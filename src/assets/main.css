@@ -1,0 +1,487 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Core Colors - Enhanced Lilac/Purple Palette */
+    --background: 310 25% 98%;
+    --foreground: 240 20% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 20% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 20% 12%;
+    --primary: 275 65% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 310 25% 95%;
+    --secondary-foreground: 240 20% 12%;
+    --muted: 310 25% 96%;
+    --muted-foreground: 240 15% 45%;
+    --accent: 285 70% 70%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
+    --border: 310 25% 88%;
+    --input: 310 25% 94%;
+    --ring: 275 65% 65%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 240 15% 8%;
+    --foreground: 310 25% 95%;
+    --card: 240 15% 10%;
+    --card-foreground: 310 25% 95%;
+    --popover: 240 15% 10%;
+    --popover-foreground: 310 25% 95%;
+    --primary: 275 70% 70%;
+    --primary-foreground: 240 15% 8%;
+    --secondary: 240 10% 15%;
+    --secondary-foreground: 310 25% 95%;
+    --muted: 240 10% 15%;
+    --muted-foreground: 310 20% 70%;
+    --accent: 285 75% 75%;
+    --accent-foreground: 240 15% 8%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
+    --border: 240 10% 18%;
+    --input: 240 10% 15%;
+    --ring: 275 70% 70%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html, body, #app {
+    @apply h-full min-h-screen;
+    overscroll-behavior: none;
+  }
+  
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    font-feature-settings: 'cv11', 'ss01';
+    font-variation-settings: 'opsz' 32;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    touch-action: manipulation;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+  }
+  
+  h1 { @apply text-4xl md:text-5xl; }
+  h2 { @apply text-3xl md:text-4xl; }
+  h3 { @apply text-2xl md:text-3xl; }
+  h4 { @apply text-xl md:text-2xl; }
+  h5 { @apply text-lg md:text-xl; }
+  h6 { @apply text-base md:text-lg; }
+  
+  p {
+    @apply leading-relaxed;
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-secondary {
+    @apply bg-gradient-to-r from-purple-600 via-primary to-purple-800 bg-clip-text text-transparent;
+  }
+}
+
+@layer components {
+  /* Layout Components */
+  .section-container {
+    @apply max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8;
+  }
+  
+  .hero-section {
+    @apply relative min-h-[80vh] flex items-center justify-center;
+    background: linear-gradient(135deg, hsl(0, 0%, 100%) 0%, hsl(310, 25%, 98%) 100%);
+  }
+  
+  .form-section {
+    @apply bg-card border border-border rounded-xl p-6 shadow-lg backdrop-blur-sm;
+    background: linear-gradient(135deg, hsl(0, 0%, 100%) 0%, hsl(310, 25%, 98%) 100%);
+  }
+  
+  /* Enhanced Cards */
+  .card-enhanced {
+    @apply bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300;
+  }
+  
+  .card-interactive {
+    @apply card-enhanced hover:scale-[1.02] hover:border-primary/20 cursor-pointer;
+  }
+  
+  /* Step Indicators */
+  .step-indicator {
+    @apply flex items-center justify-center w-10 h-10 rounded-full text-sm font-semibold transition-all duration-300 shadow-md;
+  }
+  
+  .step-active {
+    @apply text-primary-foreground shadow-lg;
+    background: linear-gradient(135deg, hsl(275, 65%, 65%) 0%, hsl(285, 70%, 70%) 50%, hsl(295, 75%, 75%) 100%);
+  }
+  
+  .step-completed {
+    @apply bg-success text-success-foreground shadow-lg;
+  }
+  
+  .step-pending {
+    @apply bg-muted text-muted-foreground border-2 border-border;
+  }
+  
+  /* Enhanced Buttons */
+  .btn-primary {
+    @apply relative overflow-hidden rounded-xl px-6 py-3 font-semibold text-primary-foreground shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105;
+    background: linear-gradient(135deg, hsl(275, 65%, 65%) 0%, hsl(285, 70%, 70%) 50%, hsl(295, 75%, 75%) 100%);
+  }
+  
+  .btn-secondary {
+    @apply relative overflow-hidden rounded-xl px-6 py-3 font-semibold bg-secondary text-secondary-foreground shadow-md transition-all duration-300 hover:shadow-lg hover:scale-105 border border-border/50;
+  }
+  
+  .btn-ghost {
+    @apply relative overflow-hidden rounded-xl px-6 py-3 font-semibold text-primary bg-transparent border-2 border-primary/20 transition-all duration-300 hover:bg-primary/5 hover:border-primary/40;
+  }
+  
+  /* Form Elements */
+  .input-enhanced {
+    @apply relative rounded-xl border border-border/50 bg-input/50 backdrop-blur-sm px-4 py-3 text-sm transition-all duration-300 focus:border-primary/50 focus:bg-background focus:shadow-md focus:outline-none focus:ring-2 focus:ring-primary/20;
+  }
+  
+  .label-enhanced {
+    @apply text-sm font-semibold text-foreground/80 mb-2 flex items-center gap-2;
+  }
+  
+  /* Icon Containers */
+  .icon-container {
+    @apply flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-primary;
+  }
+  
+  .icon-container-lg {
+    @apply flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary;
+  }
+  
+  /* Status Indicators */
+  .status-success {
+    @apply bg-success/10 text-success border border-success/20 rounded-lg px-3 py-1 text-sm font-medium;
+  }
+  
+  .status-warning {
+    @apply bg-warning/10 text-warning border border-warning/20 rounded-lg px-3 py-1 text-sm font-medium;
+  }
+  
+  .status-error {
+    @apply bg-destructive/10 text-destructive border border-destructive/20 rounded-lg px-3 py-1 text-sm font-medium;
+  }
+  
+  .status-info {
+    @apply bg-info/10 text-info border border-info/20 rounded-lg px-3 py-1 text-sm font-medium;
+  }
+}
+
+/* Enhanced Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out backwards;
+}
+
+.animate-fade-in-left {
+  animation: fadeInLeft 0.6s ease-out backwards;
+}
+
+.animate-fade-in-right {
+  animation: fadeInRight 0.6s ease-out backwards;
+}
+
+.animate-slide-in-down {
+  animation: slideInDown 0.6s ease-out backwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.6s ease-out backwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.6s ease-out backwards;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(157, 91, 210, 0.1), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-bounce-slow {
+  animation: bounce 2s infinite;
+}
+
+/* Scrollbar Styling */
+.scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary)) hsl(var(--secondary));
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: hsl(var(--secondary));
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary));
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--accent));
+}
+
+/* Glass Effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Additional Responsive Utilities */
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+/* Touch-friendly sizing */
+.touch-target {
+  min-height: 2.5rem;
+  min-width: 2.5rem;
+}
+
+@media (min-width: 640px) {
+  .touch-target {
+    min-height: 3rem;
+    min-width: 3rem;
+  }
+}
+
+/* Mobile-first responsive utilities */
+.text-responsive-xs { @apply text-xs sm:text-sm; }
+.text-responsive-sm { @apply text-sm sm:text-base; }
+.text-responsive-base { @apply text-base sm:text-lg; }
+.text-responsive-lg { @apply text-lg sm:text-xl; }
+.text-responsive-xl { @apply text-xl sm:text-2xl; }
+.text-responsive-2xl { @apply text-2xl sm:text-3xl; }
+
+/* Mobile-optimized spacing */
+.space-mobile { @apply space-y-3 sm:space-y-4; }
+.gap-mobile { @apply gap-3 sm:gap-4; }
+.p-mobile { @apply p-3 sm:p-4; }
+.px-mobile { @apply px-3 sm:px-4; }
+.py-mobile { @apply py-3 sm:py-4; }
+
+/* PWA Optimizations */
+@media (display-mode: standalone) {
+  body {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+  
+  .selectable {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .hero-section {
+    @apply min-h-[70vh];
+  }
+  
+  .form-section {
+    @apply p-4;
+  }
+  
+  .section-container {
+    @apply px-3;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .card-enhanced {
+    @apply border-2;
+  }
+  
+  .btn-primary {
+    @apply border-2 border-primary;
+  }
+  
+  .input-enhanced {
+    @apply border-2;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up,
+  .animate-fade-in-left,
+  .animate-fade-in-right,
+  .animate-slide-in-down,
+  .animate-scale-in,
+  .animate-shimmer,
+  .animate-pulse-slow,
+  .animate-bounce-slow {
+    animation: none;
+  }
+}

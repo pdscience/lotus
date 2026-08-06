@@ -1,0 +1,24 @@
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Dependencies & build
+node_modules
+dist
+
+# InsForge & AI agent skills
+.insforge
+.agent
+.agents
+.augment
+.claude
+.cline
+.github/copilot*
+.kilocode
+.qoder
+.qwen
+.roo
+.trae
+.windsurf
