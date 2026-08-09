@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@insforge/sdk": "^1.2.6",
+    "@insforge/sdk": "^1.5.2",
     "axios": "^1.13.6",
     "leaflet": "^1.9.4",
     "lucide-vue-next": "^0.344.0",
