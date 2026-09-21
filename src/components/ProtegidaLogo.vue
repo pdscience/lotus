@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ShieldCheck } from 'lucide-vue-next'
-withDefaults(defineProps<{ size?: 'sm' | 'md' | 'lg'; variant?: 'light' | 'dark' }>(), {
+withDefaults(defineProps<{ size?: 'sm' | 'md' | 'lg'; variant?: 'light' | 'dark' | 'mono' }>(), {
   size: 'md',
   variant: 'dark'
 })
@@ -21,7 +21,7 @@ const sizes = {
     </div>
     <span
       class="font-heading font-bold tracking-tight"
-      :class="[sizes[size].text, variant === 'light' ? 'text-white' : 'text-foreground']"
+      :class="[sizes[size].text, variant === 'dark' ? 'text-foreground' : 'text-white']"
     >Protegida</span>
   </div>
 </template>
