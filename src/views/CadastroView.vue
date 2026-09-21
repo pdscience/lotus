@@ -426,55 +426,57 @@ const handleSave = async () => {
         <template #desc>Registro completo de medida protetiva de urgência</template>
       </SectionHeader>
 
-      <!-- Progress Steps -->
-      <div class="mb-8">
-        <div class="rounded-lg border border-border bg-card p-6">
-          <div class="flex items-center justify-between">
-            <div 
-              v-for="(step, index) in steps" 
-              :key="step.id" 
-              class="flex items-center"
-            >
-              <div class="flex flex-col items-center">
-                <button
-                  @click="currentStep = step.id"
-                  :class="`w-12 h-12 rounded-xl flex items-center justify-center font-semibold transition-colors mb-2 ${
-                    currentStep === step.id
-                      ? 'bg-primary text-primary-foreground'
-                      : index < getCurrentStepIndex()
-                      ? 'bg-success/15 text-success border border-success/20'
-                      : 'bg-secondary text-muted-foreground'
-                  }`"
-                >
-                  <Check v-if="index < getCurrentStepIndex()" class="w-5 h-5" />
-                  <component v-else :is="step.icon" class="w-5 h-5" />
-                </button>
-                
-                <div class="text-center">
-                  <p :class="`text-sm font-semibold ${
-                    currentStep === step.id ? 'text-primary' : 'text-muted-foreground'
-                  }`">
-                    {{ step.title }}
-                  </p>
-                  <p class="text-xs text-muted-foreground hidden md:block">
-                    {{ step.description }}
-                  </p>
+      <!-- Wizard vertical: passos laterais + conteúdo -->
+      <div class="flex flex-col lg:flex-row gap-6 mb-8">
+        <!-- Progress Steps (lateral vertical) -->
+        <aside class="lg:w-64 shrink-0">
+          <div class="rounded-lg border border-border bg-card p-6">
+            <div class="flex flex-row lg:flex-col items-start justify-between lg:justify-start gap-2">
+              <div
+                v-for="(step, index) in steps"
+                :key="step.id"
+                class="flex flex-1 lg:flex-none flex-col items-center lg:items-stretch"
+              >
+                <div class="flex flex-col lg:flex-row items-center lg:items-center gap-0 lg:gap-3">
+                  <button
+                    @click="currentStep = step.id"
+                    :class="`w-12 h-12 rounded-xl flex items-center justify-center font-semibold transition-colors mb-2 lg:mb-0 shrink-0 ${
+                      currentStep === step.id
+                        ? 'bg-primary text-primary-foreground'
+                        : index < getCurrentStepIndex()
+                        ? 'bg-success/15 text-success border border-success/20'
+                        : 'bg-secondary text-muted-foreground'
+                    }`"
+                  >
+                    <Check v-if="index < getCurrentStepIndex()" class="w-5 h-5" />
+                    <component v-else :is="step.icon" class="w-5 h-5" />
+                  </button>
+
+                  <div class="text-center lg:text-left">
+                    <p :class="`text-sm font-semibold ${
+                      currentStep === step.id ? 'text-primary' : 'text-muted-foreground'
+                    }`">
+                      {{ step.title }}
+                    </p>
+                    <p class="text-xs text-muted-foreground hidden md:block">
+                      {{ step.description }}
+                    </p>
+                  </div>
                 </div>
+
+                <div
+                  v-if="index < steps.length - 1"
+                  :class="`w-1 h-8 lg:w-1 lg:h-8 lg:ml-6 lg:my-2 mx-auto my-2 rounded-full transition-colors duration-300 ${
+                    index < getCurrentStepIndex() ? 'bg-primary' : 'bg-border'
+                  }`"
+                />
               </div>
-              
-              <div 
-                v-if="index < steps.length - 1" 
-                :class="`h-1 w-16 mx-4 rounded-full transition-colors duration-300 ${
-                  index < getCurrentStepIndex() ? 'bg-success' : 'bg-border'
-                }`" 
-              />
             </div>
           </div>
-        </div>
-      </div>
+        </aside>
 
-      <!-- Form Content -->
-      <div class="mb-8" :key="currentStep">
+        <!-- Form Content -->
+        <div class="flex-1 min-w-0" :key="currentStep">
         <!-- Ofendida Form -->
         <div v-if="currentStep === 'ofendida'" class="rounded-lg border border-border bg-card p-6">
           <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
@@ -917,6 +919,7 @@ const handleSave = async () => {
             </div>
           </div>
         </div>
+        </div>
       </div>
 
       <!-- Navigation -->
@@ -958,10 +961,10 @@ const handleSave = async () => {
                 v-else
                 @click="handleSave"
                 :disabled="!canProceed() || isSaving"
-                class="flex items-center justify-center gap-2 px-6 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex-1 sm:flex-initial"
+                class="flex items-center justify-center gap-2 px-6 py-2 rounded-lg bg-accent text-accent-foreground text-sm font-semibold hover:bg-accent/90 transition-opacity disabled:opacity-50 flex-1 sm:flex-initial"
               >
                 <div v-if="isSaving" class="flex items-center gap-2">
-                  <div class="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                  <div class="w-4 h-4 border-2 border-accent-foreground/30 border-t-accent-foreground rounded-full animate-spin" />
                   Salvando...
                 </div>
                 <template v-else>

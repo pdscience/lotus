@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { Shield, ClipboardList, FileText, MapPin } from 'lucide-vue-next'
 import { fetchMedidasProtetivas, type MedidaProtetivaAll } from '../services/medidaService'
 import { useUserStore } from '../stores/userStore'
@@ -7,6 +7,13 @@ import SectionHeader from '../components/SectionHeader.vue'
 import StatCard from '../components/StatCard.vue'
 
 const userStore = useUserStore()
+const saudacao = computed(() => {
+  const h = new Date().getHours()
+  if (h < 12) return 'Bom dia'
+  if (h < 18) return 'Boa tarde'
+  return 'Boa noite'
+})
+const hoje = computed(() => new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' }))
 const medidas = ref<MedidaProtetivaAll[]>([])
 const isLoading = ref(true)
 
@@ -71,12 +78,17 @@ const getStatusClass = (status: string) => {
         </template>
       </SectionHeader>
 
+      <div class="rounded-lg border border-border bg-card p-4 mb-4 flex items-center justify-between">
+        <div><p class="font-bold text-lg">{{ saudacao }}</p><p class="text-sm text-muted-foreground">{{ hoje }}</p></div>
+        <router-link to="/dashboard/consulta" class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold" :style="{ color: 'hsl(var(--accent-foreground))' }">Nova consulta</router-link>
+      </div>
+
       <!-- Stats -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <StatCard label="Total de medidas" :value="String(stats.total)" />
-        <StatCard label="Medidas ativas" :value="String(stats.ativas)" delta="em vigor" />
-        <StatCard label="Urgência alta/crítica" :value="String(stats.critica + stats.alta)" delta="requer atenção" />
-        <StatCard label="Suspensas" :value="String(stats.suspensas)" />
+        <StatCard label="Total de medidas" :value="String(stats.total)" accent-top />
+        <StatCard label="Medidas ativas" :value="String(stats.ativas)" delta="em vigor" accent-top />
+        <StatCard label="Urgência alta/crítica" :value="String(stats.critica + stats.alta)" delta="requer atenção" accent-top />
+        <StatCard label="Suspensas" :value="String(stats.suspensas)" accent-top />
       </div>
 
       <!-- Últimas Medidas Registradas -->
@@ -94,23 +106,19 @@ const getStatusClass = (status: string) => {
           Nenhuma medida protetiva registrada
         </div>
 
-        <div v-else class="space-y-3">
-          <div
-            v-for="m in medidas.slice(0, 5)"
-            :key="m.id"
-            class="flex items-center justify-between p-3 rounded-lg border border-border bg-secondary/20"
-          >
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-full bg-secondary border border-border flex items-center justify-center text-xs font-bold">
-                {{ m.nome_ofendida?.charAt(0) || '?' }}
+        <div v-else class="space-y-0">
+          <ul class="rounded-lg border border-border bg-card divide-y divide-border">
+            <li
+              v-for="m in medidas.slice(0, 5)"
+              :key="m.id"
+              class="flex gap-3 p-4"
+            >
+              <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary" />
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-medium">{{ m.nome_ofendida }}</p>
+                <p class="text-xs text-muted-foreground">{{ m.nome_ofensor }} · {{ m.cidade }}/{{ m.uf }}</p>
               </div>
-              <div>
-                <p class="font-medium text-sm">{{ m.nome_ofendida }}</p>
-                <p class="text-xs text-muted-foreground">{{ m.nome_ofensor }}</p>
-              </div>
-            </div>
-            <div class="text-right">
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 shrink-0">
                 <span
                   class="inline-block px-2 py-1 rounded-full text-xs font-medium"
                   :class="getStatusClass(m.status)"
@@ -123,9 +131,8 @@ const getStatusClass = (status: string) => {
                   :title="m.urgencia"
                 />
               </div>
-              <p class="text-xs text-muted-foreground mt-1">{{ m.cidade }}/{{ m.uf }}</p>
-            </div>
-          </div>
+            </li>
+          </ul>
         </div>
       </div>
 

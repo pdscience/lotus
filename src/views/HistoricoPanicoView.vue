@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import {
   Trash2,
@@ -19,6 +19,47 @@ const router = useRouter()
 const records = ref<PanicRecord[]>([])
 const selectedImage = ref<string | null>(null)
 const playingAudioId = ref<string | null>(null)
+const busca = ref('')
+const filtros = ['Todos', 'Com áudio', 'Com foto']
+const filtroAtivo = ref('Todos')
+
+const recordsFiltrados = computed(() => {
+  const termo = busca.value.trim().toLowerCase()
+  return records.value.filter(r => {
+    const matchesBusca = !termo ||
+      formatDate(r.timestamp).toLowerCase().includes(termo) ||
+      formatCoordinates(r.latitude, r.longitude).toLowerCase().includes(termo)
+    const matchesFiltro = filtroAtivo.value === 'Todos' ||
+      (filtroAtivo.value === 'Com áudio' && !!r.audioUrl) ||
+      (filtroAtivo.value === 'Com foto' && !!r.imageUrl)
+    return matchesBusca && matchesFiltro
+  })
+})
+
+const statusMidia = (record: PanicRecord) => {
+  if (record.audioUrl && record.imageUrl) return 'áudio + foto'
+  if (record.audioUrl) return 'com áudio'
+  if (record.imageUrl) return 'com foto'
+  return 'pendente'
+}
+
+const classePorStatus = (status: string) => {
+  switch (status.toLowerCase()) {
+    case 'ativa': return 'bg-primary/15 text-primary'
+    case 'pendente': return 'bg-accent/15'
+    case 'áudio + foto':
+    case 'com áudio': return 'bg-primary/15 text-primary'
+    case 'com foto': return 'bg-info/10 text-info border border-info/20'
+    default: return 'bg-secondary text-muted-foreground border border-border'
+  }
+}
+
+const estiloSeloPendente = (status: string) =>
+  status.toLowerCase() === 'pendente' ? { color: 'hsl(var(--accent-foreground))' } : undefined
+
+const novoRegistro = () => {
+  router.push('/dashboard')
+}
 const audioElements = ref<Map<string, HTMLAudioElement>>(new Map())
 const audioProgress = ref<Map<string, number>>(new Map())
 const audioDurations = ref<Map<string, number>>(new Map())
@@ -137,14 +178,21 @@ onUnmounted(() => {
         <template #desc>Registros de emergência da vítima</template>
       </SectionHeader>
 
-      <DataTable v-if="records.length > 0">
+      <div class="flex flex-wrap items-center gap-2 mb-4">
+        <input v-model="busca" placeholder="Buscar..." class="input-enhanced !w-64" />
+        <button v-for="f in filtros" :key="f" @click="filtroAtivo = f" :class="['rounded-full px-3 py-1 text-xs border', filtroAtivo === f ? 'bg-primary text-primary-foreground border-transparent' : 'border-border text-muted-foreground']">{{ f }}</button>
+        <button @click="novoRegistro" class="rounded-lg px-3 py-1.5 text-xs font-semibold" :style="{ background: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }">+ Novo</button>
+      </div>
+
+      <DataTable v-if="recordsFiltrados.length > 0">
         <template #head>
           <th class="font-medium py-3">Data / hora</th>
           <th class="font-medium py-3">Localização</th>
+          <th class="font-medium py-3">Status</th>
           <th class="font-medium py-3 hidden sm:table-cell">Mídia</th>
           <th class="font-medium py-3 text-right">Ações</th>
         </template>
-        <tr v-for="record in records" :key="record.id">
+        <tr v-for="record in recordsFiltrados" :key="record.id">
           <td class="font-medium text-foreground">{{ formatDate(record.timestamp) }}</td>
           <td>
             <button
@@ -177,6 +225,9 @@ onUnmounted(() => {
               ></div>
             </div>
           </td>
+          <td>
+            <span class="rounded-full px-2 py-0.5 text-xs" :class="classePorStatus(statusMidia(record))" :style="estiloSeloPendente(statusMidia(record))">{{ statusMidia(record) }}</span>
+          </td>
           <td class="hidden sm:table-cell">
             <div class="flex items-center gap-2">
               <button
@@ -208,13 +259,38 @@ onUnmounted(() => {
             </div>
           </td>
           <td class="text-right">
-            <button
-              @click="removeRecord(record.id)"
-              class="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-secondary/50 transition-colors"
-              title="Excluir"
-            >
-              <Trash2 class="w-4 h-4" />
-            </button>
+            <details class="relative inline-block">
+              <summary class="cursor-pointer list-none px-3 py-1.5 rounded-lg border border-border text-xs font-medium hover:bg-secondary/50 transition-colors">•••</summary>
+              <div class="absolute right-0 z-10 rounded-lg border border-border bg-popover p-1 shadow-lg min-w-36">
+                <button
+                  v-if="record.audioUrl"
+                  @click="playAudio(record)"
+                  class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
+                >
+                  {{ playingAudioId === record.id ? 'Parar áudio' : 'Ouvir áudio' }}
+                </button>
+                <button
+                  v-if="record.imageUrl"
+                  @click="openImage(record.imageUrl)"
+                  class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
+                >
+                  Ver foto
+                </button>
+                <button
+                  @click="openLocation(record.latitude, record.longitude)"
+                  class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
+                >
+                  Abrir no Maps
+                </button>
+                <button
+                  @click="removeRecord(record.id)"
+                  class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left text-destructive"
+                >
+                  <Trash2 class="w-4 h-4" />
+                  Excluir
+                </button>
+              </div>
+            </details>
           </td>
         </tr>
       </DataTable>

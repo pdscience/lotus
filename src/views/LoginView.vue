@@ -92,7 +92,7 @@ const setUserType = (type: UserType) => {
             :class="[
               'flex-1 py-3 px-3 rounded-lg font-medium transition-all flex items-center justify-center gap-1.5 text-sm',
               userType === 'vitima' 
-                ? 'bg-rose-500 text-white shadow-lg' 
+                ? 'bg-primary text-primary-foreground shadow-lg' 
                 : 'text-muted-foreground hover:bg-secondary/50'
             ]">
             <Heart class="w-4 h-4" />
@@ -103,7 +103,7 @@ const setUserType = (type: UserType) => {
             :class="[
               'flex-1 py-3 px-3 rounded-lg font-medium transition-all flex items-center justify-center gap-1.5 text-sm',
               userType === 'admin' 
-                ? 'bg-primary text-primary-foreground shadow-lg' 
+                ? 'bg-accent text-accent-foreground shadow-lg' 
                 : 'text-muted-foreground hover:bg-secondary/50'
             ]"
           >
@@ -164,12 +164,7 @@ const setUserType = (type: UserType) => {
           <button
             type="submit"
             :disabled="isLoading"
-            class="w-full h-12 rounded-xl font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2"
-            :class="userType === 'vitima' 
-              ? 'bg-rose-500 hover:bg-rose-600' 
-              : userType === 'agente'
-                ? 'bg-blue-600 hover:bg-blue-700'
-                : 'bg-primary hover:bg-primary/90'"
+            class="w-full h-12 rounded-xl font-semibold bg-accent text-accent-foreground hover:bg-accent/90 transition-all duration-300 flex items-center justify-center gap-2"
           >
             <LogIn class="w-5 h-5" />
             {{ isLoading ? 'Entrando...' : 'Entrar' }}
@@ -239,7 +234,7 @@ const setUserType = (type: UserType) => {
             <!-- Cadastro Vítima -->
             <div class="bg-secondary/30 rounded-xl p-5 border border-border">
               <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 rounded-full bg-rose-500 flex items-center justify-center text-white">
+                <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
                   <Heart class="w-5 h-5" />
                 </div>
                 <div>

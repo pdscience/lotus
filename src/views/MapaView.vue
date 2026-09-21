@@ -298,112 +298,114 @@ watch(filteredLocations, () => {
       </div>
 
       <template v-else>
-        <!-- Estatísticas -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
-          <StatCard label="Total de pontos" :value="String(stats.total)" />
-          <StatCard label="Vítimas" :value="String(stats.vitimas)" />
-          <StatCard label="Agressores" :value="String(stats.agressores)" />
-        </div>
+        <!-- Molde Mapa: full-bleed + painel flutuante + stats sobrepostos -->
+        <div class="relative h-[calc(100vh-8rem)] rounded-lg overflow-hidden border border-border">
+          <div class="absolute inset-0">
+            <div id="map" class="h-full w-full z-0"></div>
+          </div>
 
-        <!-- Filtros -->
-        <div class="rounded-lg border border-border bg-card p-6 mb-6">
-          <h2 class="font-semibold text-lg flex items-center gap-2 mb-4">
-            <Filter class="w-5 h-5 text-primary" />
-            Filtros de localização
-          </h2>
-          <p class="text-sm text-muted-foreground mb-4">
-            Selecione UF e cidade para filtrar os dados no mapa
-          </p>
+          <!-- Painel flutuante: filtros + lista -->
+          <div class="absolute left-4 top-4 bottom-4 z-10 w-80 max-w-[calc(100%-2rem)] rounded-lg border border-border bg-card/95 backdrop-blur p-4 overflow-y-auto">
+            <h2 class="font-semibold text-lg flex items-center gap-2 mb-2">
+              <Filter class="w-5 h-5 text-primary" />
+              Filtros de localização
+            </h2>
+            <p class="text-sm text-muted-foreground mb-4">
+              Selecione UF e cidade para filtrar os dados no mapa
+            </p>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label class="text-sm font-medium mb-2 block">Estado (UF)</label>
-              <select
-                v-model="selectedUF"
-                :disabled="loadingEstados"
-                class="w-full h-11 rounded-lg border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 disabled:opacity-50"
-              >
-                <option v-if="loadingEstados" value="">Carregando...</option>
-                <option v-for="estado in estados" :key="estado.sigla" :value="estado.sigla">
-                  {{ estado.nome }} ({{ estado.sigla }})
-                </option>
-              </select>
+            <div class="grid grid-cols-1 gap-4">
+              <div>
+                <label class="text-sm font-medium mb-2 block">Estado (UF)</label>
+                <select
+                  v-model="selectedUF"
+                  :disabled="loadingEstados"
+                  class="w-full h-11 rounded-lg border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 disabled:opacity-50"
+                >
+                  <option v-if="loadingEstados" value="">Carregando...</option>
+                  <option v-for="estado in estados" :key="estado.sigla" :value="estado.sigla">
+                    {{ estado.nome }} ({{ estado.sigla }})
+                  </option>
+                </select>
+              </div>
+
+              <div>
+                <label class="text-sm font-medium mb-2 block">Cidade</label>
+                <select
+                  v-model="selectedCidade"
+                  :disabled="loadingCidades || cidades.length === 0"
+                  class="w-full h-11 rounded-lg border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 disabled:opacity-50"
+                >
+                  <option v-if="loadingCidades" value="">Carregando...</option>
+                  <option v-else-if="cidades.length === 0" value="">Nenhum município</option>
+                  <option value="Todas">Todas</option>
+                  <option v-for="cidade in cidades" :key="cidade.id" :value="cidade.nome">
+                    {{ cidade.nome }}
+                  </option>
+                </select>
+              </div>
+
+              <div>
+                <label class="text-sm font-medium mb-2 block">Bairro</label>
+                <select
+                  v-model="selectedBairro"
+                  class="w-full h-11 rounded-lg border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
+                >
+                  <option value="Todos">Todos</option>
+                  <option v-for="bairro in bairrosDisponiveis" :key="bairro" :value="bairro">
+                    {{ bairro }}
+                  </option>
+                </select>
+              </div>
             </div>
 
-            <div>
-              <label class="text-sm font-medium mb-2 block">Cidade</label>
-              <select
-                v-model="selectedCidade"
-                :disabled="loadingCidades || cidades.length === 0"
-                class="w-full h-11 rounded-lg border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 disabled:opacity-50"
+            <!-- Filtros de Tipo -->
+            <div class="mt-4 flex flex-wrap gap-3">
+              <label
+                class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer transition-colors select-none"
+                :class="showVitimas ? 'border-info/40 bg-info/10 text-info' : 'border-border text-muted-foreground'"
               >
-                <option v-if="loadingCidades" value="">Carregando...</option>
-                <option v-else-if="cidades.length === 0" value="">Nenhum município</option>
-                <option value="Todas">Todas</option>
-                <option v-for="cidade in cidades" :key="cidade.id" :value="cidade.nome">
-                  {{ cidade.nome }}
-                </option>
-              </select>
+                <input type="checkbox" v-model="showVitimas" class="sr-only" />
+                <Users class="w-4 h-4" />
+                <span class="text-sm font-medium">Vítimas ({{ stats.vitimas }})</span>
+              </label>
+
+              <label
+                class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer transition-colors select-none"
+                :class="showAgressores ? 'border-destructive/40 bg-destructive/10 text-destructive' : 'border-border text-muted-foreground'"
+              >
+                <input type="checkbox" v-model="showAgressores" class="sr-only" />
+                <AlertTriangle class="w-4 h-4" />
+                <span class="text-sm font-medium">Agressores ({{ stats.agressores }})</span>
+              </label>
             </div>
 
-            <div>
-              <label class="text-sm font-medium mb-2 block">Bairro</label>
-              <select
-                v-model="selectedBairro"
-                class="w-full h-11 rounded-lg border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
-              >
-                <option value="Todos">Todos</option>
-                <option v-for="bairro in bairrosDisponiveis" :key="bairro" :value="bairro">
-                  {{ bairro }}
-                </option>
-              </select>
+            <div class="mt-4 flex flex-wrap gap-2 text-sm">
+              <span class="flex items-center gap-1 px-3 py-1 rounded-lg border border-border text-muted-foreground">
+                <MapPin class="w-3 h-3" />
+                {{ selectedUF }}
+              </span>
+              <span class="flex items-center gap-1 px-3 py-1 rounded-lg border border-border text-muted-foreground">
+                <MapPin class="w-3 h-3" />
+                {{ selectedCidade }}
+              </span>
+              <span v-if="selectedBairro !== 'Todos'" class="flex items-center gap-1 px-3 py-1 rounded-lg border border-border text-muted-foreground">
+                <MapPin class="w-3 h-3" />
+                {{ selectedBairro }}
+              </span>
             </div>
           </div>
 
-          <!-- Filtros de Tipo -->
-          <div class="mt-4 flex flex-wrap gap-3">
-            <label
-              class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer transition-colors select-none"
-              :class="showVitimas ? 'border-info/40 bg-info/10 text-info' : 'border-border text-muted-foreground'"
-            >
-              <input type="checkbox" v-model="showVitimas" class="sr-only" />
-              <Users class="w-4 h-4" />
-              <span class="text-sm font-medium">Vítimas ({{ stats.vitimas }})</span>
-            </label>
-
-            <label
-              class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer transition-colors select-none"
-              :class="showAgressores ? 'border-destructive/40 bg-destructive/10 text-destructive' : 'border-border text-muted-foreground'"
-            >
-              <input type="checkbox" v-model="showAgressores" class="sr-only" />
-              <AlertTriangle class="w-4 h-4" />
-              <span class="text-sm font-medium">Agressores ({{ stats.agressores }})</span>
-            </label>
+          <!-- StatCards sobrepostos -->
+          <div class="absolute top-4 right-4 z-10 hidden sm:flex gap-2">
+            <StatCard label="Total de pontos" :value="String(stats.total)" accent-top class="w-32 shadow-lg" />
+            <StatCard label="Vítimas" :value="String(stats.vitimas)" accent-top class="w-28 shadow-lg" />
+            <StatCard label="Agressores" :value="String(stats.agressores)" accent-top class="w-28 shadow-lg" />
           </div>
-
-          <div class="mt-4 flex flex-wrap gap-2 text-sm">
-            <span class="flex items-center gap-1 px-3 py-1 rounded-lg border border-border text-muted-foreground">
-              <MapPin class="w-3 h-3" />
-              {{ selectedUF }}
-            </span>
-            <span class="flex items-center gap-1 px-3 py-1 rounded-lg border border-border text-muted-foreground">
-              <MapPin class="w-3 h-3" />
-              {{ selectedCidade }}
-            </span>
-            <span v-if="selectedBairro !== 'Todos'" class="flex items-center gap-1 px-3 py-1 rounded-lg border border-border text-muted-foreground">
-              <MapPin class="w-3 h-3" />
-              {{ selectedBairro }}
-            </span>
-          </div>
-        </div>
-
-        <!-- Mapa -->
-        <div class="rounded-lg border border-border bg-card p-6 mb-6">
-          <div id="map" class="h-[500px] rounded-lg border border-border z-0"></div>
         </div>
 
         <!-- Estatísticas por Bairro -->
-        <div v-if="bairroStats.length > 0" class="rounded-lg border border-border bg-card p-6">
+        <div v-if="bairroStats.length > 0" class="mt-6 rounded-lg border border-border bg-card p-6">
           <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
             <MapPin class="w-5 h-5 text-primary" />
             Top bairros

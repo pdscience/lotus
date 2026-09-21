@@ -3,7 +3,6 @@ import { ref, onMounted, computed, watch } from 'vue'
 import {
   Shield,
   Plus,
-  Search,
   Trash2,
   Save,
   X,
@@ -108,14 +107,14 @@ const situacoesMonitoramento = [
 ]
 
 const statusVisitaOptions = [
-  { value: 'pendente', label: 'Pendente', color: 'bg-secondary text-muted-foreground border-border', icon: Clock },
+  { value: 'pendente', label: 'Pendente', color: 'bg-accent/15 border-transparent', icon: Clock },
   { value: 'agendada', label: 'Agendada', color: 'bg-info/10 text-info border-info/20', icon: FileText },
-  { value: 'visitada', label: 'Visitada', color: 'bg-success/10 text-success border-success/20', icon: CheckCircle },
+  { value: 'visitada', label: 'Visitada', color: 'bg-primary/15 text-primary border-transparent', icon: CheckCircle },
   { value: 'nao_visitada', label: 'Não Visitada', color: 'bg-destructive/10 text-destructive border-destructive/20', icon: XCircle }
 ]
 
 const statusPatrulhaOptions = [
-  { value: 'pendente', label: 'Pendente', color: 'bg-secondary text-muted-foreground border-border', icon: Clock },
+  { value: 'pendente', label: 'Pendente', color: 'bg-accent/15 border-transparent', icon: Clock },
   { value: 'em_deslocamento', label: 'Em Deslocamento', color: 'bg-warning/10 text-warning border-warning/20', icon: Car },
   { value: 'no_local', label: 'No Local', color: 'bg-info/10 text-info border-info/20', icon: Eye },
   { value: 'concluido', label: 'Concluído', color: 'bg-success/10 text-success border-success/20', icon: CheckCircle },
@@ -128,6 +127,19 @@ const riscos = [
   { value: 'alto', label: 'Alto', color: 'bg-warning/10 text-warning border-warning/20' },
   { value: 'critico', label: 'Crítico', color: 'bg-destructive/10 text-destructive border-destructive/20' }
 ]
+
+const filtros = ['Todos', 'Baixo', 'Médio', 'Alto', 'Crítico']
+
+const filtroParaValor: Record<string, string> = {
+  Todos: 'todos',
+  Baixo: 'baixo',
+  'Médio': 'medio',
+  Alto: 'alto',
+  'Crítico': 'critico'
+}
+
+const estiloSeloPendente = (status: string) =>
+  status === 'pendente' ? { color: 'hsl(var(--accent-foreground))' } : undefined
 
 const filteredData = computed(() => {
   return monitoramentos.value.filter(item => {
@@ -330,15 +342,6 @@ onMounted(() => {
       <!-- Filtros -->
       <div class="rounded-lg border border-border bg-card p-6 mb-6">
         <div class="flex flex-col sm:flex-row gap-3">
-          <div class="flex-1 relative">
-            <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input
-              v-model="searchTerm"
-              type="text"
-              placeholder="Buscar por vítima, agressor ou processo..."
-              class="w-full h-11 pl-10 pr-4 rounded-lg border border-border bg-input text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
-            />
-          </div>
           <select
             v-model="filterRisco"
             class="h-11 px-4 rounded-lg border border-border bg-input text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
@@ -367,6 +370,12 @@ onMounted(() => {
       </div>
 
       <!-- Tabela -->
+      <div class="flex flex-wrap items-center gap-2 mb-4">
+        <input v-model="searchTerm" placeholder="Buscar..." class="input-enhanced !w-64" />
+        <button v-for="f in filtros" :key="f" @click="filterRisco = filtroParaValor[f]" :class="['rounded-full px-3 py-1 text-xs border', filterRisco === filtroParaValor[f] ? 'bg-primary text-primary-foreground border-transparent' : 'border-border text-muted-foreground']">{{ f }}</button>
+        <button @click="openModal" class="rounded-lg px-3 py-1.5 text-xs font-semibold" :style="{ background: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }">+ Novo</button>
+      </div>
+
       <div class="rounded-lg border border-border bg-card p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="font-semibold text-lg flex items-center gap-2">
@@ -412,32 +421,38 @@ onMounted(() => {
               </span>
             </td>
             <td>
-              <span :class="['inline-flex px-2 py-0.5 rounded-full text-xs font-medium border', getRiscoBadge(m.risco).color]">
+              <span :class="['rounded-full px-2 py-0.5 text-xs border', getRiscoBadge(m.risco).color]">
                 {{ getRiscoBadge(m.risco).label }}
               </span>
             </td>
             <td>
-              <span :class="['inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border', getStatusVisitaInfo(m.status_visita).color]">
-                <component :is="getStatusVisitaInfo(m.status_visita).icon" class="w-3 h-3" />
+              <span :class="['rounded-full px-2 py-0.5 text-xs border', getStatusVisitaInfo(m.status_visita).color]" :style="estiloSeloPendente(m.status_visita)">
                 {{ getStatusVisitaInfo(m.status_visita).label }}
               </span>
             </td>
             <td>
-              <span :class="['inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border', getStatusPatrulhaInfo(m.status_patrulha).color]">
-                <component :is="getStatusPatrulhaInfo(m.status_patrulha).icon" class="w-3 h-3" />
+              <span :class="['rounded-full px-2 py-0.5 text-xs border', getStatusPatrulhaInfo(m.status_patrulha).color]" :style="estiloSeloPendente(m.status_patrulha)">
                 {{ getStatusPatrulhaInfo(m.status_patrulha).label }}
               </span>
             </td>
             <td class="text-right whitespace-nowrap">
-              <button @click="openEdit(m)" class="p-2 rounded-lg text-primary hover:bg-secondary transition-colors" title="Editar status">
-                <Edit3 class="w-4 h-4" />
-              </button>
-              <button @click="openDetail(m)" class="p-2 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors" title="Ver detalhes">
-                <Eye class="w-4 h-4" />
-              </button>
-              <button @click="handleDelete(m.id)" class="p-2 rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors" title="Excluir">
-                <Trash2 class="w-4 h-4" />
-              </button>
+              <details class="relative inline-block">
+                <summary class="cursor-pointer list-none px-3 py-1.5 rounded-lg border border-border text-xs font-medium hover:bg-secondary/50 transition-colors">•••</summary>
+                <div class="absolute right-0 z-10 rounded-lg border border-border bg-popover p-1 shadow-lg min-w-36">
+                  <button @click="openEdit(m)" class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left">
+                    <Edit3 class="w-4 h-4" />
+                    Editar status
+                  </button>
+                  <button @click="openDetail(m)" class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left">
+                    <Eye class="w-4 h-4" />
+                    Ver detalhes
+                  </button>
+                  <button @click="handleDelete(m.id)" class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left text-destructive">
+                    <Trash2 class="w-4 h-4" />
+                    Excluir
+                  </button>
+                </div>
+              </details>
             </td>
           </tr>
           <template #empty>

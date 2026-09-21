@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import {
   UserPlus,
   Phone,
@@ -35,6 +35,39 @@ const formData = ref({
 })
 
 const parentescos = ['Cônjuge', 'Filho(a)', 'Pai', 'Mãe', 'Irmão(ã)', 'Amigo(a)', 'Vizinho(a)', 'Outro']
+
+const busca = ref('')
+const filtros = computed(() => ['Todos', ...parentescos])
+const filtroAtivo = ref('Todos')
+
+const contatosFiltrados = computed(() => {
+  const termo = busca.value.trim().toLowerCase()
+  return contatos.value.filter(c => {
+    const matchesBusca = !termo ||
+      c.nome.toLowerCase().includes(termo) ||
+      c.telefone.includes(termo) ||
+      (c.parentesco || '').toLowerCase().includes(termo)
+    const matchesFiltro = filtroAtivo.value === 'Todos' || (c.parentesco || '') === filtroAtivo.value
+    return matchesBusca && matchesFiltro
+  })
+})
+
+const classePorStatus = (status: string) => {
+  switch (status.toLowerCase()) {
+    case 'ativa': return 'bg-primary/15 text-primary'
+    case 'pendente': return 'bg-accent/15'
+    case 'cônjuge': return 'bg-primary/15 text-primary'
+    case 'filho(a)':
+    case 'pai':
+    case 'mãe': return 'bg-info/10 text-info border border-info/20'
+    case 'amigo(a)':
+    case 'vizinho(a)': return 'bg-success/10 text-success border border-success/20'
+    default: return 'bg-secondary text-muted-foreground border border-border'
+  }
+}
+
+const estiloSeloPendente = (status: string) =>
+  status.toLowerCase() === 'pendente' ? { color: 'hsl(var(--accent-foreground))' } : undefined
 
 const loadContatos = async () => {
   contatos.value = await fetchContatosAnjo()
@@ -150,14 +183,20 @@ const goBack = () => {
       </div>
 
       <!-- Contatos Table -->
-      <DataTable v-if="contatos.length > 0">
+      <div class="flex flex-wrap items-center gap-2 mb-4">
+        <input v-model="busca" placeholder="Buscar..." class="input-enhanced !w-64" />
+        <button v-for="f in filtros" :key="f" @click="filtroAtivo = f" :class="['rounded-full px-3 py-1 text-xs border', filtroAtivo === f ? 'bg-primary text-primary-foreground border-transparent' : 'border-border text-muted-foreground']">{{ f }}</button>
+        <button @click="openModal()" class="rounded-lg px-3 py-1.5 text-xs font-semibold" :style="{ background: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }">+ Novo</button>
+      </div>
+
+      <DataTable v-if="contatosFiltrados.length > 0">
         <template #head>
           <th class="font-medium py-3">Nome</th>
           <th class="font-medium py-3">Telefone</th>
           <th class="font-medium py-3 hidden sm:table-cell">Parentesco</th>
           <th class="font-medium py-3 text-right">Ações</th>
         </template>
-        <tr v-for="contato in contatos" :key="contato.id">
+        <tr v-for="contato in contatosFiltrados" :key="contato.id">
           <td>
             <div class="flex items-center gap-2 py-1">
               <Heart class="w-4 h-4 text-muted-foreground flex-shrink-0" />
@@ -170,24 +209,29 @@ const goBack = () => {
               {{ formatTelefone(contato.telefone) }}
             </span>
           </td>
-          <td class="hidden sm:table-cell text-muted-foreground">{{ contato.parentesco || '—' }}</td>
+          <td class="hidden sm:table-cell">
+            <span class="rounded-full px-2 py-0.5 text-xs" :class="classePorStatus(contato.parentesco || '—')" :style="estiloSeloPendente(contato.parentesco || '')">{{ contato.parentesco || '—' }}</span>
+          </td>
           <td class="text-right">
-            <div class="flex gap-1 justify-end">
-              <button
-                @click="openModal(contato)"
-                class="p-2 rounded-lg hover:bg-secondary/50 transition-colors text-muted-foreground hover:text-primary"
-                title="Editar"
-              >
-                <Edit3 class="w-4 h-4" />
-              </button>
-              <button
-                @click="deleteContato(contato.id)"
-                class="p-2 rounded-lg hover:bg-secondary/50 transition-colors text-muted-foreground hover:text-destructive"
-                title="Excluir"
-              >
-                <Trash2 class="w-4 h-4" />
-              </button>
-            </div>
+            <details class="relative inline-block">
+              <summary class="cursor-pointer list-none px-3 py-1.5 rounded-lg border border-border text-xs font-medium hover:bg-secondary/50 transition-colors">•••</summary>
+              <div class="absolute right-0 z-10 rounded-lg border border-border bg-popover p-1 shadow-lg min-w-32">
+                <button
+                  @click="openModal(contato)"
+                  class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
+                >
+                  <Edit3 class="w-4 h-4" />
+                  Editar
+                </button>
+                <button
+                  @click="deleteContato(contato.id)"
+                  class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left text-destructive"
+                >
+                  <Trash2 class="w-4 h-4" />
+                  Excluir
+                </button>
+              </div>
+            </details>
           </td>
         </tr>
       </DataTable>
