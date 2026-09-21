@@ -122,9 +122,9 @@ const closeMenu = () => {
           :key="item.href"
           :to="item.href"
           class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all"
-          :class="isActivePath(item.href)
+          :class="[isActivePath(item.href)
             ? 'bg-primary text-primary-foreground shadow-lg'
-            : 'hover:bg-secondary/50 text-foreground'"
+            : 'hover:bg-secondary/50 text-foreground', collapsed && 'justify-center px-0']"
         >
           <component :is="item.icon" class="w-5 h-5 shrink-0" />
           <span v-show="!collapsed">{{ item.label }}</span>
@@ -239,7 +239,8 @@ const closeMenu = () => {
             
             <button
               @click="handleLogout"
-              class="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-left hover:bg-red-50 text-red-600 transition-all"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-left hover:bg-red-50 text-red-600 transition-all"
+          :class="collapsed && 'justify-center px-0'"
             >
               <LogOut class="w-5 h-5" />
               <span>Sair</span>

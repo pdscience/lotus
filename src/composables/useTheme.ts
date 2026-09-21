@@ -2,6 +2,7 @@ import { ref, watch } from 'vue'
 
 type Theme = 'dark' | 'light'
 const theme = ref<Theme>('dark')
+let started = false
 
 function apply(t: Theme) {
   document.documentElement.classList.toggle('dark', t === 'dark')
@@ -13,6 +14,8 @@ export function useTheme() {
 }
 
 export function initTheme(): void {
+  if (started) return
+  started = true
   let saved: string | null = null
   try { saved = localStorage.getItem('protegida-theme') } catch { /* ignore */ }
   if (saved === 'light' || saved === 'dark') theme.value = saved
