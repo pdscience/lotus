@@ -32,35 +32,35 @@
     --border: 340 20% 88%;
     --input: 340 20% 94%;
     --ring: 340 75% 55%;
-    --radius: 0.75rem;
+    --radius: 0.5rem;
   }
 
   .dark {
-    --background: 240 15% 8%;
-    --foreground: 310 25% 95%;
-    --card: 240 15% 10%;
-    --card-foreground: 310 25% 95%;
-    --popover: 240 15% 10%;
-    --popover-foreground: 310 25% 95%;
-    --primary: 340 70% 65%;
-    --primary-foreground: 240 15% 8%;
-    --secondary: 240 10% 15%;
-    --secondary-foreground: 310 25% 95%;
-    --muted: 240 10% 15%;
-    --muted-foreground: 310 20% 70%;
-    --accent: 320 75% 70%;
-    --accent-foreground: 240 15% 8%;
-    --destructive: 0 84% 60%;
+    --background: 340 12% 7%;
+    --foreground: 340 15% 93%;
+    --card: 340 10% 10%;
+    --card-foreground: 340 15% 93%;
+    --popover: 340 10% 12%;
+    --popover-foreground: 340 15% 93%;
+    --primary: 340 75% 62%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 340 8% 15%;
+    --secondary-foreground: 340 15% 93%;
+    --muted: 340 8% 15%;
+    --muted-foreground: 340 12% 65%;
+    --accent: 320 70% 65%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 100%;
-    --success: 142 76% 36%;
+    --warning: 38 92% 55%;
+    --warning-foreground: 0 0% 10%;
+    --success: 142 60% 45%;
     --success-foreground: 0 0% 100%;
-    --info: 217 91% 60%;
+    --info: 217 85% 65%;
     --info-foreground: 0 0% 100%;
-    --border: 240 10% 18%;
-    --input: 240 10% 15%;
-    --ring: 340 70% 65%;
+    --border: 340 10% 18%;
+    --input: 340 8% 14%;
+    --ring: 340 75% 62%;
   }
 }
 
@@ -102,6 +102,8 @@
   p {
     @apply leading-relaxed;
   }
+
+  .tnum { font-variant-numeric: tabular-nums; }
   
   .text-gradient {
     @apply bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent;
