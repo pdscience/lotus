@@ -22,3 +22,7 @@ dist
 .roo
 .trae
 .windsurf
+
+# Worktrees & SDD scratch
+.worktrees
+.superpowers
