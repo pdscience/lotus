@@ -146,7 +146,7 @@ const handleSubmit = async () => {
               <button
                 type="submit"
                 class="w-full h-12 text-base font-semibold rounded-xl transition-all duration-300 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                style="background: linear-gradient(135deg, hsl(340, 75%, 55%) 0%, hsl(320, 70%, 60%) 50%, hsl(280, 65%, 65%) 100%)"
+                style="background: linear-gradient(135deg, hsl(265, 70%, 55%) 0%, hsl(265, 75%, 45%) 100%)"
                 :disabled="isLoading"
               >
                 <div v-if="isLoading" class="flex items-center gap-2">

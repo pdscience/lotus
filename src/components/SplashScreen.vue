@@ -37,7 +37,7 @@ const emit = defineEmits<{
         <button
           @click="emit('complete')"
           class="relative group w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-2xl shadow-2xl transition-all duration-500 flex items-center justify-center overflow-hidden hover:scale-110 active:scale-95"
-          style="background: linear-gradient(135deg, hsl(340, 75%, 55%) 0%, hsl(320, 70%, 60%) 50%, hsl(280, 65%, 65%) 100%)"
+          style="background: linear-gradient(135deg, hsl(265, 70%, 55%) 0%, hsl(265, 75%, 45%) 100%)"
         >
           <!-- Animated Ring -->
           <div class="absolute inset-0 rounded-2xl border-3 border-primary/40 animate-pulse-slow" />

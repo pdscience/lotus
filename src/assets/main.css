@@ -6,21 +6,21 @@
 
 @layer base {
   :root {
-    /* Core Colors - Rosa Protetivo */
-    --background: 340 20% 98%;
-    --foreground: 240 20% 12%;
+    /* Core Colors - Violeta Protetivo + Âmbar */
+    --background: 40 30% 97%;
+    --foreground: 265 25% 14%;
     --card: 0 0% 100%;
-    --card-foreground: 240 20% 12%;
+    --card-foreground: 265 25% 14%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 20% 12%;
-    --primary: 340 75% 55%;
+    --popover-foreground: 265 25% 14%;
+    --primary: 265 70% 55%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 340 20% 95%;
-    --secondary-foreground: 240 20% 12%;
-    --muted: 340 20% 96%;
-    --muted-foreground: 240 15% 45%;
-    --accent: 320 70% 60%;
-    --accent-foreground: 0 0% 100%;
+    --secondary: 40 20% 93%;
+    --secondary-foreground: 265 25% 14%;
+    --muted: 40 20% 94%;
+    --muted-foreground: 265 12% 42%;
+    --accent: 38 95% 52%;
+    --accent-foreground: 265 25% 14%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
@@ -29,27 +29,27 @@
     --success-foreground: 0 0% 100%;
     --info: 217 91% 60%;
     --info-foreground: 0 0% 100%;
-    --border: 340 20% 88%;
-    --input: 340 20% 94%;
-    --ring: 340 75% 55%;
+    --border: 40 20% 88%;
+    --input: 40 20% 93%;
+    --ring: 265 70% 55%;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 340 12% 7%;
-    --foreground: 340 15% 93%;
-    --card: 340 10% 10%;
-    --card-foreground: 340 15% 93%;
-    --popover: 340 10% 12%;
-    --popover-foreground: 340 15% 93%;
-    --primary: 340 75% 62%;
+    --background: 265 22% 8%;
+    --foreground: 265 15% 93%;
+    --card: 265 16% 11%;
+    --card-foreground: 265 15% 93%;
+    --popover: 265 16% 13%;
+    --popover-foreground: 265 15% 93%;
+    --primary: 265 75% 68%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 340 8% 15%;
-    --secondary-foreground: 340 15% 93%;
-    --muted: 340 8% 15%;
-    --muted-foreground: 340 12% 65%;
-    --accent: 320 70% 65%;
-    --accent-foreground: 0 0% 100%;
+    --secondary: 265 12% 16%;
+    --secondary-foreground: 265 15% 93%;
+    --muted: 265 12% 16%;
+    --muted-foreground: 265 12% 68%;
+    --accent: 38 95% 55%;
+    --accent-foreground: 265 25% 10%;
     --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
     --warning: 38 92% 55%;
@@ -58,9 +58,9 @@
     --success-foreground: 0 0% 100%;
     --info: 217 85% 65%;
     --info-foreground: 0 0% 100%;
-    --border: 340 10% 18%;
-    --input: 340 8% 14%;
-    --ring: 340 75% 62%;
+    --border: 265 14% 19%;
+    --input: 265 12% 15%;
+    --ring: 265 75% 68%;
   }
 }
 
@@ -146,7 +146,7 @@
   
   .step-active {
     @apply text-primary-foreground shadow-lg;
-    background: linear-gradient(135deg, hsl(340, 75%, 55%) 0%, hsl(320, 70%, 60%) 50%, hsl(280, 65%, 65%) 100%);
+    background: linear-gradient(135deg, hsl(265, 70%, 55%) 0%, hsl(265, 75%, 45%) 100%);
   }
   
   .step-completed {
@@ -160,7 +160,7 @@
   /* Enhanced Buttons */
   .btn-primary {
     @apply relative overflow-hidden rounded-xl px-6 py-3 font-semibold text-primary-foreground shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105;
-    background: linear-gradient(135deg, hsl(340, 75%, 55%) 0%, hsl(320, 70%, 60%) 50%, hsl(280, 65%, 65%) 100%);
+    background: linear-gradient(135deg, hsl(265, 70%, 55%) 0%, hsl(265, 75%, 45%) 100%);
   }
   
   .btn-secondary {
@@ -328,7 +328,7 @@
 }
 
 .animate-shimmer {
-  background: linear-gradient(90deg, transparent, rgba(229, 72, 107, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.1), transparent);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
