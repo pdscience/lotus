@@ -463,7 +463,7 @@ const gerarSugestoes = async () => {
             </div>
 
             <!-- Sugestões de ação (IA nativa, opt-in) -->
-            <div v-if="iaDisponivel" class="rounded-lg border border-border bg-card p-6">
+            <div v-if="iaDisponivel" class="rounded-lg border border-border bg-card p-6 max-w-2xl mx-auto">
               <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
                 <Sparkles class="w-5 h-5 text-primary" />
                 Sugestões de ação
@@ -479,7 +479,7 @@ const gerarSugestoes = async () => {
               <button
                 @click="gerarSugestoes"
                 :disabled="carregandoIa"
-                class="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium disabled:opacity-50"
+                class="px-4 py-2 rounded-lg bg-accent text-accent-foreground hover:bg-accent/90 transition-colors text-sm font-medium disabled:opacity-50"
               >
                 {{ carregandoIa ? 'Gerando...' : sugestaoIa ? 'Gerar novamente' : 'Gerar sugestões' }}
               </button>

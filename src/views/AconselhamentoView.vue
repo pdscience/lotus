@@ -573,7 +573,7 @@ const goBack = () => {
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
       @click.self="closeModal"
     >
-      <div class="bg-card rounded-2xl border border-border w-full max-w-md animate-scale-in">
+      <div class="bg-card rounded-2xl border border-border w-full max-w-2xl mx-auto animate-scale-in">
         <div class="flex items-center justify-between p-6 border-b border-border">
           <h2 class="text-xl font-bold text-foreground">
             {{ isEditing ? 'Editar Local' : 'Novo Local de Apoio' }}
@@ -674,7 +674,7 @@ const goBack = () => {
             </button>
             <button
               type="submit"
-              class="flex-1 px-4 py-3 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium flex items-center justify-center gap-2"
+              class="flex-1 px-4 py-3 rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 transition-colors font-medium flex items-center justify-center gap-2"
             >
               <Save class="w-4 h-4" />
               Salvar
