@@ -479,35 +479,250 @@ function resetar() {
         </div>
       </div>
 
-      <!-- Mapa - Largura Total -->
-      <div class="mb-6 animate-fade-in-up" style="animation-delay: 0.2s">
-        <div class="rounded-lg border border-border bg-card p-4 sm:p-6">
-          <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center gap-2">
-              <MapPin class="w-5 h-5 text-primary" />
-              <span class="font-semibold">Mapa de Monitoramento</span>
-            </div>
-            <div
-              v-if="modoSelecao"
-              class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium animate-pulse"
-              :class="modoSelecao === 'vitima'
-                ? 'bg-blue-500/10 text-blue-600'
-                : 'bg-red-500/10 text-red-600'"
-            >
-              <MapPin class="w-3 h-3" />
-              Clique no mapa para definir a {{ modoSelecao === 'vitima' ? 'vítima' : 'agressor' }}
-            </div>
-          </div>
+      <!-- Molde Mapa: full-bleed + painel flutuante + stats sobrepostos -->
+      <div class="relative h-[calc(100vh-8rem)] rounded-lg overflow-hidden border border-border animate-fade-in-up">
+        <div class="absolute inset-0">
           <div
             id="cercamento-map"
-            class="h-[400px] sm:h-[500px] lg:h-[600px] rounded-lg overflow-hidden w-full"
+            class="h-full w-full z-0"
             :class="modoSelecao ? 'cursor-crosshair' : ''"
           ></div>
+        </div>
+
+        <!-- Painel flutuante -->
+        <div class="absolute left-4 top-4 bottom-4 z-10 w-80 max-w-[calc(100%-2rem)] rounded-lg border border-border bg-card/95 backdrop-blur p-4 overflow-y-auto">
+          <div class="flex items-center gap-2 mb-1">
+            <MapPin class="w-5 h-5 text-primary" />
+            <span class="font-semibold">Mapa de Monitoramento</span>
+          </div>
+          <div
+            v-if="modoSelecao"
+            class="mb-3 flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium animate-pulse"
+            :class="modoSelecao === 'vitima'
+              ? 'bg-blue-500/10 text-blue-600'
+              : 'bg-red-500/10 text-red-600'"
+          >
+            <MapPin class="w-3 h-3" />
+            Clique no mapa para definir a {{ modoSelecao === 'vitima' ? 'vítima' : 'agressor' }}
+          </div>
+
+          <!-- Dados da Vítima -->
+          <div class="rounded-lg border border-border bg-card p-4 mb-3">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center text-white">
+                <User class="w-4 h-4" />
+              </div>
+              <h3 class="font-semibold">Dados da Vítima</h3>
+            </div>
+            <div class="space-y-3">
+              <div>
+                <label class="text-sm font-medium text-foreground mb-1 block">Nome da Vítima</label>
+                <input
+                  v-model="vitimaNome"
+                  type="text"
+                  placeholder="Ex: Maria Santos"
+                  class="w-full h-11 rounded-xl border border-border/50 bg-input/50 px-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+              <div>
+                <label class="text-sm font-medium text-foreground mb-1 block">Telefone da Vítima</label>
+                <input
+                  v-model="vitimaTelefone"
+                  type="tel"
+                  placeholder="(00) 00000-0000"
+                  class="w-full h-11 rounded-xl border border-border/50 bg-input/50 px-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+              <div>
+                <label class="text-sm font-medium text-foreground mb-1 block">Endereço de Referência</label>
+                <input
+                  v-model="vitimaEndereco"
+                  type="text"
+                  placeholder="Ex: Rua ABC, 123 - Centro"
+                  class="w-full h-11 rounded-xl border border-border/50 bg-input/50 px-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+              <div class="flex gap-2">
+                <button
+                  @click="usarLocalizacaoAtual('vitima')"
+                  class="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 transition-colors text-sm font-medium"
+                >
+                  <Navigation class="w-4 h-4" />
+                  Minha Localização
+                </button>
+                <button
+                  @click="modoSelecao = modoSelecao === 'vitima' ? null : 'vitima'"
+                  class="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl text-sm font-medium transition-colors"
+                  :class="[
+                    modoSelecao === 'vitima'
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-blue-500/10 text-blue-600 hover:bg-blue-500/20'
+                  ]"
+                >
+                  <MapPin class="w-4 h-4" />
+                  {{ modoSelecao === 'vitima' ? 'Clique no mapa...' : 'Selecionar no Mapa' }}
+                </button>
+              </div>
+              <div v-if="vitimaPosicao" class="text-xs text-muted-foreground bg-secondary/30 rounded-lg p-2">
+                <MapPin class="w-3 h-3 inline mr-1" />
+                {{ vitimaPosicao.lat.toFixed(6) }}, {{ vitimaPosicao.lng.toFixed(6) }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Dados do Agressor -->
+          <div class="rounded-lg border border-border bg-card p-4 mb-3">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-8 h-8 rounded-lg bg-red-500 flex items-center justify-center text-white">
+                <UserX class="w-4 h-4" />
+              </div>
+              <h3 class="font-semibold">Dados do Agressor</h3>
+            </div>
+            <div class="space-y-3">
+              <div>
+                <label class="text-sm font-medium text-foreground mb-1 block">Nome do Agressor</label>
+                <input
+                  v-model="agressorNome"
+                  type="text"
+                  placeholder="Ex: João Silva"
+                  class="w-full h-11 rounded-xl border border-border/50 bg-input/50 px-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+              <div>
+                <label class="text-sm font-medium text-foreground mb-1 block">Telefone do Agressor</label>
+                <input
+                  v-model="agressorTelefone"
+                  type="tel"
+                  placeholder="(00) 00000-0000"
+                  class="w-full h-11 rounded-xl border border-border/50 bg-input/50 px-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+              <div>
+                <label class="text-sm font-medium text-foreground mb-1 block">Endereço do Agressor</label>
+                <input
+                  v-model="agressorEndereco"
+                  type="text"
+                  placeholder="Ex: Rua XYZ, 456 - Bairro"
+                  class="w-full h-11 rounded-xl border border-border/50 bg-input/50 px-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+              <div class="flex gap-2">
+                <button
+                  @click="usarLocalizacaoAtual('agressor')"
+                  class="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl bg-red-500/10 text-red-600 hover:bg-red-500/20 transition-colors text-sm font-medium"
+                >
+                  <Navigation class="w-4 h-4" />
+                  Localização GPS
+                </button>
+                <button
+                  @click="modoSelecao = modoSelecao === 'agressor' ? null : 'agressor'"
+                  class="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl text-sm font-medium transition-colors"
+                  :class="[
+                    modoSelecao === 'agressor'
+                      ? 'bg-red-500 text-white'
+                      : 'bg-red-500/10 text-red-600 hover:bg-red-500/20'
+                  ]"
+                >
+                  <MapPin class="w-4 h-4" />
+                  {{ modoSelecao === 'agressor' ? 'Clique no mapa...' : 'Selecionar no Mapa' }}
+                </button>
+              </div>
+              <div v-if="agressorPosicao" class="text-xs text-muted-foreground bg-secondary/30 rounded-lg p-2">
+                <MapPin class="w-3 h-3 inline mr-1" />
+                {{ agressorPosicao.lat.toFixed(6) }}, {{ agressorPosicao.lng.toFixed(6) }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Raio de Proteção -->
+          <div class="rounded-lg border border-border bg-card p-4 mb-3">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center text-white">
+                <Radius class="w-4 h-4" />
+              </div>
+              <h3 class="font-semibold">Raio de Proteção</h3>
+            </div>
+            <div class="space-y-4">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <label class="text-sm font-medium text-foreground">Distância do raio</label>
+                  <span class="text-sm font-bold text-primary">{{ raioMetros }}m ({{ raioKm.toFixed(1) }}km)</span>
+                </div>
+                <input
+                  v-model.number="raioMetros"
+                  type="range"
+                  min="100"
+                  max="5000"
+                  step="100"
+                  class="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+                />
+                <div class="flex justify-between text-xs text-muted-foreground mt-1">
+                  <span>100m</span>
+                  <span>2.5km</span>
+                  <span>5km</span>
+                </div>
+              </div>
+              <div class="grid grid-cols-4 gap-2">
+                <button
+                  v-for="preset in [200, 500, 1000, 2000]"
+                  :key="preset"
+                  @click="raioMetros = preset"
+                  class="h-9 rounded-lg text-xs font-medium transition-colors"
+                  :class="raioMetros === preset
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-secondary/50 hover:bg-secondary text-foreground'"
+                >
+                  {{ preset >= 1000 ? `${preset / 1000}km` : `${preset}m` }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controles -->
+          <div class="rounded-lg border border-border bg-card p-4 mb-3">
+            <div class="space-y-3">
+              <button
+                v-if="!monitorando"
+                @click="iniciarMonitoramento"
+                :disabled="!vitimaPosicao || !agressorPosicao"
+                class="w-full flex items-center justify-center gap-2 h-12 rounded-xl font-semibold text-white transition-all"
+                :class="vitimaPosicao && agressorPosicao
+                  ? 'bg-green-500 hover:bg-green-600'
+                  : 'bg-secondary text-muted-foreground cursor-not-allowed'"
+              >
+                <Play class="w-5 h-5" />
+                Iniciar Monitoramento
+              </button>
+              <button
+                v-if="monitorando"
+                @click="pararMonitoramento"
+                class="w-full flex items-center justify-center gap-2 h-12 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold transition-all"
+              >
+                <Square class="w-5 h-5" />
+                Parar Monitoramento
+              </button>
+              <button
+                @click="resetar"
+                class="w-full flex items-center justify-center gap-2 h-10 rounded-xl border border-border hover:bg-secondary/50 text-sm font-medium transition-colors"
+              >
+                Limpar Tudo
+              </button>
+              <p
+                v-if="!vitimaPosicao || !agressorPosicao"
+                class="text-xs text-muted-foreground text-center"
+              >
+                {{ !vitimaPosicao ? 'Selecione a localização da vítima' : '' }}
+                {{ !vitimaPosicao && !agressorPosicao ? ' e ' : '' }}
+                {{ !agressorPosicao ? 'a localização do agressor' : '' }}
+                {{ !vitimaPosicao || !agressorPosicao ? ' para iniciar.' : '' }}
+              </p>
+            </div>
+          </div>
 
           <!-- Distância em tempo real -->
           <div
             v-if="distanciaAtual !== null"
-            class="mt-4 p-4 rounded-xl"
+            class="p-4 rounded-xl mb-3"
             :class="alertaAtivo ? 'bg-red-500/10 border border-red-500' : 'bg-green-500/10 border border-green-500'"
           >
             <div class="flex items-center justify-between">
@@ -536,250 +751,48 @@ function resetar() {
               {{ alertaAtivo ? 'DENTRO DO RAIO DE RISCO!' : 'Fora do raio de risco' }}
             </p>
           </div>
-        </div>
-      </div>
 
-      <!-- Dados da Vítima e Agressor - Abaixo do Mapa -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <!-- Dados da Vítima -->
-        <div class="rounded-lg border border-border bg-card p-6 animate-fade-in-up" style="animation-delay: 0.3s">
-          <div class="flex items-center gap-2 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center text-white">
-              <User class="w-4 h-4" />
-            </div>
-            <h3 class="font-semibold text-lg">Dados da Vítima</h3>
-          </div>
-
-          <div class="space-y-3">
-            <div>
-              <label class="text-sm font-medium text-foreground mb-1 block">Nome da Vítima</label>
-              <input
-                v-model="vitimaNome"
-                type="text"
-                placeholder="Ex: Maria Santos"
-                class="w-full h-11 rounded-xl border border-border/50 bg-input/50 px-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
-              />
-            </div>
-            <div>
-              <label class="text-sm font-medium text-foreground mb-1 block">Telefone da Vítima</label>
-              <input
-                v-model="vitimaTelefone"
-                type="tel"
-                placeholder="(00) 00000-0000"
-                class="w-full h-11 rounded-xl border border-border/50 bg-input/50 px-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
-              />
-            </div>
-            <div>
-              <label class="text-sm font-medium text-foreground mb-1 block">Endereço de Referência</label>
-              <input
-                v-model="vitimaEndereco"
-                type="text"
-                placeholder="Ex: Rua ABC, 123 - Centro"
-                class="w-full h-11 rounded-xl border border-border/50 bg-input/50 px-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
-              />
-            </div>
-            <div class="flex gap-2">
-              <button
-                @click="usarLocalizacaoAtual('vitima')"
-                class="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 transition-colors text-sm font-medium"
-              >
-                <Navigation class="w-4 h-4" />
-                Minha Localização
-              </button>
-              <button
-                @click="modoSelecao = modoSelecao === 'vitima' ? null : 'vitima'"
-                class="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl text-sm font-medium transition-colors"
-                :class="[
-                  modoSelecao === 'vitima'
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-blue-500/10 text-blue-600 hover:bg-blue-500/20'
-                ]"
-              >
-                <MapPin class="w-4 h-4" />
-                {{ modoSelecao === 'vitima' ? 'Clique no mapa...' : 'Selecionar no Mapa' }}
-              </button>
-            </div>
-            <div v-if="vitimaPosicao" class="text-xs text-muted-foreground bg-secondary/30 rounded-lg p-2">
-              <MapPin class="w-3 h-3 inline mr-1" />
-              {{ vitimaPosicao.lat.toFixed(6) }}, {{ vitimaPosicao.lng.toFixed(6) }}
-            </div>
-          </div>
-        </div>
-
-        <!-- Dados do Agressor -->
-        <div class="rounded-lg border border-border bg-card p-6 animate-fade-in-up" style="animation-delay: 0.35s">
-          <div class="flex items-center gap-2 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-red-500 flex items-center justify-center text-white">
-              <UserX class="w-4 h-4" />
-            </div>
-            <h3 class="font-semibold text-lg">Dados do Agressor</h3>
-          </div>
-
-          <div class="space-y-3">
-            <div>
-              <label class="text-sm font-medium text-foreground mb-1 block">Nome do Agressor</label>
-              <input
-                v-model="agressorNome"
-                type="text"
-                placeholder="Ex: João Silva"
-                class="w-full h-11 rounded-xl border border-border/50 bg-input/50 px-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
-              />
-            </div>
-            <div>
-              <label class="text-sm font-medium text-foreground mb-1 block">Telefone do Agressor</label>
-              <input
-                v-model="agressorTelefone"
-                type="tel"
-                placeholder="(00) 00000-0000"
-                class="w-full h-11 rounded-xl border border-border/50 bg-input/50 px-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
-              />
-            </div>
-            <div>
-              <label class="text-sm font-medium text-foreground mb-1 block">Endereço do Agressor</label>
-              <input
-                v-model="agressorEndereco"
-                type="text"
-                placeholder="Ex: Rua XYZ, 456 - Bairro"
-                class="w-full h-11 rounded-xl border border-border/50 bg-input/50 px-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
-              />
-            </div>
-            <div class="flex gap-2">
-              <button
-                @click="usarLocalizacaoAtual('agressor')"
-                class="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl bg-red-500/10 text-red-600 hover:bg-red-500/20 transition-colors text-sm font-medium"
-              >
-                <Navigation class="w-4 h-4" />
-                Localização GPS
-              </button>
-              <button
-                @click="modoSelecao = modoSelecao === 'agressor' ? null : 'agressor'"
-                class="flex-1 flex items-center justify-center gap-2 h-10 rounded-xl text-sm font-medium transition-colors"
-                :class="[
-                  modoSelecao === 'agressor'
-                    ? 'bg-red-500 text-white'
-                    : 'bg-red-500/10 text-red-600 hover:bg-red-500/20'
-                ]"
-              >
-                <MapPin class="w-4 h-4" />
-                {{ modoSelecao === 'agressor' ? 'Clique no mapa...' : 'Selecionar no Mapa' }}
-              </button>
-            </div>
-            <div v-if="agressorPosicao" class="text-xs text-muted-foreground bg-secondary/30 rounded-lg p-2">
-              <MapPin class="w-3 h-3 inline mr-1" />
-              {{ agressorPosicao.lat.toFixed(6) }}, {{ agressorPosicao.lng.toFixed(6) }}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Configurações e Controles - Abaixo dos Dados -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Configuração do Raio -->
-        <div class="rounded-lg border border-border bg-card p-6 animate-fade-in-up" style="animation-delay: 0.4s">
-          <div class="flex items-center gap-2 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center text-white">
-              <Radius class="w-4 h-4" />
-            </div>
-            <h3 class="font-semibold text-lg">Raio de Proteção</h3>
-          </div>
-
-          <div class="space-y-4">
-            <div>
-              <div class="flex items-center justify-between mb-2">
-                <label class="text-sm font-medium text-foreground">Distância do raio</label>
-                <span class="text-sm font-bold text-primary">{{ raioMetros }}m ({{ raioKm.toFixed(1) }}km)</span>
+          <!-- Legenda -->
+          <div class="rounded-lg border border-border bg-card p-4">
+            <h4 class="text-sm font-semibold mb-3 text-foreground">Legenda</h4>
+            <div class="space-y-2">
+              <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded-full bg-blue-500 border-2 border-border"></div>
+                <span class="text-sm text-muted-foreground">Vítima</span>
               </div>
-              <input
-                v-model.number="raioMetros"
-                type="range"
-                min="100"
-                max="5000"
-                step="100"
-                class="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
-              />
-              <div class="flex justify-between text-xs text-muted-foreground mt-1">
-                <span>100m</span>
-                <span>2.5km</span>
-                <span>5km</span>
+              <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded-full bg-red-500 border-2 border-border"></div>
+                <span class="text-sm text-muted-foreground">Agressor</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded-full border-2 border-red-500 bg-red-500/20"></div>
+                <span class="text-sm text-muted-foreground">Raio de Proteção</span>
               </div>
             </div>
-
-            <div class="grid grid-cols-4 gap-2">
-              <button
-                v-for="preset in [200, 500, 1000, 2000]"
-                :key="preset"
-                @click="raioMetros = preset"
-                class="h-9 rounded-lg text-xs font-medium transition-colors"
-                :class="raioMetros === preset
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-secondary/50 hover:bg-secondary text-foreground'"
-              >
-                {{ preset >= 1000 ? `${preset / 1000}km` : `${preset}m` }}
-              </button>
-            </div>
           </div>
         </div>
 
-        <!-- Controles -->
-        <div class="rounded-lg border border-border bg-card p-6 animate-fade-in-up" style="animation-delay: 0.45s">
-          <div class="space-y-3">
-            <button
-              v-if="!monitorando"
-              @click="iniciarMonitoramento"
-              :disabled="!vitimaPosicao || !agressorPosicao"
-              class="w-full flex items-center justify-center gap-2 h-12 rounded-xl font-semibold text-white transition-all"
-              :class="vitimaPosicao && agressorPosicao
-                ? 'bg-green-500 hover:bg-green-600'
-                : 'bg-secondary text-muted-foreground cursor-not-allowed'"
-            >
-              <Play class="w-5 h-5" />
-              Iniciar Monitoramento
-            </button>
-
-            <button
-              v-if="monitorando"
-              @click="pararMonitoramento"
-              class="w-full flex items-center justify-center gap-2 h-12 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold transition-all"
-            >
-              <Square class="w-5 h-5" />
-              Parar Monitoramento
-            </button>
-
-            <button
-              @click="resetar"
-              class="w-full flex items-center justify-center gap-2 h-10 rounded-xl border border-border hover:bg-secondary/50 text-sm font-medium transition-colors"
-            >
-              Limpar Tudo
-            </button>
-
-            <p
-              v-if="!vitimaPosicao || !agressorPosicao"
-              class="text-xs text-muted-foreground text-center"
-            >
-              {{ !vitimaPosicao ? 'Selecione a localização da vítima' : '' }}
-              {{ !vitimaPosicao && !agressorPosicao ? ' e ' : '' }}
-              {{ !agressorPosicao ? 'a localização do agressor' : '' }}
-              {{ !vitimaPosicao || !agressorPosicao ? ' para iniciar.' : '' }}
+        <!-- StatCards sobrepostos -->
+        <div class="absolute top-4 right-4 z-10 hidden sm:flex gap-2">
+          <div class="rounded-lg border border-border bg-card/95 backdrop-blur px-4 py-2 shadow-lg">
+            <p class="text-xs text-muted-foreground">Distância</p>
+            <p class="text-lg font-bold" :class="alertaAtivo ? 'text-red-600' : 'text-green-600'">
+              {{ distanciaAtual !== null ? formatarDistancia(distanciaAtual) : '—' }}
             </p>
           </div>
-        </div>
-
-        <!-- Legenda -->
-        <div class="rounded-lg border border-border bg-card p-4 animate-fade-in-up" style="animation-delay: 0.5s">
-          <h4 class="text-sm font-semibold mb-3 text-foreground">Legenda</h4>
-          <div class="space-y-2">
-            <div class="flex items-center gap-2">
-              <div class="w-4 h-4 rounded-full bg-blue-500 border-2 border-border"></div>
-              <span class="text-sm text-muted-foreground">Vítima</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <div class="w-4 h-4 rounded-full bg-red-500 border-2 border-border"></div>
-              <span class="text-sm text-muted-foreground">Agressor</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <div class="w-4 h-4 rounded-full border-2 border-red-500 bg-red-500/20"></div>
-              <span class="text-sm text-muted-foreground">Raio de Proteção</span>
-            </div>
+          <div class="rounded-lg border border-border bg-card/95 backdrop-blur px-4 py-2 shadow-lg">
+            <p class="text-xs text-muted-foreground">Raio</p>
+            <p class="text-lg font-bold">{{ raioMetros }}m</p>
+          </div>
+          <div
+            v-if="monitorando"
+            class="rounded-lg border px-4 py-2 shadow-lg backdrop-blur"
+            :class="alertaAtivo ? 'border-red-500 bg-red-500/10' : 'border-green-500 bg-green-500/10'"
+          >
+            <p class="text-xs" :class="alertaAtivo ? 'text-red-600' : 'text-green-600'">
+              {{ alertaAtivo ? 'EM RISCO' : 'MONITORANDO' }}
+            </p>
+            <p class="text-lg font-bold" :class="alertaAtivo ? 'text-red-600' : 'text-green-600'">●</p>
           </div>
         </div>
       </div>
