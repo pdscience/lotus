@@ -1,11 +1,12 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{ label: string; value: string; delta?: string; trend?: number[] }>(), { delta: '', trend: () => [] })
+const props = withDefaults(defineProps<{ label: string; value: string; delta?: string; trend?: number[]; accentTop?: boolean }>(), { delta: '', trend: () => [], accentTop: false })
 const points = props.trend.length
   ? props.trend.map((v, i) => `${(i / Math.max(props.trend.length - 1, 1)) * 100},${28 - (v / Math.max(...props.trend, 1)) * 24}`).join(' ')
   : ''
 </script>
 <template>
   <div class="rounded-lg border border-border bg-card p-4">
+    <div v-if="accentTop" class="h-1 -mx-4 -mt-4 mb-3 rounded-t-lg bg-primary" />
     <p class="text-xs text-muted-foreground">{{ label }}</p>
     <p class="tnum text-2xl font-bold mt-1">{{ value }}</p>
     <div class="flex items-end justify-between mt-2">
