@@ -13,14 +13,22 @@ import {
   Home,
   Shield,
   History,
-  ClipboardList
+  ClipboardList,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-vue-next'
 import { useUserStore } from '../stores/userStore'
 import ProtegidaLogo from './ProtegidaLogo.vue'
+import ThemeToggle from './ThemeToggle.vue'
 
 const route = useRoute()
 const router = useRouter()
 const isMenuOpen = ref(false)
+const collapsed = ref(localStorage.getItem('protegida-sidebar') === 'collapsed')
+const toggleSidebar = () => {
+  collapsed.value = !collapsed.value
+  localStorage.setItem('protegida-sidebar', collapsed.value ? 'collapsed' : 'open')
+}
 const userStore = useUserStore()
 
 const user = computed(() => userStore.user)
@@ -89,13 +97,22 @@ const closeMenu = () => {
     <!-- Admin/Agent Sidebar - Fixed Left -->
     <aside
       v-if="user?.tipo === 'admin' || user?.tipo === 'agente'"
-      class="hidden lg:flex fixed left-0 top-0 h-full w-64 bg-background border-r border-border/50 shadow-lg z-40 flex-col"
+      class="hidden lg:flex fixed left-0 top-0 h-full bg-background border-r border-border/50 shadow-lg z-40 flex-col transition-all"
+      :class="collapsed ? 'lg:w-20' : 'lg:w-64'"
     >
       <!-- Logo -->
-      <div class="p-4 border-b border-border/30">
+      <div class="p-4 border-b border-border/30 flex items-center justify-between">
         <router-link to="/dashboard" class="flex items-center justify-center hover:scale-105 transition-transform">
-          <ProtegidaLogo size="sm" />
+          <ProtegidaLogo size="sm" variant="mono" />
         </router-link>
+        <button
+          @click="toggleSidebar"
+          class="p-1.5 rounded-lg hover:bg-secondary/50 transition-colors text-muted-foreground"
+          :title="collapsed ? 'Expandir sidebar' : 'Colapsar sidebar'"
+        >
+          <ChevronRight v-if="collapsed" class="w-5 h-5" />
+          <ChevronLeft v-else class="w-5 h-5" />
+        </button>
       </div>
 
       <!-- Navigation -->
@@ -109,8 +126,8 @@ const closeMenu = () => {
             ? 'bg-primary text-primary-foreground shadow-lg'
             : 'hover:bg-secondary/50 text-foreground'"
         >
-          <component :is="item.icon" class="w-5 h-5" />
-          <span>{{ item.label }}</span>
+          <component :is="item.icon" class="w-5 h-5 shrink-0" />
+          <span v-show="!collapsed">{{ item.label }}</span>
         </router-link>
       </nav>
 
@@ -120,7 +137,7 @@ const closeMenu = () => {
           <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white">
             <span class="text-sm font-bold">{{ user?.username?.charAt(0).toUpperCase() }}</span>
           </div>
-          <div>
+          <div v-show="!collapsed">
             <p class="font-medium text-foreground">{{ user?.username }}</p>
             <p class="text-xs text-muted-foreground capitalize">
               {{ user?.tipo === 'admin' ? 'Administrador' : user?.tipo === 'agente' ? 'Agente de Segurança' : 'Vítima' }}
@@ -131,14 +148,14 @@ const closeMenu = () => {
           @click="handleLogout"
           class="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-left hover:bg-red-50 text-red-600 transition-all"
         >
-          <LogOut class="w-5 h-5" />
-          <span>Sair</span>
+          <LogOut class="w-5 h-5 shrink-0" />
+          <span v-show="!collapsed">Sair</span>
         </button>
       </div>
     </aside>
 
     <!-- Main Content Area (offset from sidebar) -->
-    <div :class="user?.tipo === 'admin' || user?.tipo === 'agente' ? 'lg:ml-64' : ''">
+    <div :class="user?.tipo === 'admin' || user?.tipo === 'agente' ? (collapsed ? 'lg:ml-20' : 'lg:ml-64') : ''">
       <!-- Header -->
       <header
         class="sticky top-0 z-40 backdrop-blur-md bg-background/80 border-b border-border/50 shadow-lg"
@@ -166,6 +183,7 @@ const closeMenu = () => {
 
             <!-- User Section -->
             <div class="flex items-center gap-2">
+              <ThemeToggle />
               <!-- Logout Button (hidden on admin desktop) -->
               <button
                 @click="handleLogout"
@@ -231,7 +249,7 @@ const closeMenu = () => {
       </div>
 
       <!-- Main Content -->
-      <main class="pb-20">
+      <main class="pb-20 px-4 py-4">
         <router-view />
       </main>
     </div>
