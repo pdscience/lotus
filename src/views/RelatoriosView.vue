@@ -19,6 +19,13 @@ import StatCard from '../components/StatCard.vue'
 const medidas = ref<MedidaProtetivaAll[]>([])
 const monitoramentos = ref<AgenteMonitoramento[]>([])
 const isLoading = ref(true)
+const saudacao = computed(() => {
+  const h = new Date().getHours()
+  if (h < 12) return 'Bom dia'
+  if (h < 18) return 'Boa tarde'
+  return 'Boa noite'
+})
+const hoje = computed(() => new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' }))
 
 onMounted(async () => {
   try {
@@ -91,9 +98,9 @@ const tipoMedidas = computed(() => {
 
 const urgenciaDonut = computed(() => {
   const groups = [
-    { label: 'Baixa', count: 0, color: '#22c55e' },
-    { label: 'Média', count: 0, color: '#3b82f6' },
-    { label: 'Alta + Crítica', count: 0, color: '#ef4444' }
+    { label: 'Baixa', count: 0, color: 'hsl(var(--muted-foreground))' },
+    { label: 'Média', count: 0, color: '#F59E0B' },
+    { label: 'Alta + Crítica', count: 0, color: '#8B5CF6' }
   ]
   medidas.value.forEach(m => {
     const urg = m.urgencia || 'media'
@@ -195,6 +202,11 @@ const municipioStats = computed(() => {
         <template #desc>Visão geral do sistema de proteção</template>
       </SectionHeader>
 
+      <div class="rounded-lg border border-border bg-card p-4 mb-4 flex items-center justify-between">
+        <div><p class="font-bold text-lg">{{ saudacao }}</p><p class="text-sm text-muted-foreground">{{ hoje }}</p></div>
+        <button class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold" :style="{ color: 'hsl(var(--accent-foreground))' }">Exportar relatório</button>
+      </div>
+
       <!-- Loading -->
       <div v-if="isLoading" class="text-center py-12 text-muted-foreground">
         Carregando dados...
@@ -211,6 +223,7 @@ const municipioStats = computed(() => {
               :label="stat.label"
               :value="stat.value"
               :delta="stat.delta"
+              accent-top
             />
           </div>
         </div>
@@ -228,6 +241,7 @@ const municipioStats = computed(() => {
               :label="stat.label"
               :value="stat.value"
               :delta="stat.delta"
+              accent-top
             />
           </div>
         </div>

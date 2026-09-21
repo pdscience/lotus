@@ -33,6 +33,14 @@ const panicos30d = ref(0);
 const atividadeRecente = ref<PanicRecord[]>([]);
 
 const isAdmin = computed(() => user.value?.tipo === "admin");
+const saudacao = computed(() => {
+  const h = new Date().getHours();
+  if (h < 12) return "Bom dia";
+  if (h < 18) return "Boa tarde";
+  return "Boa noite";
+});
+const hoje = computed(() => new Date().toLocaleDateString("pt-BR", { weekday: 'long', day: 'numeric', month: 'long' }));
+const ctaLabel = "Acessar rede de apoio";
 const medidaAtiva = computed(() => medidaVitima.value?.status === "ativa" ? "1" : medidaVitima.value ? "0" : "0");
 const resumoIa = ref("");
 
@@ -166,6 +174,11 @@ const getStatusColor = (status: string) => {
         <template #desc>Visão geral da sua proteção</template>
       </SectionHeader>
 
+      <div v-if="!isAdmin" class="rounded-lg border border-border bg-card p-4 mb-4 flex items-center justify-between">
+        <div><p class="font-bold text-lg">{{ saudacao }}</p><p class="text-sm text-muted-foreground">{{ hoje }}</p></div>
+        <router-link to="/dashboard/rede-apoio" class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold" :style="{ color: 'hsl(var(--accent-foreground))' }">{{ ctaLabel }}</router-link>
+      </div>
+
       <div
         v-if="!isAdmin && resumoIa"
         class="rounded-lg border border-primary/30 bg-primary/5 p-4 mb-4"
@@ -179,9 +192,9 @@ const getStatusColor = (status: string) => {
         v-if="!isAdmin"
         class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6"
       >
-        <StatCard label="Medidas ativas" :value="medidaAtiva" />
-        <StatCard label="Pânicos (30d)" :value="String(panicos30d)" />
-        <StatCard label="Contatos anjo" :value="String(contatosCount)" />
+        <StatCard label="Medidas ativas" :value="medidaAtiva" accent-top />
+        <StatCard label="Pânicos (30d)" :value="String(panicos30d)" accent-top />
+        <StatCard label="Contatos anjo" :value="String(contatosCount)" accent-top />
       </div>
 
       <!-- Quick Access Cards - Apenas para Vítima -->
@@ -337,22 +350,18 @@ const getStatusColor = (status: string) => {
         <div class="rounded-lg border border-border bg-card p-4 sm:p-6">
           <h3 class="font-semibold text-foreground mb-1">Atividade recente</h3>
           <p class="text-xs text-muted-foreground mb-4">Últimos acionamentos de pânico</p>
-          <ul v-if="atividadeRecente.length > 0" class="divide-y divide-border">
+          <ul v-if="atividadeRecente.length > 0" class="rounded-lg border border-border bg-card divide-y divide-border">
             <li
               v-for="item in atividadeRecente"
               :key="item.id"
-              class="flex items-center justify-between gap-3 py-3"
+              class="flex gap-3 p-4"
             >
-              <div class="flex items-center gap-3 min-w-0">
-                <div class="w-9 h-9 rounded-lg bg-secondary/50 flex items-center justify-center flex-shrink-0">
-                  <Siren class="w-4 h-4 text-muted-foreground" />
-                </div>
-                <div class="min-w-0">
-                  <p class="text-sm font-medium text-foreground">{{ formatarDataHora(item.timestamp) }}</p>
-                  <p class="text-xs text-muted-foreground font-mono truncate">
-                    {{ item.latitude.toFixed(4) }}, {{ item.longitude.toFixed(4) }}
-                  </p>
-                </div>
+              <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary" />
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-medium">{{ formatarDataHora(item.timestamp) }}</p>
+                <p class="text-xs text-muted-foreground font-mono truncate">
+                  {{ item.latitude.toFixed(4) }}, {{ item.longitude.toFixed(4) }}
+                </p>
               </div>
               <router-link
                 to="/dashboard/historico-panico"
