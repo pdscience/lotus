@@ -7,7 +7,7 @@ Motivo: rejeição às combinações rosa (light) e rosada (dark); pedido de lay
 ## 1. Paleta (substitui o rosa por completo)
 
 - Primário violeta: light `265 70% 55%`, dark `265 75% 68%`. `--ring` acompanha.
-- Âmbar prestígio/CTA: `38 95% 52%` (light e dark), `--accent`. Uso restrito: submit primário, selos de destaque, indicadores live.
+- Âmbar prestígio/CTA: `38 95% 52%` light, `38 95% 55%` dark (ajuste de contraste com foreground escuro), `--accent`. Uso restrito: submit primário, selos de destaque, indicadores live.
 - Dark: fundo ametista `265 22% 8%`, card `265 16% 11%`, popover `265 16% 13%`, borda `265 14% 19%`, texto `265 15% 93%`.
 - Light: fundo marfim `40 30% 97%`, card branco `0 0% 100%`, texto `265 25% 14%`, borda `40 20% 88%`.
 - Semânticas inalteradas (success/warning/destructive/info).
