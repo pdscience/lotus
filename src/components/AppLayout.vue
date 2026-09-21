@@ -161,7 +161,7 @@ const closeMenu = () => {
               v-if="user?.tipo === 'admin' || user?.tipo === 'agente'"
               class="hidden lg:block text-xl font-bold text-gradient tracking-wide text-center flex-1"
             >
-              Sistema AMPARE Medidas Protetivas e Ações Emergenciais
+              Sistema Protegida — Medidas Protetivas e Ações Emergenciais
             </h1>
 
             <!-- User Section -->

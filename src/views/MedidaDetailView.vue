@@ -170,7 +170,7 @@ const handleCompartilhar = async () => {
   if (navigator.share) {
     try {
       await navigator.share({
-        title: 'Medida Protetiva - AMPARE',
+        title: 'Medida Protetiva - Protegida',
         text: texto
       })
     } catch {

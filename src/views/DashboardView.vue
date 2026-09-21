@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-vue-next";
 import PanicButton from "../components/PanicButton.vue";
+import ProtegidaLogo from "../components/ProtegidaLogo.vue";
 import { fetchContatosAnjo } from "../services/contatoAnjoService";
 import { fetchMedidasVitima } from "../services/medidaVitimaService";
 import { fetchUsuario, saveUsuario } from "../services/usuarioService";
@@ -221,7 +222,7 @@ const getStatusColor = (status: string) => {
                 <div
                   class="w-20 h-20 rounded-xl bg-white/20 flex items-center justify-center overflow-hidden shadow-lg"
                 >
-                  <img src="@/assets/Logo AMPARE.png" alt="AMPARE Logo" class="w-18 h-18 object-contain" />
+                  <ProtegidaLogo size="sm" />
                 </div>
                 <div>
                   <h4 class="font-bold text-white">Sua Medida Protetiva</h4>

@@ -28,6 +28,7 @@ import {
   type LocalApoio,
   type RedeApoio
 } from '../services/redeApoioService'
+import ProtegidaLogo from '../components/ProtegidaLogo.vue'
 
 const router = useRouter()
 
@@ -540,7 +541,7 @@ const goBack = () => {
           <div class="bg-gradient-to-r from-pink-500 to-rose-500 rounded-xl shadow-lg py-3 px-6 text-center">
             <div class="flex items-center justify-center gap-4">
               <div class="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center shadow-xl flex-shrink-0">
-                <img src="@/assets/Logo AMPARE.png" alt="AMPARE Logo" class="w-11 h-11 object-contain" />
+                <ProtegidaLogo size="sm" />
               </div>
               <div class="text-left">
                 <h2 class="text-lg font-bold text-white">Você não está sozinha!</h2>

@@ -6,7 +6,18 @@ export interface ApiError {
   status?: number
 }
 
-const CSRF_KEY = 'ampare-csrf-token'
+const CSRF_KEY = 'protegida-csrf-token'
+const LEGACY_CSRF_KEY = 'ampare-csrf-token'
+const TOKEN_KEY = 'protegida-token'
+const LEGACY_TOKEN_KEY = 'ampare-token'
+
+function migrate(key: string, legacy: string): void {
+  const v = localStorage.getItem(legacy)
+  if (v && !localStorage.getItem(key)) localStorage.setItem(key, v)
+  if (v) localStorage.removeItem(legacy)
+}
+migrate(TOKEN_KEY, LEGACY_TOKEN_KEY)
+migrate(CSRF_KEY, LEGACY_CSRF_KEY)
 
 function generateCSRFToken(): string {
   const array = new Uint8Array(32)
@@ -44,7 +55,7 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('ampare-token')
+  const token = localStorage.getItem('protegida-token')
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`
   }
@@ -72,8 +83,8 @@ api.interceptors.response.use(
     }
 
     if (error.response?.status === 401) {
-      localStorage.removeItem('ampare-user')
-      localStorage.removeItem('ampare-user-type')
+      localStorage.removeItem('protegida-user')
+      localStorage.removeItem('protegida-user-type')
       removeCSRFToken()
       window.location.href = '/login'
     }

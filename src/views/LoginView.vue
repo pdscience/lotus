@@ -17,6 +17,7 @@ import {
   ClipboardList
 } from 'lucide-vue-next'
 import { useUserStore } from '../stores/userStore'
+import ProtegidaLogo from '../components/ProtegidaLogo.vue'
 import type { UserType } from '../types'
 
 const router = useRouter()
@@ -66,8 +67,9 @@ const setUserType = (type: UserType) => {
     <!-- Background Image -->
     <div class="absolute inset-0">
       <img
-        src="@/assets/Tela limpa.png"
+        src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&q=80&auto=format&fit=crop"
         alt="Tela limpa"
+        @error="(e) => { (e.target as HTMLImageElement).style.display = 'none' }"
         class="w-full h-full object-cover"/>
     </div>
 
@@ -75,7 +77,7 @@ const setUserType = (type: UserType) => {
       <!-- Logo -->
       <div class="text-center mb-8">
         <div class="inline-flex items-center justify-center w-40 h-40 rounded-3xl bg-white/10 backdrop-blur-sm mb-4">
-          <img src="@/assets/Logo AMPARE.png" alt="AMPARE Logo" class="w-40 h-40 object-contain" />
+          <ProtegidaLogo size="md" />
         </div>
       </div>
 
@@ -206,7 +208,7 @@ const setUserType = (type: UserType) => {
 
       <!-- Footer -->
       <p class="text-center text-white/50 text-sm mt-8">
-        &copy; 2026 AMPARE. Todos os direitos reservados.
+        &copy; 2026 Protegida. Todos os direitos reservados.
       </p>
     </div>
 

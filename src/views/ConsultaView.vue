@@ -123,7 +123,7 @@ const exportToPDF = () => {
       </table>
       
       <div class="footer">
-        <p>Sistema AMPARE - Acesso a Medidas Protetivas e Ações de Resposta Emergenciais</p>
+        <p>Sistema Protegida - Acesso a Medidas Protetivas e Ações de Resposta Emergenciais</p>
       </div>
     </body>
     </html>
