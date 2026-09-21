@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
   Plus,
@@ -14,24 +14,27 @@ import {
   Shield,
   History,
   ClipboardList,
-  ChevronLeft,
-  ChevronRight
+  ChevronDown
 } from 'lucide-vue-next'
 import { useUserStore } from '../stores/userStore'
+import { useTheme } from '../composables/useTheme'
 import ProtegidaLogo from './ProtegidaLogo.vue'
 import ThemeToggle from './ThemeToggle.vue'
+import { useClickOutside } from '../composables/useClickOutside'
 
 const route = useRoute()
 const router = useRouter()
 const isMenuOpen = ref(false)
-const collapsed = ref(localStorage.getItem('protegida-sidebar') === 'collapsed')
-const toggleSidebar = () => {
-  collapsed.value = !collapsed.value
-  localStorage.setItem('protegida-sidebar', collapsed.value ? 'collapsed' : 'open')
-}
+const openDropdown = ref<string | null>(null)
+const navRef = ref<HTMLElement | null>(null)
+const { theme } = useTheme()
 const userStore = useUserStore()
 
 const user = computed(() => userStore.user)
+
+interface NavLink { kind: 'link'; href: string; label: string; icon: object }
+interface NavGroup { kind: 'group'; label: string; icon: object; items: { href: string; label: string; icon: object }[] }
+type NavEntry = NavLink | NavGroup
 
 const navigationItems = computed(() => {
   const items = []
@@ -68,6 +71,49 @@ const navigationItems = computed(() => {
   return items
 })
 
+const navGroups = computed<NavEntry[]>(() => {
+  const isAdmin = user.value?.tipo === 'admin'
+  const isAgente = user.value?.tipo === 'agente'
+  const pessoas: NavGroup = {
+    kind: 'group', label: 'Pessoas', icon: Heart,
+    items: [
+      { href: '/dashboard/contatos', label: 'Anjos', icon: Heart },
+      { href: '/dashboard/historico-panico', label: 'Histórico', icon: History }
+    ]
+  }
+  if (isAdmin) {
+    return [
+      { kind: 'link', href: '/dashboard/relatorios', label: 'Início', icon: BarChart3 },
+      { kind: 'group', label: 'Gerenciar', icon: ClipboardList, items: [
+        { href: '/dashboard/cadastro', label: 'Cadastrar', icon: Plus },
+        { href: '/dashboard/consulta', label: 'Consultar', icon: Search }
+      ] },
+      { kind: 'group', label: 'Território', icon: Map, items: [
+        { href: '/dashboard/mapa', label: 'Mapa', icon: Map },
+        { href: '/dashboard/cercamento', label: 'Cercamento', icon: Shield }
+      ] },
+      pessoas
+    ]
+  }
+  if (isAgente) {
+    return [
+      { kind: 'link', href: '/dashboard/inicio', label: 'Início', icon: Home },
+      { kind: 'group', label: 'Patrulha', icon: Shield, items: [
+        { href: '/dashboard/monitoramento', label: 'Monitoramento', icon: ClipboardList },
+        { href: '/dashboard/cercamento', label: 'Cercamento', icon: Shield }
+      ] },
+      { kind: 'link', href: '/dashboard/consulta', label: 'Consultar', icon: Search },
+      pessoas
+    ]
+  }
+  return [
+    { kind: 'link', href: '/dashboard', label: 'Início', icon: Home },
+    { kind: 'link', href: '/dashboard/cercamento', label: 'Cercamento', icon: Shield },
+    { kind: 'link', href: '/dashboard/contatos', label: 'Anjos', icon: Heart },
+    { kind: 'link', href: '/dashboard/historico-panico', label: 'Histórico', icon: History }
+  ]
+})
+
 const isActivePath = (path: string) => {
   const isAdmin = user.value?.tipo === 'admin'
   if (isAdmin) {
@@ -90,79 +136,41 @@ const handleLogout = async () => {
 const closeMenu = () => {
   isMenuOpen.value = false
 }
+
+const toggleDropdown = (label: string) => {
+  openDropdown.value = openDropdown.value === label ? null : label
+}
+
+const closeDropdown = () => {
+  openDropdown.value = null
+}
+
+const groupActive = (items: { href: string }[]) => items.some((i) => isActivePath(i.href))
+
+watch(route, closeDropdown)
+
+const onKeydown = (e: KeyboardEvent) => {
+  if (e.key === 'Escape') {
+    closeDropdown()
+    closeMenu()
+  }
+}
+
+onMounted(() => document.addEventListener('keydown', onKeydown))
+onUnmounted(() => document.removeEventListener('keydown', onKeydown))
+useClickOutside(navRef, closeDropdown)
 </script>
 
 <template>
   <div class="min-h-screen bg-background">
-    <!-- Admin/Agent Sidebar - Fixed Left -->
-    <aside
-      v-if="user?.tipo === 'admin' || user?.tipo === 'agente'"
-      class="hidden lg:flex fixed left-0 top-0 h-full bg-background border-r border-border/50 shadow-lg z-40 flex-col transition-all"
-      :class="collapsed ? 'lg:w-20' : 'lg:w-64'"
-    >
-      <!-- Logo -->
-      <div class="p-4 border-b border-border/30 flex items-center justify-between">
-        <router-link to="/dashboard" class="flex items-center justify-center hover:scale-105 transition-transform">
-          <ProtegidaLogo size="sm" variant="mono" />
-        </router-link>
-        <button
-          @click="toggleSidebar"
-          class="p-1.5 rounded-lg hover:bg-secondary/50 transition-colors text-muted-foreground"
-          :title="collapsed ? 'Expandir sidebar' : 'Colapsar sidebar'"
-        >
-          <ChevronRight v-if="collapsed" class="w-5 h-5" />
-          <ChevronLeft v-else class="w-5 h-5" />
-        </button>
-      </div>
-
-      <!-- Navigation -->
-      <nav class="flex-1 mx-3 my-2 p-3 space-y-2 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl border border-white/40 shadow-lg">
-        <router-link
-          v-for="item in navigationItems"
-          :key="item.href"
-          :to="item.href"
-          class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all"
-          :class="[isActivePath(item.href)
-            ? 'bg-primary text-primary-foreground shadow-lg'
-            : 'hover:bg-secondary/50 text-foreground', collapsed && 'justify-center px-0']"
-        >
-          <component :is="item.icon" class="w-5 h-5 shrink-0" />
-          <span v-show="!collapsed">{{ item.label }}</span>
-        </router-link>
-      </nav>
-
-      <!-- User Section -->
-      <div class="p-4 border-t border-border/50">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white">
-            <span class="text-sm font-bold">{{ user?.username?.charAt(0).toUpperCase() }}</span>
-          </div>
-          <div v-show="!collapsed">
-            <p class="font-medium text-foreground">{{ user?.username }}</p>
-            <p class="text-xs text-muted-foreground capitalize">
-              {{ user?.tipo === 'admin' ? 'Administrador' : user?.tipo === 'agente' ? 'Agente de Segurança' : 'Vítima' }}
-            </p>
-          </div>
-        </div>
-        <button
-          @click="handleLogout"
-          class="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-left hover:bg-red-50 text-red-600 transition-all"
-          :class="collapsed && 'justify-center px-0'"
-        >
-          <LogOut class="w-5 h-5 shrink-0" />
-          <span v-show="!collapsed">Sair</span>
-        </button>
-      </div>
-    </aside>
-
-    <!-- Main Content Area (offset from sidebar) -->
-    <div :class="user?.tipo === 'admin' || user?.tipo === 'agente' ? (collapsed ? 'lg:ml-20' : 'lg:ml-64') : ''">
+    <!-- Main Content Area -->
+    <div>
       <!-- Header -->
       <header
         class="sticky top-0 z-40 backdrop-blur-md bg-background/80 border-b border-border/50 shadow-lg"
       >
         <div class="px-3 sm:px-4 md:px-6 lg:px-8">
-          <div class="flex h-16 items-center justify-between">
+          <div class="flex h-16 items-center justify-between gap-2">
             <!-- Logo and Menu Button -->
             <div class="flex items-center gap-2">
               <!-- Mobile Menu Button -->
@@ -172,20 +180,74 @@ const closeMenu = () => {
               >
                 <Menu class="w-6 h-6" />
               </button>
+              <router-link to="/dashboard" class="flex items-center hover:scale-105 transition-transform">
+                <ProtegidaLogo size="sm" :variant="theme === 'dark' ? 'mono' : 'dark'" />
+              </router-link>
             </div>
 
-            <!-- Centered Title for Admin/Agent (desktop) -->
-            <h1
-              v-if="user?.tipo === 'admin' || user?.tipo === 'agente'"
-              class="hidden lg:block text-xl font-bold text-gradient tracking-wide text-center flex-1"
-            >
-              Sistema Protegida — Medidas Protetivas e Ações Emergenciais
-            </h1>
+            <!-- Desktop Dropdown Navigation -->
+            <nav ref="navRef" class="hidden lg:flex items-center gap-1">
+              <template v-for="entry in navGroups" :key="entry.kind === 'link' ? entry.href : entry.label">
+                <router-link
+                  v-if="entry.kind === 'link'"
+                  :to="entry.href"
+                  class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                  :class="isActivePath(entry.href)
+                    ? 'bg-primary text-primary-foreground shadow-lg'
+                    : 'hover:bg-secondary/50 text-foreground'"
+                >
+                  <component :is="entry.icon" class="w-4 h-4" />
+                  <span>{{ entry.label }}</span>
+                </router-link>
+                <div v-else class="relative">
+                  <button
+                    @click="toggleDropdown(entry.label)"
+                    type="button"
+                    :aria-expanded="openDropdown === entry.label"
+                    class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                    :class="groupActive(entry.items) || openDropdown === entry.label
+                      ? 'bg-primary text-primary-foreground shadow-lg'
+                      : 'hover:bg-secondary/50 text-foreground'"
+                  >
+                    <component :is="entry.icon" class="w-4 h-4" />
+                    <span>{{ entry.label }}</span>
+                    <ChevronDown class="w-4 h-4 transition-transform" :class="openDropdown === entry.label && 'rotate-180'" />
+                  </button>
+                  <div
+                    v-if="openDropdown === entry.label"
+                    class="absolute left-0 top-full mt-2 w-56 rounded-xl border border-border bg-popover p-1.5 shadow-xl animate-scale-in"
+                  >
+                    <router-link
+                      v-for="item in entry.items"
+                      :key="item.href"
+                      :to="item.href"
+                      @click="closeDropdown"
+                      class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all"
+                      :class="isActivePath(item.href)
+                        ? 'bg-primary text-primary-foreground'
+                        : 'hover:bg-secondary/50 text-foreground'"
+                    >
+                      <component :is="item.icon" class="w-4 h-4" />
+                      <span>{{ item.label }}</span>
+                    </router-link>
+                  </div>
+                </div>
+              </template>
+            </nav>
 
             <!-- User Section -->
             <div class="flex items-center gap-2">
               <ThemeToggle />
-              <!-- Logout Button (hidden on admin desktop) -->
+              <div class="hidden lg:flex w-9 h-9 rounded-full bg-gradient-to-br from-primary to-accent items-center justify-center text-white">
+                <span class="text-sm font-bold">{{ user?.nome?.charAt(0).toUpperCase() }}</span>
+              </div>
+              <button
+                @click="handleLogout"
+                class="hidden lg:flex p-2 rounded-lg hover:bg-secondary/50 transition-colors text-muted-foreground hover:text-destructive"
+                title="Sair"
+              >
+                <LogOut class="w-5 h-5" />
+              </button>
               <button
                 @click="handleLogout"
                 class="p-2 rounded-lg hover:bg-secondary/50 transition-colors text-muted-foreground hover:text-destructive lg:hidden"
