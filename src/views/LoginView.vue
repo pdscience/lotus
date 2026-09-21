@@ -63,7 +63,7 @@ const setUserType = (type: UserType) => {
 </script>
 
 <template>
-  <div class="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
+  <div class="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-background">
     <!-- Background Image -->
     <div class="absolute inset-0">
       <img
@@ -72,18 +72,19 @@ const setUserType = (type: UserType) => {
         loading="lazy"
         @error="(e) => { (e.target as HTMLImageElement).style.display = 'none' }"
         class="w-full h-full object-cover"/>
+      <div class="absolute inset-0 bg-gradient-to-b from-background/70 via-background/40 to-background"></div>
     </div>
 
     <div class="relative z-10 w-full max-w-lg px-4">
       <!-- Logo -->
       <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-40 h-40 rounded-3xl bg-white/10 backdrop-blur-sm mb-4">
-          <ProtegidaLogo size="md" />
+        <div class="inline-flex items-center justify-center rounded-3xl bg-card border border-border p-4 mb-4">
+          <ProtegidaLogo size="md" variant="mono" />
         </div>
       </div>
 
       <!-- Card de Login -->
-      <div class="bg-white/30 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border border-white/20">
+      <div class="bg-card rounded-3xl shadow-2xl p-8 border border-border">
         <!-- Seleção de Tipo -->
         <div class="flex rounded-xl bg-secondary/50 p-1 mb-6">
           <button
@@ -91,8 +92,8 @@ const setUserType = (type: UserType) => {
             :class="[
               'flex-1 py-3 px-3 rounded-lg font-medium transition-all flex items-center justify-center gap-1.5 text-sm',
               userType === 'vitima' 
-                ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-lg' 
-                : 'text-muted-foreground hover:bg-white/50'
+                ? 'bg-rose-500 text-white shadow-lg' 
+                : 'text-muted-foreground hover:bg-secondary/50'
             ]">
             <Heart class="w-4 h-4" />
             Vítima
@@ -102,8 +103,8 @@ const setUserType = (type: UserType) => {
             :class="[
               'flex-1 py-3 px-3 rounded-lg font-medium transition-all flex items-center justify-center gap-1.5 text-sm',
               userType === 'admin' 
-                ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg' 
-                : 'text-muted-foreground hover:bg-white/50'
+                ? 'bg-primary text-primary-foreground shadow-lg' 
+                : 'text-muted-foreground hover:bg-secondary/50'
             ]"
           >
             <Scale class="w-4 h-4" />
@@ -114,8 +115,8 @@ const setUserType = (type: UserType) => {
             :class="[
               'flex-1 py-3 px-3 rounded-lg font-medium transition-all flex items-center justify-center gap-1.5 text-sm',
               userType === 'agente' 
-                ? 'bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg' 
-                : 'text-muted-foreground hover:bg-white/50'
+                ? 'bg-blue-600 text-white shadow-lg' 
+                : 'text-muted-foreground hover:bg-secondary/50'
             ]"
           >
             <ClipboardList class="w-4 h-4" />
@@ -155,7 +156,7 @@ const setUserType = (type: UserType) => {
           </div>
 
           <!-- Erro -->
-          <div v-if="error" class="flex items-center gap-2 p-3 rounded-lg bg-red-50 text-red-600 text-sm">
+          <div v-if="error" class="flex items-center gap-2 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
             <AlertCircle class="w-4 h-4 flex-shrink-0" />
             {{ error }}
           </div>
@@ -165,10 +166,10 @@ const setUserType = (type: UserType) => {
             :disabled="isLoading"
             class="w-full h-12 rounded-xl font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2"
             :class="userType === 'vitima' 
-              ? 'bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600' 
+              ? 'bg-rose-500 hover:bg-rose-600' 
               : userType === 'agente'
-                ? 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900'
-                : 'bg-gradient-to-r from-primary to-accent hover:opacity-90'"
+                ? 'bg-blue-600 hover:bg-blue-700'
+                : 'bg-primary hover:bg-primary/90'"
           >
             <LogIn class="w-5 h-5" />
             {{ isLoading ? 'Entrando...' : 'Entrar' }}
@@ -179,7 +180,7 @@ const setUserType = (type: UserType) => {
             type="button"
             @click="showCadastroModal = true"
             :disabled="isLoading"
-            class="w-full h-12 mt-3 rounded-xl font-semibold bg-transparent border-2 border-white/30 text-white transition-all duration-300 flex items-center justify-center gap-2 hover:bg-white/10"
+            class="w-full h-12 mt-3 rounded-xl font-semibold bg-transparent border-2 border-border text-foreground transition-all duration-300 flex items-center justify-center gap-2 hover:bg-secondary/50"
           >
             <UserPlus class="w-5 h-5" />
             Cadastrar-se
@@ -208,7 +209,7 @@ const setUserType = (type: UserType) => {
       </div>
 
       <!-- Footer -->
-      <p class="text-center text-white/50 text-sm mt-8">
+      <p class="text-center text-muted-foreground text-sm mt-8">
         &copy; 2026 Protegida. Todos os direitos reservados.
       </p>
     </div>
@@ -236,9 +237,9 @@ const setUserType = (type: UserType) => {
 
           <div class="p-6 space-y-6">
             <!-- Cadastro Vítima -->
-            <div class="bg-blue-50 rounded-xl p-5 border border-blue-200">
+            <div class="bg-secondary/30 rounded-xl p-5 border border-border">
               <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center text-white">
+                <div class="w-10 h-10 rounded-full bg-rose-500 flex items-center justify-center text-white">
                   <Heart class="w-5 h-5" />
                 </div>
                 <div>
@@ -260,8 +261,8 @@ const setUserType = (type: UserType) => {
                   <p class="text-sm text-foreground"><span class="font-medium">Medida Protetiva:</span> Número do processo judicial (se houver)</p>
                 </div>
               </div>
-              <div class="mt-4 pt-4 border-t border-blue-200">
-                <p class="text-xs text-blue-600 flex items-center gap-2">
+              <div class="mt-4 pt-4 border-t border-border">
+                <p class="text-xs text-muted-foreground flex items-center gap-2">
                   <AlertTriangle class="w-4 h-4" />
                   O cadastro será analisado pela equipe responsável
                 </p>
@@ -269,9 +270,9 @@ const setUserType = (type: UserType) => {
             </div>
 
             <!-- Cadastro Admin -->
-            <div class="bg-purple-50 rounded-xl p-5 border border-purple-200">
+            <div class="bg-secondary/30 rounded-xl p-5 border border-border">
               <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white">
+                <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
                   <Scale class="w-5 h-5" />
                 </div>
                 <div>
@@ -293,8 +294,8 @@ const setUserType = (type: UserType) => {
                   <p class="text-sm text-foreground"><span class="font-medium">Autorização:</span> Criado pela equipe técnica</p>
                 </div>
               </div>
-              <div class="mt-4 pt-4 border-t border-purple-200">
-                <p class="text-xs text-purple-600 flex items-center gap-2">
+              <div class="mt-4 pt-4 border-t border-border">
+                <p class="text-xs text-muted-foreground flex items-center gap-2">
                   <AlertTriangle class="w-4 h-4" />
                   Admin deve ser criado pela equipe de TI
                 </p>
