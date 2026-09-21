@@ -29,6 +29,22 @@ import {
   type RedeApoio
 } from '../services/redeApoioService'
 import ProtegidaLogo from '../components/ProtegidaLogo.vue'
+import { isConfigured, gerarApoio } from '../services/iaAconselhamentoService'
+
+const promptIa = ref('')
+const respostaIa = ref('')
+const loadingIa = ref(false)
+const erroIa = ref('')
+const iaAtiva = isConfigured()
+const enviarIa = async () => {
+  erroIa.value = ''
+  respostaIa.value = ''
+  if (!promptIa.value.trim()) { erroIa.value = 'Escreva como você está se sentindo.'; return }
+  loadingIa.value = true
+  try { respostaIa.value = await gerarApoio(promptIa.value) }
+  catch (e: unknown) { erroIa.value = e instanceof Error ? e.message : 'Não foi possível gerar apoio agora.' }
+  finally { loadingIa.value = false }
+}
 
 const router = useRouter()
 
@@ -218,6 +234,14 @@ const goBack = () => {
 <template>
   <div class="bg-gradient-to-br from-background via-secondary/5 to-primary/5">
     <main class="px-3 sm:px-4 md:px-6 lg:px-8 py-8">
+      <div v-if="iaAtiva" class="mb-6 p-4 rounded-xl border border-border bg-card">
+        <p class="font-semibold mb-1">Apoio com IA (opcional)</p>
+        <p class="text-xs text-muted-foreground mb-3">Não substitui ajuda profissional. Em risco imediato ligue 180 ou 190.</p>
+        <textarea v-model="promptIa" rows="3" placeholder="Como você está se sentindo?" class="w-full input-enhanced"></textarea>
+        <button @click="enviarIa" :disabled="loadingIa" class="btn-primary mt-3">{{ loadingIa ? 'Gerando...' : 'Receber apoio' }}</button>
+        <p v-if="erroIa" class="text-sm text-destructive mt-2">{{ erroIa }}</p>
+        <p v-if="respostaIa" class="text-sm mt-2 whitespace-pre-wrap">{{ respostaIa }}</p>
+      </div>
       <!-- Header -->
       <div class="mb-6 animate-fade-in-up">
         <button
