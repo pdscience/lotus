@@ -311,8 +311,11 @@ useClickOutside(navRef, closeDropdown)
         </div>
       </div>
 
-      <!-- Main Content -->
-      <main class="pb-20 px-4 py-4">
+      <!-- Main Content (centered column with empty side gutters, except full-bleed map routes) -->
+      <main
+        class="pb-20 px-4 py-4"
+        :class="route.path === '/dashboard/mapa' || route.path === '/dashboard/cercamento' ? '' : 'mx-auto w-full max-w-6xl'"
+      >
         <router-view />
       </main>
     </div>
