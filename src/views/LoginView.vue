@@ -68,7 +68,7 @@ const setUserType = (type: UserType) => {
     <div class="absolute inset-0">
       <img
         src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&q=80&auto=format&fit=crop"
-        alt="Tela limpa"
+        alt="Rede de apoio - Protegida"
         @error="(e) => { (e.target as HTMLImageElement).style.display = 'none' }"
         class="w-full h-full object-cover"/>
     </div>
