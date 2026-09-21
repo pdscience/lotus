@@ -52,16 +52,16 @@ src/
 
 ### Configuração
 
-- **Project**: Ampare
-- **Project ID**: 79b7572c-4e5f-4969-9a9c-5d55744bb56b
-- **App Key**: 4c5r57fe
+- **Project**: Protegida
+- **Project ID**: 47386ba3-8e89-4d77-8f76-ec98995a0b04
+- **App Key**: tna9zi8t
 - **Region**: us-east
-- **OSS Host**: https://4c5r57fe.us-east.insforge.app
+- **OSS Host**: https://tna9zi8t.us-east.insforge.app
 
 ### Environment Variables
 
 ```bash
-VITE_INSFORGE_URL=https://4c5r57fe.us-east.insforge.app
+VITE_INSFORGE_URL=https://tna9zi8t.us-east.insforge.app
 VITE_INSFORGE_ANON_KEY=<chave_anonima>
 ```
 
@@ -72,6 +72,9 @@ VITE_INSFORGE_ANON_KEY=<chave_anonima>
 - `panic_records` - Registros de pânico
 - `rede_apoio` - Rede de apoio (ONGs, abrigos, delegacias)
 - `aconselhamentos` - Registros de aconselhamento
+- `usuarios` - Perfis de usuário
+- `user_roles` - Papel por usuário (vitima, agente, admin)
+- `agente_monitoramento` - Monitoramentos de patrulha
 
 ### Comandos Úteis
 

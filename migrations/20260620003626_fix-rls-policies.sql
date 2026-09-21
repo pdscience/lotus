@@ -23,12 +23,51 @@ CREATE POLICY user_roles_own_select ON public.user_roles
 
 GRANT SELECT ON public.user_roles TO anon, authenticated;
 
--- 2. Seed roles for existing users
-INSERT INTO public.user_roles (user_id, tipo) VALUES
+-- 2. Seed roles for existing users (only where the user exists — safe on fresh projects)
+INSERT INTO public.user_roles (user_id, tipo)
+SELECT v.user_id::uuid, v.tipo
+FROM (VALUES
   ('0fc678a2-fc82-4e84-9951-10a5589798dc', 'admin'),
   ('aa47fb2f-3040-4172-a434-69bf6ecc7fbd', 'agente'),
   ('f0b93dae-4e22-40b7-bb55-6f992eb8efc2', 'vitima')
+) AS v(user_id, tipo)
+WHERE EXISTS (SELECT 1 FROM auth.users u WHERE u.id = v.user_id::uuid)
 ON CONFLICT (user_id) DO UPDATE SET tipo = EXCLUDED.tipo;
+
+-- 2b. agente_monitoramento table (used by src/services/agenteService.ts; created here if missing)
+CREATE TABLE IF NOT EXISTS public.agente_monitoramento (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  agente_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  vitima_nome TEXT,
+  vitima_cpf TEXT,
+  vitima_telefone TEXT,
+  vitima_endereco TEXT,
+  agressor_nome TEXT,
+  agressor_cpf TEXT,
+  agressor_telefone TEXT,
+  agressor_endereco TEXT,
+  medida_id UUID,
+  numero_processo TEXT,
+  data_monitoramento DATE,
+  hora TEXT,
+  condicao_vitima TEXT,
+  situacao_monitorada TEXT,
+  localizacao_verificada TEXT,
+  restricao_respeitada TEXT,
+  observacoes TEXT,
+  risco TEXT,
+  encaminhamentos TEXT,
+  status_visita TEXT NOT NULL DEFAULT 'pendente'
+    CHECK (status_visita IN ('pendente', 'visitada', 'nao_visitada', 'agendada')),
+  status_patrulha TEXT NOT NULL DEFAULT 'pendente'
+    CHECK (status_patrulha IN ('pendente', 'em_deslocamento', 'no_local', 'concluido', 'nao_foi_possivel')),
+  ultima_atualizacao TIMESTAMPTZ DEFAULT NOW(),
+  obs_patrulha TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.agente_monitoramento ENABLE ROW LEVEL SECURITY;
 
 -- 3. Recreate all policies that referenced auth.users
 
