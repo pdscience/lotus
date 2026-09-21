@@ -3,12 +3,10 @@ import { ref, onMounted } from 'vue'
 import { 
   Scale,
   Shield,
-  Heart,
   AlertTriangle,
   Home,
   FileText,
   CheckCircle,
-  ArrowLeft,
   Phone,
   MapPin,
   Clock,
@@ -29,6 +27,7 @@ import {
   type RedeApoio
 } from '../services/redeApoioService'
 import ProtegidaLogo from '../components/ProtegidaLogo.vue'
+import SectionHeader from '../components/SectionHeader.vue'
 import { isConfigured, gerarApoio } from '../services/iaAconselhamentoService'
 
 const promptIa = ref('')
@@ -232,9 +231,9 @@ const goBack = () => {
 </script>
 
 <template>
-  <div class="bg-gradient-to-br from-background via-secondary/5 to-primary/5">
+  <div class="bg-background">
     <main class="px-3 sm:px-4 md:px-6 lg:px-8 py-8">
-      <div v-if="iaAtiva" class="mb-6 p-4 rounded-xl border border-border bg-card">
+      <div v-if="iaAtiva" class="mb-6 p-4 rounded-lg border border-border bg-card">
         <p class="font-semibold mb-1">Apoio com IA (opcional)</p>
         <p class="text-xs text-muted-foreground mb-3">Não substitui ajuda profissional. Em risco imediato ligue 180 ou 190.</p>
         <textarea v-model="promptIa" rows="3" placeholder="Como você está se sentindo?" class="w-full input-enhanced"></textarea>
@@ -243,29 +242,18 @@ const goBack = () => {
         <p v-if="respostaIa" class="text-sm mt-2 whitespace-pre-wrap">{{ respostaIa }}</p>
       </div>
       <!-- Header -->
-      <div class="mb-6 animate-fade-in-up">
-        <button
-          @click="goBack"
-          class="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4"
-        >
-          <ArrowLeft class="w-5 h-5" />
-          Voltar
-        </button>
-        
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white">
-            <Heart class="w-6 h-6" />
-          </div>
-          <div>
-            <h1 class="text-2xl sm:text-3xl font-bold text-gradient">
-              Informação para Você
-            </h1>
-            <p class="text-muted-foreground text-sm sm:text-base">
-              Seus direitos e como buscar ajuda
-            </p>
-          </div>
-        </div>
-      </div>
+      <SectionHeader>
+        <template #title>Informação para você</template>
+        <template #desc>Seus direitos e como buscar ajuda</template>
+        <template #actions>
+          <button
+            @click="goBack"
+            class="px-4 py-2 rounded-lg border border-border hover:bg-secondary/50 transition-colors text-sm font-medium"
+          >
+            Voltar
+          </button>
+        </template>
+      </SectionHeader>
 
       <!-- Navigation Tabs -->
       <div class="mb-6 overflow-x-auto">
@@ -277,7 +265,7 @@ const goBack = () => {
             :class="[
               'flex items-center gap-2 px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all',
               activeSection === section.id 
-                ? 'bg-primary text-primary-foreground shadow-lg' 
+                ? 'bg-primary text-primary-foreground' 
                 : 'bg-card text-muted-foreground hover:bg-secondary'
             ]"
           >
@@ -291,14 +279,14 @@ const goBack = () => {
       <div class="space-y-6">
         <!-- Lei Maria da Penha -->
         <div v-if="activeSection === 'lei'" class="animate-fade-in-up">
-          <div class="bg-card rounded-xl shadow-lg p-6">
+          <div class="rounded-lg border border-border bg-card p-6">
             <div class="flex items-start gap-4 mb-4">
-              <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 flex-shrink-0">
+              <div class="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground flex-shrink-0">
                 <Scale class="w-6 h-6" />
               </div>
               <div>
                 <h2 class="text-xl font-bold text-foreground">Lei nº 11.340/2006</h2>
-                <p class="text-purple-600 font-medium">Lei Maria da Penha</p>
+                <p class="text-primary font-medium">Lei Maria da Penha</p>
               </div>
             </div>
             <p class="text-muted-foreground leading-relaxed">
@@ -306,8 +294,8 @@ const goBack = () => {
               A lei foi criada em 2006 em homenagem à Maria da Penha, que sofreu violência 
               doméstica por anos e cujo caso teve repercussão internacional.
             </p>
-            <div class="mt-4 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-              <p class="text-sm text-purple-700 dark:text-purple-300">
+            <div class="mt-4 p-4 bg-secondary/30 border border-border rounded-lg">
+              <p class="text-sm text-muted-foreground">
                 <strong>Importante:</strong> A lei considera violência doméstica qualquer ação ou omissão baseada no gênero que cause morte, lesão, sofrimento físico, sexual ou psicológico.
               </p>
             </div>
@@ -316,9 +304,9 @@ const goBack = () => {
 
         <!-- Seus Direitos -->
         <div v-if="activeSection === 'direitos'" class="animate-fade-in-up">
-          <div class="bg-card rounded-xl shadow-lg p-6">
+          <div class="rounded-lg border border-border bg-card p-6">
             <div class="flex items-center gap-3 mb-6">
-              <div class="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600">
+              <div class="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground">
                 <Shield class="w-6 h-6" />
               </div>
               <h2 class="text-xl font-bold text-foreground">Seus Direitos</h2>
@@ -342,10 +330,10 @@ const goBack = () => {
           <div 
             v-for="(violencia, index) in tiposViolencia" 
             :key="index"
-            class="bg-card rounded-xl shadow-lg p-6"
+            class="rounded-lg border border-border bg-card p-6"
           >
             <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600">
+              <div class="w-10 h-10 rounded-lg bg-secondary/50 flex items-center justify-center text-foreground">
                 <AlertTriangle class="w-5 h-5" />
               </div>
               <h3 class="font-bold text-foreground">{{ violencia.tipo }}</h3>
@@ -355,7 +343,7 @@ const goBack = () => {
               <span 
                 v-for="(exemplo, i) in violencia.exemplos" 
                 :key="i"
-                class="px-3 py-1 rounded-full bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 text-sm"
+                class="px-3 py-1 rounded-full bg-secondary/50 text-foreground text-sm"
               >
                 {{ exemplo }}
               </span>
@@ -365,9 +353,9 @@ const goBack = () => {
 
         <!-- Medidas Protetivas -->
         <div v-if="activeSection === 'medidas'" class="animate-fade-in-up space-y-4">
-          <div class="bg-card rounded-xl shadow-lg p-6">
+          <div class="rounded-lg border border-border bg-card p-6">
             <div class="flex items-center gap-3 mb-4">
-              <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+              <div class="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground">
                 <Home class="w-6 h-6" />
               </div>
               <div>
@@ -375,8 +363,8 @@ const goBack = () => {
                 <p class="text-muted-foreground text-sm">Garantidas pela Lei Maria da Penha</p>
               </div>
             </div>
-            <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg mb-4">
-              <p class="text-sm text-blue-700 dark:text-blue-300">
+            <div class="p-4 bg-secondary/30 border border-border rounded-lg mb-4">
+              <p class="text-sm text-muted-foreground">
                 <strong>Importante:</strong> As medidas protetivas devem ser concedidas em até 48 horas após a solicitação.
               </p>
             </div>
@@ -386,9 +374,9 @@ const goBack = () => {
             <div 
               v-for="(medida, index) in medidas" 
               :key="index"
-              class="bg-card rounded-xl shadow-lg p-5 flex items-start gap-4"
+              class="rounded-lg border border-border bg-card p-5 flex items-start gap-4"
             >
-              <div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-white font-bold flex-shrink-0">
+              <div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold flex-shrink-0">
                 {{ index + 1 }}
               </div>
               <div>
@@ -401,9 +389,9 @@ const goBack = () => {
 
         <!-- O que Fazer -->
         <div v-if="activeSection === 'passos'" class="animate-fade-in-up space-y-4">
-          <div class="bg-card rounded-xl shadow-lg p-6">
+          <div class="rounded-lg border border-border bg-card p-6">
             <div class="flex items-center gap-3 mb-6">
-              <div class="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600">
+              <div class="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground">
                 <FileText class="w-6 h-6" />
               </div>
               <h2 class="text-xl font-bold text-foreground">O que Fazer?</h2>
@@ -414,9 +402,9 @@ const goBack = () => {
             <div 
               v-for="passo in passos" 
               :key="passo.num"
-              class="bg-card rounded-xl shadow-lg p-5 flex items-start gap-4"
+              class="rounded-lg border border-border bg-card p-5 flex items-start gap-4"
             >
-              <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+              <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-lg flex-shrink-0">
                 {{ passo.num }}
               </div>
               <div>
@@ -435,41 +423,41 @@ const goBack = () => {
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <button
                 @click="callPhone('180')"
-                class="bg-gradient-to-br from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white rounded-xl p-4 text-center transition-all duration-300 hover:shadow-lg hover:scale-105"
+                class="rounded-lg border border-border bg-card hover:bg-secondary/30 p-4 text-center transition-colors"
               >
-                <span class="text-2xl font-bold">180</span>
-                <p class="text-xs mt-1 opacity-90">Central Mulher</p>
+                <span class="text-2xl font-bold tnum">180</span>
+                <p class="text-xs mt-1 text-muted-foreground">Central Mulher</p>
               </button>
-              
+
               <button
                 @click="callPhone('190')"
-                class="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl p-4 text-center transition-all duration-300 hover:shadow-lg hover:scale-105"
+                class="rounded-lg border border-border bg-card hover:bg-secondary/30 p-4 text-center transition-colors"
               >
-                <span class="text-2xl font-bold">190</span>
-                <p class="text-xs mt-1 opacity-90">Polícia Militar</p>
+                <span class="text-2xl font-bold tnum">190</span>
+                <p class="text-xs mt-1 text-muted-foreground">Polícia Militar</p>
               </button>
-              
+
               <button
                 @click="callPhone('192')"
-                class="bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl p-4 text-center transition-all duration-300 hover:shadow-lg hover:scale-105"
+                class="rounded-lg border border-border bg-card hover:bg-secondary/30 p-4 text-center transition-colors"
               >
-                <span class="text-2xl font-bold">192</span>
-                <p class="text-xs mt-1 opacity-90">SAMU</p>
+                <span class="text-2xl font-bold tnum">192</span>
+                <p class="text-xs mt-1 text-muted-foreground">SAMU</p>
               </button>
-              
+
               <button
                 @click="callPhone('129')"
-                class="bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-xl p-4 text-center transition-all duration-300 hover:shadow-lg hover:scale-105"
+                class="rounded-lg border border-border bg-card hover:bg-secondary/30 p-4 text-center transition-colors"
               >
-                <span class="text-2xl font-bold">129</span>
-                <p class="text-xs mt-1 opacity-90">Defensoria</p>
+                <span class="text-2xl font-bold tnum">129</span>
+                <p class="text-xs mt-1 text-muted-foreground">Defensoria</p>
               </button>
             </div>
           </div>
 
           <!-- Locais de Atendimento -->
           <div>
-            <div class="bg-card rounded-xl shadow-lg">
+            <div class="rounded-lg border border-border bg-card">
               <div class="p-6 pb-4">
                 <div class="flex items-center justify-between">
                   <h2 class="font-semibold text-lg text-foreground">Locais de Atendimento</h2>
@@ -502,21 +490,21 @@ const goBack = () => {
                       <div class="flex gap-1">
                         <button
                           @click="openInMaps(local)"
-                          class="p-2 rounded-lg hover:bg-white/50 text-primary transition-colors"
+                          class="p-2 rounded-lg hover:bg-secondary text-primary transition-colors"
                           title="Abrir no Maps"
                         >
                           <ExternalLink class="w-4 h-4" />
                         </button>
                         <button
                           @click="openModal(local)"
-                          class="p-2 rounded-lg hover:bg-white/50 text-muted-foreground hover:text-primary transition-colors"
+                          class="p-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-primary transition-colors"
                           title="Editar"
                         >
                           <Edit3 class="w-4 h-4" />
                         </button>
                         <button
                           @click="deleteLocal(local.id)"
-                          class="p-2 rounded-lg hover:bg-white/50 text-muted-foreground hover:text-destructive transition-colors"
+                          class="p-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-destructive transition-colors"
                           title="Excluir"
                         >
                           <Trash2 class="w-4 h-4" />
@@ -562,14 +550,14 @@ const goBack = () => {
 
         <!-- Frase Final -->
         <div class="animate-fade-in-up">
-          <div class="bg-gradient-to-r from-pink-500 to-rose-500 rounded-xl shadow-lg py-3 px-6 text-center">
+          <div class="rounded-lg border border-border bg-card py-3 px-6 text-center">
             <div class="flex items-center justify-center gap-4">
-              <div class="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center shadow-xl flex-shrink-0">
-                <ProtegidaLogo size="sm" variant="light" />
+              <div class="w-14 h-14 rounded-full bg-secondary/50 border border-border flex items-center justify-center flex-shrink-0">
+                <ProtegidaLogo size="sm" />
               </div>
               <div class="text-left">
-                <h2 class="text-lg font-bold text-white">Você não está sozinha!</h2>
-                <p class="text-white/90 text-sm">
+                <h2 class="text-lg font-bold text-foreground">Você não está sozinha!</h2>
+                <p class="text-muted-foreground text-sm">
                   Há uma rede de apoio pronta para ajudá-la. Não tenha medo de buscar seus direitos.
                 </p>
               </div>
@@ -585,7 +573,7 @@ const goBack = () => {
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
       @click.self="closeModal"
     >
-      <div class="bg-card rounded-2xl shadow-2xl w-full max-w-md animate-scale-in">
+      <div class="bg-card rounded-2xl border border-border w-full max-w-md animate-scale-in">
         <div class="flex items-center justify-between p-6 border-b border-border">
           <h2 class="text-xl font-bold text-foreground">
             {{ isEditing ? 'Editar Local' : 'Novo Local de Apoio' }}

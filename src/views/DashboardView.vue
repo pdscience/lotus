@@ -10,11 +10,16 @@ import {
   Camera,
   Save,
   X,
+  Users,
+  Siren,
 } from "lucide-vue-next";
 import PanicButton from "../components/PanicButton.vue";
 import ProtegidaLogo from "../components/ProtegidaLogo.vue";
+import SectionHeader from "../components/SectionHeader.vue";
+import StatCard from "../components/StatCard.vue";
 import { fetchContatosAnjo } from "../services/contatoAnjoService";
 import { fetchMedidasVitima } from "../services/medidaVitimaService";
+import { fetchPanicRecords, type PanicRecord } from "../services/panicService";
 import { fetchUsuario, saveUsuario } from "../services/usuarioService";
 import { useUserStore } from "../stores/userStore";
 
@@ -23,8 +28,11 @@ const user = computed(() => userStore.user);
 
 const contatosCount = ref(0);
 const medidaVitima = ref<any>(null);
+const panicos30d = ref(0);
+const atividadeRecente = ref<PanicRecord[]>([]);
 
 const isAdmin = computed(() => user.value?.tipo === "admin");
+const medidaAtiva = computed(() => medidaVitima.value?.status === "ativa" ? "1" : medidaVitima.value ? "0" : "0");
 
 onMounted(async () => {
   await userStore.init();
@@ -32,6 +40,13 @@ onMounted(async () => {
   contatosCount.value = contatos.length;
   const medidas = await fetchMedidasVitima();
   medidaVitima.value = medidas[0] || null;
+
+  const panicos = await fetchPanicRecords();
+  const limite = Date.now() - 30 * 24 * 60 * 60 * 1000;
+  panicos30d.value = panicos.filter((p) => p.timestamp >= limite).length;
+  atividadeRecente.value = [...panicos]
+    .sort((a, b) => b.timestamp - a.timestamp)
+    .slice(0, 5);
 
   const usuario = await fetchUsuario();
   if (usuario) {
@@ -110,23 +125,47 @@ const formatarData = (data: string) => {
   return new Date(data).toLocaleDateString("pt-BR");
 };
 
+const formatarDataHora = (ts: number) => {
+  return new Date(ts).toLocaleString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
 const getStatusColor = (status: string) => {
   switch (status) {
     case "ativa":
-      return "bg-green-100 text-green-700";
+      return "bg-success/10 text-success border border-success/20";
     case "encerrada":
-      return "bg-gray-100 text-gray-700";
+      return "bg-secondary text-muted-foreground border border-border";
     case "revogada":
-      return "bg-red-100 text-red-700";
+      return "bg-destructive/10 text-destructive border border-destructive/20";
     default:
-      return "bg-gray-100 text-gray-700";
+      return "bg-secondary text-muted-foreground border border-border";
   }
 };
 </script>
 
 <template>
-  <div class="bg-gradient-to-br from-background via-secondary/5 to-primary/5">
+  <div class="bg-background">
     <main class="px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
+      <SectionHeader v-if="!isAdmin">
+        <template #title>Meu painel</template>
+        <template #desc>Visão geral da sua proteção</template>
+      </SectionHeader>
+
+      <!-- Bento StatCards - Apenas para Vítima -->
+      <div
+        v-if="!isAdmin"
+        class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6"
+      >
+        <StatCard label="Medidas ativas" :value="medidaAtiva" />
+        <StatCard label="Pânicos (30d)" :value="String(panicos30d)" />
+        <StatCard label="Contatos anjo" :value="String(contatosCount)" />
+      </div>
+
       <!-- Quick Access Cards - Apenas para Vítima -->
       <div
         v-if="!isAdmin"
@@ -134,14 +173,13 @@ const getStatusColor = (status: string) => {
       >
         <router-link
           to="/dashboard/rede-apoio"
-          class="bg-white rounded-xl shadow-md p-4 sm:p-5 hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up"
-          style="animation-delay: 0.1s"
+          class="rounded-lg border border-border bg-card p-4 sm:p-5 hover:bg-secondary/30 transition-colors"
         >
           <div class="flex flex-col items-center text-center gap-2">
             <div
-              class="w-12 sm:w-14 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center text-white"
+              class="w-12 sm:w-14 h-12 sm:h-14 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground"
             >
-              <span class="text-xl sm:text-2xl">🚨</span>
+              <Siren class="w-5 sm:w-6 h-5 sm:h-6" />
             </div>
             <div>
               <h3 class="font-semibold text-foreground text-sm">
@@ -154,12 +192,11 @@ const getStatusColor = (status: string) => {
 
         <router-link
           to="/dashboard/aconselhamento"
-          class="bg-white rounded-xl shadow-md p-4 sm:p-5 hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up"
-          style="animation-delay: 0.15s"
+          class="rounded-lg border border-border bg-card p-4 sm:p-5 hover:bg-secondary/30 transition-colors"
         >
           <div class="flex flex-col items-center text-center gap-2">
             <div
-              class="w-12 sm:w-14 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white"
+              class="w-12 sm:w-14 h-12 sm:h-14 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground"
             >
               <Heart class="w-5 sm:w-6 h-5 sm:h-6" />
             </div>
@@ -174,14 +211,13 @@ const getStatusColor = (status: string) => {
 
         <router-link
           to="/dashboard/contatos"
-          class="bg-white rounded-xl shadow-md p-4 sm:p-5 hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up"
-          style="animation-delay: 0.2s"
+          class="rounded-lg border border-border bg-card p-4 sm:p-5 hover:bg-secondary/30 transition-colors"
         >
           <div class="flex flex-col items-center text-center gap-2">
             <div
-              class="w-12 sm:w-14 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white"
+              class="w-12 sm:w-14 h-12 sm:h-14 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground"
             >
-              <span class="text-xl sm:text-2xl">👼</span>
+              <Users class="w-5 sm:w-6 h-5 sm:h-6" />
             </div>
             <div>
               <h3 class="font-semibold text-foreground text-sm">Meus Anjos</h3>
@@ -194,12 +230,11 @@ const getStatusColor = (status: string) => {
 
         <button
           @click="openProfileModal"
-          class="bg-white rounded-xl shadow-md p-4 sm:p-5 hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up"
-          style="animation-delay: 0.25s"
+          class="rounded-lg border border-border bg-card p-4 sm:p-5 hover:bg-secondary/30 transition-colors"
         >
           <div class="flex flex-col items-center text-center gap-2">
             <div
-              class="w-12 sm:w-14 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center text-white"
+              class="w-12 sm:w-14 h-12 sm:h-14 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground"
             >
               <User class="w-5 sm:w-6 h-5 sm:h-6" />
             </div>
@@ -212,21 +247,21 @@ const getStatusColor = (status: string) => {
       </div>
 
       <!-- Card da Medida Protetiva - Apenas para Vítima -->
-      <div v-if="!isAdmin && medidaVitima" class="mt-6 sm:mt-8 mb-4 sm:mb-6 animate-fade-in-up">
+      <div v-if="!isAdmin && medidaVitima" class="mt-6 sm:mt-8 mb-4 sm:mb-6">
         <div
-          class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden"
+          class="rounded-lg border border-border bg-card overflow-hidden"
         >
-          <div class="bg-gradient-to-r from-primary to-accent px-4 sm:px-6 py-3 sm:py-4">
+          <div class="bg-secondary/30 border-b border-border px-4 sm:px-6 py-3 sm:py-4">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-3">
                 <div
-                  class="w-20 h-20 rounded-xl bg-white/20 flex items-center justify-center overflow-hidden shadow-lg"
+                  class="w-12 h-12 rounded-xl bg-secondary/50 border border-border flex items-center justify-center overflow-hidden"
                 >
                   <ProtegidaLogo size="sm" />
                 </div>
                 <div>
-                  <h4 class="font-bold text-white">Sua Medida Protetiva</h4>
-                  <p class="text-xs text-white/80">
+                  <h4 class="font-bold text-foreground">Sua Medida Protetiva</h4>
+                  <p class="text-xs text-muted-foreground">
                     Informações da sua proteção
                   </p>
                 </div>
@@ -265,7 +300,7 @@ const getStatusColor = (status: string) => {
               </div>
             </div>
 
-            <hr class="border-gray-200" />
+            <hr class="border-border" />
 
             <div>
               <p class="text-xs text-muted-foreground mb-2">
@@ -279,9 +314,45 @@ const getStatusColor = (status: string) => {
         </div>
       </div>
 
+      <!-- Atividade recente - Apenas para Vítima -->
+      <div v-if="!isAdmin" class="mt-6 sm:mt-8">
+        <div class="rounded-lg border border-border bg-card p-4 sm:p-6">
+          <h3 class="font-semibold text-foreground mb-1">Atividade recente</h3>
+          <p class="text-xs text-muted-foreground mb-4">Últimos acionamentos de pânico</p>
+          <ul v-if="atividadeRecente.length > 0" class="divide-y divide-border">
+            <li
+              v-for="item in atividadeRecente"
+              :key="item.id"
+              class="flex items-center justify-between gap-3 py-3"
+            >
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-9 h-9 rounded-lg bg-secondary/50 flex items-center justify-center flex-shrink-0">
+                  <Siren class="w-4 h-4 text-muted-foreground" />
+                </div>
+                <div class="min-w-0">
+                  <p class="text-sm font-medium text-foreground">{{ formatarDataHora(item.timestamp) }}</p>
+                  <p class="text-xs text-muted-foreground font-mono truncate">
+                    {{ item.latitude.toFixed(4) }}, {{ item.longitude.toFixed(4) }}
+                  </p>
+                </div>
+              </div>
+              <router-link
+                to="/dashboard/historico-panico"
+                class="text-xs text-primary hover:underline flex-shrink-0"
+              >
+                Ver
+              </router-link>
+            </li>
+          </ul>
+          <p v-else class="text-sm text-muted-foreground">
+            Nenhum acionamento recente. Os registros aparecerão aqui.
+          </p>
+        </div>
+      </div>
+
       <!-- Panic Button - Para Vítimas (Maior) -->
       <div v-if="!isAdmin" class="py-6 sm:py-12">
-        <div class="bg-white rounded-3xl p-6 sm:p-12 md:p-16 text-center shadow-xl border border-gray-200 max-w-2xl mx-auto">
+        <div class="rounded-lg border border-border bg-card p-6 sm:p-12 md:p-16 text-center max-w-2xl mx-auto">
           <div class="flex justify-center">
             <PanicButton />
           </div>
@@ -295,7 +366,7 @@ const getStatusColor = (status: string) => {
         @click.self="closeProfileModal"
       >
         <div
-          class="bg-card rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-scale-in"
+          class="bg-card rounded-2xl border border-border w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-scale-in"
         >
           <div
             class="sticky top-0 bg-card border-b border-border p-6 flex items-center justify-between z-10"
@@ -325,7 +396,7 @@ const getStatusColor = (status: string) => {
                   <User v-else class="w-16 h-16 text-muted-foreground" />
                 </div>
                 <label
-                  class="absolute bottom-0 right-0 w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center cursor-pointer hover:bg-primary/90 transition-colors shadow-lg"
+                  class="absolute bottom-0 right-0 w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center cursor-pointer hover:bg-primary/90 transition-colors"
                 >
                   <Camera class="w-5 h-5" />
                   <input

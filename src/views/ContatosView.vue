@@ -8,8 +8,7 @@ import {
   Heart,
   Shield,
   Save,
-  X,
-  ArrowLeft
+  X
 } from 'lucide-vue-next'
 import {
   fetchContatosAnjo,
@@ -18,6 +17,9 @@ import {
   type ContatoAnjo
 } from '../services/contatoAnjoService'
 import { useRouter } from 'vue-router'
+import SectionHeader from '../components/SectionHeader.vue'
+import DataTable from '../components/DataTable.vue'
+import EmptyState from '../components/EmptyState.vue'
 
 const router = useRouter()
 
@@ -78,9 +80,9 @@ const saveContato = async () => {
     telefone: formData.value.telefone,
     parentesco: formData.value.parentesco
   }
-  
+
   await saveContatoAnjo(novoContato)
-  
+
   await loadContatos()
   closeModal()
 }
@@ -106,44 +108,40 @@ const goBack = () => {
 </script>
 
 <template>
-  <div class="bg-gradient-to-br from-background via-secondary/5 to-primary/5">
+  <div class="bg-background">
     <main class="px-3 sm:px-4 md:px-6 lg:px-8 py-8">
-      <!-- Header -->
-      <div class="mb-6 animate-fade-in-up">
-        <button 
-          @click="goBack" 
-          class="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-3 transition-colors"
-        >
-          <ArrowLeft class="w-5 h-5" />
-          <span>Voltar</span>
-        </button>
-        <div class="flex items-center gap-3 mb-2">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center text-white shadow-lg">
-            <Heart class="w-6 h-6" />
-          </div>
-          <div>
-            <h1 class="text-2xl sm:text-3xl font-bold text-gradient">
-              Contatos de Emergência
-            </h1>
-            <p class="text-muted-foreground text-sm sm:text-base">
-              Gerencie seus "Anjos" - pessoas de confiança para emergências
-            </p>
-          </div>
-        </div>
-      </div>
+      <SectionHeader>
+        <template #title>Contatos de emergência</template>
+        <template #desc>Seus "Anjos" — pessoas de confiança para emergências</template>
+        <template #actions>
+          <button
+            @click="goBack"
+            class="px-4 py-2 rounded-lg border border-border hover:bg-secondary/50 transition-colors text-sm font-medium"
+          >
+            Voltar
+          </button>
+          <button
+            @click="openModal()"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm"
+          >
+            <UserPlus class="w-4 h-4" />
+            Novo Anjo
+          </button>
+        </template>
+      </SectionHeader>
 
       <!-- Info Card -->
-      <div class="mb-6 animate-fade-in-up" style="animation-delay: 0.1s">
-        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 sm:p-6">
+      <div class="mb-6">
+        <div class="rounded-lg border border-border bg-card p-4 sm:p-6">
           <div class="flex items-start gap-3">
-            <div class="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center text-white flex-shrink-0">
+            <div class="w-10 h-10 rounded-lg bg-secondary/50 flex items-center justify-center text-foreground flex-shrink-0">
               <Shield class="w-5 h-5" />
             </div>
             <div>
-              <h3 class="font-bold text-blue-900 dark:text-blue-100 text-sm sm:text-base mb-1">
+              <h3 class="font-bold text-foreground text-sm sm:text-base mb-1">
                 Como funciona o SOS Anjo da Guarda?
               </h3>
-              <p class="text-blue-700 dark:text-blue-200 text-xs sm:text-sm">
+              <p class="text-muted-foreground text-xs sm:text-sm">
                 Ao acionar o botão de SOS Anjo da Guarda, seus contatos cadastrados aqui receberão automaticamente sua localização atual via SMS e/ou WhatsApp para que possam ajudá-lo rapidamente.
               </p>
             </div>
@@ -151,68 +149,56 @@ const goBack = () => {
         </div>
       </div>
 
-      <!-- Add Button -->
-      
-
-      <!-- Contatos List -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in-up" style="animation-delay: 0.3s">
-        <div
-          v-for="contato in contatos"
-          :key="contato.id"
-          class="bg-card rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300"
-        >
-          <div class="flex items-start justify-between mb-4">
-            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center text-white">
-              <Heart class="w-6 h-6" />
+      <!-- Contatos Table -->
+      <DataTable v-if="contatos.length > 0">
+        <template #head>
+          <th class="font-medium py-3">Nome</th>
+          <th class="font-medium py-3">Telefone</th>
+          <th class="font-medium py-3 hidden sm:table-cell">Parentesco</th>
+          <th class="font-medium py-3 text-right">Ações</th>
+        </template>
+        <tr v-for="contato in contatos" :key="contato.id">
+          <td>
+            <div class="flex items-center gap-2 py-1">
+              <Heart class="w-4 h-4 text-muted-foreground flex-shrink-0" />
+              <span class="font-medium text-foreground">{{ contato.nome }}</span>
             </div>
-            <div class="flex gap-2">
+          </td>
+          <td>
+            <span class="inline-flex items-center gap-1 text-sm">
+              <Phone class="w-3 h-3 text-muted-foreground" />
+              {{ formatTelefone(contato.telefone) }}
+            </span>
+          </td>
+          <td class="hidden sm:table-cell text-muted-foreground">{{ contato.parentesco || '—' }}</td>
+          <td class="text-right">
+            <div class="flex gap-1 justify-end">
               <button
                 @click="openModal(contato)"
                 class="p-2 rounded-lg hover:bg-secondary/50 transition-colors text-muted-foreground hover:text-primary"
+                title="Editar"
               >
                 <Edit3 class="w-4 h-4" />
               </button>
               <button
                 @click="deleteContato(contato.id)"
                 class="p-2 rounded-lg hover:bg-secondary/50 transition-colors text-muted-foreground hover:text-destructive"
+                title="Excluir"
               >
                 <Trash2 class="w-4 h-4" />
               </button>
             </div>
-          </div>
-
-          <h3 class="font-bold text-foreground text-lg mb-1">{{ contato.nome }}</h3>
-          <p v-if="contato.parentesco" class="text-muted-foreground text-sm mb-3">{{ contato.parentesco }}</p>
-
-          <div class="space-y-2">
-            <div class="flex items-center gap-2 text-sm">
-              <Phone class="w-4 h-4 text-muted-foreground" />
-              <span>{{ formatTelefone(contato.telefone) }}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Empty State -->
-        <div
-          v-if="contatos.length === 0"
-          class="col-span-full text-center py-12"
-        >
-          <div class="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-            <Heart class="w-8 h-8 text-muted-foreground" />
-          </div>
-          <h3 class="font-semibold text-foreground mb-2">Nenhum contato cadastrado</h3>
-          <p class="text-muted-foreground text-sm mb-4">
-            Adicione pessoas de confiança que serão acionadas em emergências
-          </p>
-          <button
-            @click="openModal()"
-            class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
-          >
-            <UserPlus class="w-4 h-4" />
-            Adicionar primeiro contato
-          </button>
-        </div>
-      </div>
+          </td>
+        </tr>
+      </DataTable>
+      <EmptyState
+        v-else
+        :icon="Heart"
+        title="Nenhum contato cadastrado"
+        description="Adicione pessoas de confiança que serão acionadas em emergências"
+        action-label="Adicionar primeiro contato"
+        @action="openModal()"
+      />
     </main>
 
     <!-- Modal -->
@@ -221,7 +207,7 @@ const goBack = () => {
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
       @click.self="closeModal"
     >
-      <div class="bg-card rounded-2xl shadow-2xl w-full max-w-md animate-scale-in">
+      <div class="bg-card rounded-2xl border border-border w-full max-w-md animate-scale-in">
         <div class="flex items-center justify-between p-6 border-b border-border">
           <h2 class="text-xl font-bold text-foreground">
             {{ isEditing ? 'Editar Contato' : 'Novo Anjo' }}

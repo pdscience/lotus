@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { 
+import {
   Phone,
   MapPin,
   Clock,
@@ -9,18 +9,18 @@ import {
   Plus,
   Save,
   X,
-  ExternalLink,
-  ArrowLeft
+  ExternalLink
 } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
-import { 
-  getLocaisApoio as getRedeApoio, 
-  adicionarLocalApoio, 
-  atualizarLocalApoio, 
+import {
+  getLocaisApoio as getRedeApoio,
+  adicionarLocalApoio,
+  atualizarLocalApoio,
   removerLocalApoio,
   type LocalApoio,
   type RedeApoio
 } from '../services/redeApoioService'
+import SectionHeader from '../components/SectionHeader.vue'
 
 const router = useRouter()
 const locaisApoio = ref<(LocalApoio | RedeApoio)[]>([])
@@ -137,74 +137,62 @@ const goBack = () => {
 </script>
 
 <template>
-  <div class="bg-gradient-to-br from-background via-secondary/5 to-primary/5">
+  <div class="bg-background">
     <main class="px-3 sm:px-4 md:px-6 lg:px-8 py-8">
-      <!-- Header -->
-      <div class="mb-6 animate-fade-in-up">
-        <button
-          @click="goBack"
-          class="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4"
-        >
-          <ArrowLeft class="w-5 h-5" />
-          Voltar
-        </button>
-        
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center text-white">
-            <Phone class="w-6 h-6" />
-          </div>
-          <div>
-            <h1 class="text-2xl sm:text-3xl font-bold text-gradient">
-              Rede de Apoio
-            </h1>
-            <p class="text-muted-foreground text-sm sm:text-base">
-              Telefones úteis e locais de atendimento
-            </p>
-          </div>
-        </div>
-      </div>
+      <SectionHeader>
+        <template #title>Rede de apoio</template>
+        <template #desc>Telefones úteis e locais de atendimento</template>
+        <template #actions>
+          <button
+            @click="goBack"
+            class="px-4 py-2 rounded-lg border border-border hover:bg-secondary/50 transition-colors text-sm font-medium"
+          >
+            Voltar
+          </button>
+        </template>
+      </SectionHeader>
 
       <!-- Telefones Úteis -->
-      <div class="mb-8 animate-fade-in-up">
+      <div class="mb-8">
         <h2 class="font-semibold text-lg text-foreground mb-3">Telefones de Emergência</h2>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <button
             @click="callPhone('180')"
-            class="bg-gradient-to-br from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white rounded-xl p-4 text-center transition-all duration-300 hover:shadow-lg hover:scale-105"
+            class="rounded-lg border border-border bg-card hover:bg-secondary/30 p-4 text-center transition-colors"
           >
-            <span class="text-2xl font-bold">180</span>
-            <p class="text-xs mt-1 opacity-90">Central Mulher</p>
+            <span class="text-2xl font-bold tnum">180</span>
+            <p class="text-xs mt-1 text-muted-foreground">Central Mulher</p>
           </button>
-          
+
           <button
             @click="callPhone('190')"
-            class="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl p-4 text-center transition-all duration-300 hover:shadow-lg hover:scale-105"
+            class="rounded-lg border border-border bg-card hover:bg-secondary/30 p-4 text-center transition-colors"
           >
-            <span class="text-2xl font-bold">190</span>
-            <p class="text-xs mt-1 opacity-90">Polícia Militar</p>
+            <span class="text-2xl font-bold tnum">190</span>
+            <p class="text-xs mt-1 text-muted-foreground">Polícia Militar</p>
           </button>
-          
+
           <button
             @click="callPhone('192')"
-            class="bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl p-4 text-center transition-all duration-300 hover:shadow-lg hover:scale-105"
+            class="rounded-lg border border-border bg-card hover:bg-secondary/30 p-4 text-center transition-colors"
           >
-            <span class="text-2xl font-bold">192</span>
-            <p class="text-xs mt-1 opacity-90">SAMU</p>
+            <span class="text-2xl font-bold tnum">192</span>
+            <p class="text-xs mt-1 text-muted-foreground">SAMU</p>
           </button>
-          
+
           <button
             @click="callPhone('129')"
-            class="bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-xl p-4 text-center transition-all duration-300 hover:shadow-lg hover:scale-105"
+            class="rounded-lg border border-border bg-card hover:bg-secondary/30 p-4 text-center transition-colors"
           >
-            <span class="text-2xl font-bold">129</span>
-            <p class="text-xs mt-1 opacity-90">Defensoria</p>
+            <span class="text-2xl font-bold tnum">129</span>
+            <p class="text-xs mt-1 text-muted-foreground">Defensoria</p>
           </button>
         </div>
       </div>
 
       <!-- Locais de Atendimento -->
-      <div class="animate-fade-in-up">
-        <div class="bg-card rounded-xl shadow-lg">
+      <div>
+        <div class="rounded-lg border border-border bg-card">
           <div class="p-6 pb-4">
             <div class="flex items-center justify-between">
               <h2 class="font-semibold text-lg text-foreground">Locais de Atendimento</h2>
@@ -217,17 +205,17 @@ const goBack = () => {
               </button>
             </div>
           </div>
-          
+
           <div class="px-6 pb-6 space-y-4">
             <div
               v-for="local in locaisApoio"
               :key="local.id"
               class="flex items-start gap-4 p-4 rounded-xl bg-secondary/30 hover:bg-secondary/50 transition-colors"
             >
-              <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+              <div class="w-10 h-10 rounded-lg bg-secondary/50 flex items-center justify-center text-foreground flex-shrink-0">
                 <MapPin class="w-5 h-5" />
               </div>
-              
+
               <div class="flex-1 min-w-0">
                 <div class="flex items-start justify-between gap-2">
                   <div>
@@ -237,33 +225,33 @@ const goBack = () => {
                   <div class="flex gap-1">
                     <button
                       @click="openInMaps(local)"
-                      class="p-2 rounded-lg hover:bg-white/50 text-primary transition-colors"
+                      class="p-2 rounded-lg hover:bg-secondary text-primary transition-colors"
                       title="Abrir no Maps"
                     >
                       <ExternalLink class="w-4 h-4" />
                     </button>
                     <button
                       @click="openModal(local)"
-                      class="p-2 rounded-lg hover:bg-white/50 text-muted-foreground hover:text-primary transition-colors"
+                      class="p-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-primary transition-colors"
                       title="Editar"
                     >
                       <Edit3 class="w-4 h-4" />
                     </button>
                     <button
                       @click="deleteLocal(local.id)"
-                      class="p-2 rounded-lg hover:bg-white/50 text-muted-foreground hover:text-destructive transition-colors"
+                      class="p-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-destructive transition-colors"
                       title="Excluir"
                     >
                       <Trash2 class="w-4 h-4" />
                     </button>
                   </div>
                 </div>
-                
+
                 <div class="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
                   <MapPin class="w-3 h-3" />
                   <span>{{ local.endereco }}, {{ local.cidade }}-{{ local.uf }}</span>
                 </div>
-                
+
                 <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mt-2">
                   <button
                     @click="callPhone(local.telefone)"
@@ -279,7 +267,7 @@ const goBack = () => {
                 </div>
               </div>
             </div>
-            
+
             <div v-if="locaisApoio.length === 0" class="text-center py-8">
               <MapPin class="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
               <p class="text-muted-foreground">Nenhum local cadastrado</p>
@@ -301,7 +289,7 @@ const goBack = () => {
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
       @click.self="closeModal"
     >
-      <div class="bg-card rounded-2xl shadow-2xl w-full max-w-md animate-scale-in">
+      <div class="bg-card rounded-2xl border border-border w-full max-w-md animate-scale-in">
         <div class="flex items-center justify-between p-6 border-b border-border">
           <h2 class="text-xl font-bold text-foreground">
             {{ isEditing ? 'Editar Local' : 'Novo Local de Apoio' }}

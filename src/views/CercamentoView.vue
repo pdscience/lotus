@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import {
-  Shield,
   User,
   UserX,
   Radius,
@@ -13,6 +12,7 @@ import {
   Bell
 } from 'lucide-vue-next'
 import 'leaflet/dist/leaflet.css'
+import SectionHeader from '../components/SectionHeader.vue'
 
 let L: typeof import('leaflet') | null = null
 
@@ -376,24 +376,12 @@ function resetar() {
 </script>
 
 <template>
-  <div class="bg-gradient-to-br from-background via-secondary/5 to-primary/5">
+  <div class="bg-background">
     <main class="px-3 sm:px-4 md:px-6 lg:px-8 py-8">
-      <!-- Título -->
-      <div class="mb-6 animate-fade-in-up">
-        <div class="flex items-center gap-3 mb-2">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white shadow-lg">
-            <Shield class="w-6 h-6" />
-          </div>
-          <div>
-            <h1 class="text-2xl sm:text-3xl font-bold text-gradient">
-              Cercamento Eletrônico
-            </h1>
-            <p class="text-muted-foreground text-sm sm:text-base">
-              Monitore a proximidade do agressor em relação à vítima
-            </p>
-          </div>
-        </div>
-      </div>
+      <SectionHeader>
+        <template #title>Cercamento eletrônico</template>
+        <template #desc>Monitore a proximidade do agressor em relação à vítima</template>
+      </SectionHeader>
 
       <!-- Permissão de Localização - Negada -->
       <div v-if="localizacaoNegada" class="mb-6 animate-fade-in-up">
@@ -493,7 +481,7 @@ function resetar() {
 
       <!-- Mapa - Largura Total -->
       <div class="mb-6 animate-fade-in-up" style="animation-delay: 0.2s">
-        <div class="bg-card rounded-xl shadow-lg p-4 sm:p-6">
+        <div class="rounded-lg border border-border bg-card p-4 sm:p-6">
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-2">
               <MapPin class="w-5 h-5 text-primary" />
@@ -554,7 +542,7 @@ function resetar() {
       <!-- Dados da Vítima e Agressor - Abaixo do Mapa -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <!-- Dados da Vítima -->
-        <div class="bg-card rounded-xl shadow-lg p-6 animate-fade-in-up" style="animation-delay: 0.3s">
+        <div class="rounded-lg border border-border bg-card p-6 animate-fade-in-up" style="animation-delay: 0.3s">
           <div class="flex items-center gap-2 mb-4">
             <div class="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center text-white">
               <User class="w-4 h-4" />
@@ -619,7 +607,7 @@ function resetar() {
         </div>
 
         <!-- Dados do Agressor -->
-        <div class="bg-card rounded-xl shadow-lg p-6 animate-fade-in-up" style="animation-delay: 0.35s">
+        <div class="rounded-lg border border-border bg-card p-6 animate-fade-in-up" style="animation-delay: 0.35s">
           <div class="flex items-center gap-2 mb-4">
             <div class="w-8 h-8 rounded-lg bg-red-500 flex items-center justify-center text-white">
               <UserX class="w-4 h-4" />
@@ -687,7 +675,7 @@ function resetar() {
       <!-- Configurações e Controles - Abaixo dos Dados -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Configuração do Raio -->
-        <div class="bg-card rounded-xl shadow-lg p-6 animate-fade-in-up" style="animation-delay: 0.4s">
+        <div class="rounded-lg border border-border bg-card p-6 animate-fade-in-up" style="animation-delay: 0.4s">
           <div class="flex items-center gap-2 mb-4">
             <div class="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center text-white">
               <Radius class="w-4 h-4" />
@@ -733,7 +721,7 @@ function resetar() {
         </div>
 
         <!-- Controles -->
-        <div class="bg-card rounded-xl shadow-lg p-6 animate-fade-in-up" style="animation-delay: 0.45s">
+        <div class="rounded-lg border border-border bg-card p-6 animate-fade-in-up" style="animation-delay: 0.45s">
           <div class="space-y-3">
             <button
               v-if="!monitorando"
@@ -741,8 +729,8 @@ function resetar() {
               :disabled="!vitimaPosicao || !agressorPosicao"
               class="w-full flex items-center justify-center gap-2 h-12 rounded-xl font-semibold text-white transition-all"
               :class="vitimaPosicao && agressorPosicao
-                ? 'bg-green-500 hover:bg-green-600 shadow-lg'
-                : 'bg-gray-300 cursor-not-allowed'"
+                ? 'bg-green-500 hover:bg-green-600'
+                : 'bg-secondary text-muted-foreground cursor-not-allowed'"
             >
               <Play class="w-5 h-5" />
               Iniciar Monitoramento
@@ -751,7 +739,7 @@ function resetar() {
             <button
               v-if="monitorando"
               @click="pararMonitoramento"
-              class="w-full flex items-center justify-center gap-2 h-12 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold transition-all shadow-lg"
+              class="w-full flex items-center justify-center gap-2 h-12 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold transition-all"
             >
               <Square class="w-5 h-5" />
               Parar Monitoramento
@@ -777,15 +765,15 @@ function resetar() {
         </div>
 
         <!-- Legenda -->
-        <div class="bg-card rounded-xl shadow-lg p-4 animate-fade-in-up" style="animation-delay: 0.5s">
+        <div class="rounded-lg border border-border bg-card p-4 animate-fade-in-up" style="animation-delay: 0.5s">
           <h4 class="text-sm font-semibold mb-3 text-foreground">Legenda</h4>
           <div class="space-y-2">
             <div class="flex items-center gap-2">
-              <div class="w-4 h-4 rounded-full bg-blue-500 border-2 border-white shadow"></div>
+              <div class="w-4 h-4 rounded-full bg-blue-500 border-2 border-border"></div>
               <span class="text-sm text-muted-foreground">Vítima</span>
             </div>
             <div class="flex items-center gap-2">
-              <div class="w-4 h-4 rounded-full bg-red-500 border-2 border-white shadow"></div>
+              <div class="w-4 h-4 rounded-full bg-red-500 border-2 border-border"></div>
               <span class="text-sm text-muted-foreground">Agressor</span>
             </div>
             <div class="flex items-center gap-2">

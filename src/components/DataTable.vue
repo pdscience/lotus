@@ -11,5 +11,5 @@
 tbody :slotted(tr) { height: 44px; }
 tbody :slotted(tr:not(:last-child)) { border-bottom: 1px solid hsl(var(--border)); }
 tbody :slotted(tr:hover) { background: hsl(var(--muted) / 0.5); }
-th, td { padding: 0 16px; }
+thead :slotted(th), tbody :slotted(td) { padding: 0 16px; }
 </style>
