@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import {
   Phone,
   MapPin,
   Clock,
   Trash2,
   Edit3,
-  Plus,
   Save,
   X,
   ExternalLink
@@ -21,6 +20,7 @@ import {
   type RedeApoio
 } from '../services/redeApoioService'
 import SectionHeader from '../components/SectionHeader.vue'
+import DataTable from '../components/DataTable.vue'
 
 const router = useRouter()
 const locaisApoio = ref<(LocalApoio | RedeApoio)[]>([])
@@ -44,6 +44,44 @@ const tipoOptions = [
   { value: 'hospital', label: 'Hospital' },
   { value: 'ong', label: 'ONG' }
 ]
+
+const busca = ref('')
+const filtros = ['Todos', 'Delegacia', 'Abrigo', 'Hospital', 'ONG']
+const filtroAtivo = ref('Todos')
+
+const locaisFiltrados = computed(() => {
+  const termo = busca.value.trim().toLowerCase()
+  return locaisApoio.value.filter(l => {
+    const matchesBusca = !termo ||
+      l.nome.toLowerCase().includes(termo) ||
+      l.endereco.toLowerCase().includes(termo) ||
+      (l.cidade || '').toLowerCase().includes(termo) ||
+      l.telefone.includes(termo)
+    const matchesFiltro = filtroAtivo.value === 'Todos' ||
+      (l.tipo || '').toLowerCase() === filtroAtivo.value.toLowerCase()
+    return matchesBusca && matchesFiltro
+  })
+})
+
+const labelTipo = (tipo: string) => {
+  const opt = tipoOptions.find(o => o.value === (tipo || '').toLowerCase())
+  return opt ? opt.label : tipo
+}
+
+const classePorStatus = (status: string) => {
+  switch (status.toLowerCase()) {
+    case 'ativa': return 'bg-primary/15 text-primary'
+    case 'pendente': return 'bg-accent/15'
+    case 'delegacia': return 'bg-primary/15 text-primary'
+    case 'abrigo': return 'bg-success/10 text-success border border-success/20'
+    case 'hospital': return 'bg-destructive/10 text-destructive border border-destructive/20'
+    case 'ong': return 'bg-info/10 text-info border border-info/20'
+    default: return 'bg-secondary text-muted-foreground border border-border'
+  }
+}
+
+const estiloSeloPendente = (status: string) =>
+  status.toLowerCase() === 'pendente' ? { color: 'hsl(var(--accent-foreground))' } : undefined
 
 const loadLocais = async () => {
   locaisApoio.value = await getRedeApoio()
@@ -196,82 +234,90 @@ const goBack = () => {
           <div class="p-6 pb-4">
             <div class="flex items-center justify-between">
               <h2 class="font-semibold text-lg text-foreground">Locais de Atendimento</h2>
-              <button
-                @click="openModal()"
-                class="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm"
-              >
-                <Plus class="w-4 h-4" />
-                Adicionar
-              </button>
+              <span class="text-sm text-muted-foreground">{{ locaisFiltrados.length }} locais</span>
             </div>
           </div>
 
-          <div class="px-6 pb-6 space-y-4">
-            <div
-              v-for="local in locaisApoio"
-              :key="local.id"
-              class="flex items-start gap-4 p-4 rounded-xl bg-secondary/30 hover:bg-secondary/50 transition-colors"
-            >
-              <div class="w-10 h-10 rounded-lg bg-secondary/50 flex items-center justify-center text-foreground flex-shrink-0">
-                <MapPin class="w-5 h-5" />
-              </div>
+          <div class="px-6 pb-6">
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+              <input v-model="busca" placeholder="Buscar..." class="input-enhanced !w-64" />
+              <button v-for="f in filtros" :key="f" @click="filtroAtivo = f" :class="['rounded-full px-3 py-1 text-xs border', filtroAtivo === f ? 'bg-primary text-primary-foreground border-transparent' : 'border-border text-muted-foreground']">{{ f }}</button>
+              <button @click="openModal()" class="rounded-lg px-3 py-1.5 text-xs font-semibold" :style="{ background: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }">+ Novo</button>
+            </div>
 
-              <div class="flex-1 min-w-0">
-                <div class="flex items-start justify-between gap-2">
-                  <div>
-                    <h3 class="font-semibold text-foreground">{{ local.nome }}</h3>
-                    <p class="text-xs text-primary">{{ local.tipo }}</p>
+            <DataTable v-if="locaisFiltrados.length > 0">
+              <template #head>
+                <th class="font-medium py-3">Nome</th>
+                <th class="font-medium py-3">Tipo</th>
+                <th class="font-medium py-3 hidden md:table-cell">Endereço</th>
+                <th class="font-medium py-3 hidden sm:table-cell">Contato</th>
+                <th class="font-medium py-3 text-right">Ações</th>
+              </template>
+              <tr v-for="local in locaisFiltrados" :key="local.id">
+                <td>
+                  <div class="flex items-center gap-2 py-1">
+                    <MapPin class="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                    <span class="font-semibold text-foreground">{{ local.nome }}</span>
                   </div>
-                  <div class="flex gap-1">
-                    <button
-                      @click="openInMaps(local)"
-                      class="p-2 rounded-lg hover:bg-secondary text-primary transition-colors"
-                      title="Abrir no Maps"
-                    >
-                      <ExternalLink class="w-4 h-4" />
-                    </button>
-                    <button
-                      @click="openModal(local)"
-                      class="p-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-primary transition-colors"
-                      title="Editar"
-                    >
-                      <Edit3 class="w-4 h-4" />
-                    </button>
-                    <button
-                      @click="deleteLocal(local.id)"
-                      class="p-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-destructive transition-colors"
-                      title="Excluir"
-                    >
-                      <Trash2 class="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-
-                <div class="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
-                  <MapPin class="w-3 h-3" />
-                  <span>{{ local.endereco }}, {{ local.cidade }}-{{ local.uf }}</span>
-                </div>
-
-                <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mt-2">
-                  <button
-                    @click="callPhone(local.telefone)"
-                    class="flex items-center gap-1 text-sm text-primary hover:underline"
-                  >
+                  <p class="text-xs text-muted-foreground md:hidden">{{ local.endereco }}, {{ local.cidade }}-{{ local.uf }}</p>
+                </td>
+                <td>
+                  <span class="rounded-full px-2 py-0.5 text-xs" :class="classePorStatus(local.tipo || '')" :style="estiloSeloPendente(local.tipo || '')">{{ labelTipo(local.tipo) }}</span>
+                </td>
+                <td class="hidden md:table-cell text-sm text-muted-foreground">{{ local.endereco }}, {{ local.cidade }}-{{ local.uf }}</td>
+                <td class="hidden sm:table-cell">
+                  <button @click="callPhone(local.telefone)" class="flex items-center gap-1 text-sm text-primary hover:underline">
                     <Phone class="w-3 h-3" />
                     {{ local.telefone }}
                   </button>
-                  <div class="flex items-center gap-1 text-xs text-muted-foreground">
+                  <div class="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
                     <Clock class="w-3 h-3" />
                     {{ local.horario }}
                   </div>
-                </div>
-              </div>
-            </div>
+                </td>
+                <td class="text-right">
+                  <details class="relative inline-block">
+                    <summary class="cursor-pointer list-none px-3 py-1.5 rounded-lg border border-border text-xs font-medium hover:bg-secondary/50 transition-colors">•••</summary>
+                    <div class="absolute right-0 z-10 rounded-lg border border-border bg-popover p-1 shadow-lg min-w-36">
+                      <button
+                        @click="callPhone(local.telefone)"
+                        class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
+                      >
+                        <Phone class="w-4 h-4" />
+                        Ligar
+                      </button>
+                      <button
+                        @click="openInMaps(local)"
+                        class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
+                      >
+                        <ExternalLink class="w-4 h-4" />
+                        Abrir no Maps
+                      </button>
+                      <button
+                        @click="openModal(local)"
+                        class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
+                      >
+                        <Edit3 class="w-4 h-4" />
+                        Editar
+                      </button>
+                      <button
+                        @click="deleteLocal(local.id)"
+                        class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left text-destructive"
+                      >
+                        <Trash2 class="w-4 h-4" />
+                        Excluir
+                      </button>
+                    </div>
+                  </details>
+                </td>
+              </tr>
+            </DataTable>
 
-            <div v-if="locaisApoio.length === 0" class="text-center py-8">
+            <div v-else class="text-center py-8">
               <MapPin class="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
-              <p class="text-muted-foreground">Nenhum local cadastrado</p>
+              <p class="text-muted-foreground">{{ locaisApoio.length === 0 ? 'Nenhum local cadastrado' : 'Nenhum local para este filtro' }}</p>
               <button
+                v-if="locaisApoio.length === 0"
                 @click="openModal()"
                 class="mt-3 text-primary hover:underline text-sm"
               >

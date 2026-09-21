@@ -148,16 +148,6 @@ const filteredData = computed(() => {
   })
 })
 
-const getStatusBadgeClass = (status: string) => {
-  switch (status) {
-    case 'ativa': return 'bg-success/10 text-success border border-success/20'
-    case 'suspensa': return 'bg-warning/10 text-warning border border-warning/20'
-    case 'revogada': return 'bg-destructive/10 text-destructive border border-destructive/20'
-    case 'finalizada': return 'bg-secondary text-muted-foreground border border-border'
-    default: return 'bg-secondary text-muted-foreground border border-border'
-  }
-}
-
 const getStatusLabel = (status: string) => {
   switch (status) {
     case 'ativa': return 'Ativa'
@@ -193,6 +183,48 @@ const handleSearch = () => {
 const viewMedida = (id: string) => {
   router.push(`/dashboard/medida/${id}`)
 }
+
+const novaMedida = () => {
+  router.push('/dashboard/cadastro')
+}
+
+const filtros = ['Todos', 'Ativa', 'Suspensa', 'Revogada', 'Finalizada']
+
+const filtroParaValor: Record<string, string> = {
+  Todos: 'todos',
+  Ativa: 'ativa',
+  Suspensa: 'suspensa',
+  Revogada: 'revogada',
+  Finalizada: 'finalizada'
+}
+
+const valorParaFiltro: Record<string, string> = {
+  todos: 'Todos',
+  ativa: 'Ativa',
+  suspensa: 'Suspensa',
+  revogada: 'Revogada',
+  finalizada: 'Finalizada'
+}
+
+const classePorStatus = (status: string) => {
+  switch (status.toLowerCase()) {
+    case 'ativa': return 'bg-primary/15 text-primary'
+    case 'pendente': return 'bg-accent/15'
+    case 'suspensa': return 'bg-warning/10 text-warning border border-warning/20'
+    case 'revogada': return 'bg-destructive/10 text-destructive border border-destructive/20'
+    case 'finalizada': return 'bg-secondary text-muted-foreground border border-border'
+    case 'crítica':
+    case 'critica': return 'bg-destructive/10 text-destructive border border-destructive/20'
+    case 'alta': return 'bg-warning/10 text-warning border border-warning/20'
+    case 'média':
+    case 'media': return 'bg-info/10 text-info border border-info/20'
+    case 'baixa': return 'bg-success/10 text-success border border-success/20'
+    default: return 'bg-secondary text-muted-foreground border border-border'
+  }
+}
+
+const estiloSeloPendente = (status: string) =>
+  status.toLowerCase() === 'pendente' ? { color: 'hsl(var(--accent-foreground))' } : undefined
 </script>
 
 <template>
@@ -285,6 +317,12 @@ const viewMedida = (id: string) => {
           <span class="text-sm text-muted-foreground">{{ filteredData.length }} registros encontrados</span>
         </div>
 
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+          <input v-model="searchTerm" placeholder="Buscar..." class="input-enhanced !w-64" />
+          <button v-for="f in filtros" :key="f" @click="selectedStatus = filtroParaValor[f]" :class="['rounded-full px-3 py-1 text-xs border', valorParaFiltro[selectedStatus] === f ? 'bg-primary text-primary-foreground border-transparent' : 'border-border text-muted-foreground']">{{ f }}</button>
+          <button @click="novaMedida" class="rounded-lg px-3 py-1.5 text-xs font-semibold" :style="{ background: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }">+ Novo</button>
+        </div>
+
         <DataTable>
           <template #head>
             <th class="text-left font-medium">Processo</th>
@@ -306,24 +344,26 @@ const viewMedida = (id: string) => {
               <p class="text-xs text-muted-foreground truncate max-w-40">{{ item.tipo.join(', ') }}</p>
             </td>
             <td>
-              <span :class="`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${getStatusBadgeClass(item.status)}`">
+              <span class="rounded-full px-2 py-0.5 text-xs" :class="classePorStatus(item.status)" :style="estiloSeloPendente(item.status)">
                 {{ getStatusLabel(item.status) }}
               </span>
             </td>
             <td>
-              <span :class="`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${getUrgenciaConfig(item.urgencia).color}`">
+              <span class="rounded-full px-2 py-0.5 text-xs" :class="classePorStatus(item.urgencia)">
                 {{ getUrgenciaConfig(item.urgencia).label }}
               </span>
             </td>
             <td class="text-muted-foreground">{{ new Date(item.dataRegistro).toLocaleDateString('pt-BR') }}</td>
             <td class="text-right">
-              <button
-                @click="viewMedida(item.id)"
-                class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-border text-xs font-medium hover:bg-secondary/50 transition-colors"
-              >
-                <Eye class="w-3.5 h-3.5" />
-                Ver
-              </button>
+              <details class="relative inline-block">
+                <summary class="cursor-pointer list-none px-3 py-1.5 rounded-lg border border-border text-xs font-medium hover:bg-secondary/50 transition-colors">•••</summary>
+                <div class="absolute right-0 z-10 rounded-lg border border-border bg-popover p-1 shadow-lg min-w-32">
+                  <button @click="viewMedida(item.id)" class="flex w-full items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left">
+                    <Eye class="w-3.5 h-3.5" />
+                    Ver
+                  </button>
+                </div>
+              </details>
             </td>
           </tr>
           <template #empty>
