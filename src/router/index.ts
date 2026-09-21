@@ -5,8 +5,7 @@ import { useUserStore } from '../stores/userStore'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: 'BoasVindas',
-    component: () => import('../views/BoasVindasView.vue')
+    redirect: '/login'
   },
   {
     path: '/login',
