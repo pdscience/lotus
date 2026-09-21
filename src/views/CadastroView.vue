@@ -954,7 +954,7 @@ const handleSave = async () => {
                 @click="handleNext"
                 :disabled="!canProceed()"
                 class="flex items-center justify-center gap-2 px-6 py-2 rounded-xl font-semibold text-white transition-all duration-300 disabled:opacity-50 flex-1 sm:flex-initial"
-                style="background: linear-gradient(135deg, hsl(275, 65%, 65%) 0%, hsl(285, 70%, 70%) 50%, hsl(295, 75%, 75%) 100%)"
+                style="background: linear-gradient(135deg, hsl(340, 75%, 55%) 0%, hsl(320, 70%, 60%) 50%, hsl(280, 65%, 65%) 100%)"
               >
                 Próximo
                 <ChevronRight class="w-4 h-4" />
@@ -964,7 +964,7 @@ const handleSave = async () => {
                 @click="handleSave"
                 :disabled="!canProceed() || isSaving"
                 class="flex items-center justify-center gap-2 px-6 py-2 rounded-xl font-semibold text-white transition-all duration-300 disabled:opacity-50 flex-1 sm:flex-initial"
-                style="background: linear-gradient(135deg, hsl(275, 65%, 65%) 0%, hsl(285, 70%, 70%) 50%, hsl(295, 75%, 75%) 100%)"
+                style="background: linear-gradient(135deg, hsl(340, 75%, 55%) 0%, hsl(320, 70%, 60%) 50%, hsl(280, 65%, 65%) 100%)"
               >
                 <div v-if="isSaving" class="flex items-center gap-2">
                   <div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

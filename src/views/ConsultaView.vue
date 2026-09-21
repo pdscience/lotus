@@ -221,7 +221,7 @@ const viewMedida = (id: string) => {
           
           <div class="flex flex-col sm:flex-row gap-3">
             <button @click="exportToPDF" class="flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold text-white transition-all duration-300"
-              style="background: linear-gradient(135deg, hsl(275, 65%, 65%) 0%, hsl(285, 70%, 70%) 50%, hsl(295, 75%, 75%) 100%)">
+              style="background: linear-gradient(135deg, hsl(340, 75%, 55%) 0%, hsl(320, 70%, 60%) 50%, hsl(280, 65%, 65%) 100%)">
               <Download class="w-4 h-4" />
               Exportar Relatório
             </button>
@@ -265,7 +265,7 @@ const viewMedida = (id: string) => {
               <button 
                 @click="handleSearch" 
                 class="flex items-center justify-center gap-2 px-6 py-2 rounded-xl font-semibold text-white transition-all duration-300"
-                style="background: linear-gradient(135deg, hsl(275, 65%, 65%) 0%, hsl(285, 70%, 70%) 50%, hsl(295, 75%, 75%) 100%)"
+                style="background: linear-gradient(135deg, hsl(340, 75%, 55%) 0%, hsl(320, 70%, 60%) 50%, hsl(280, 65%, 65%) 100%)"
                 :disabled="isLoading"
               >
                 <div v-if="isLoading" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
