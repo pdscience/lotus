@@ -14,8 +14,8 @@ const sizes = {
   <div class="flex items-center gap-3">
     <div
       class="flex items-center justify-center text-white shadow-lg"
-      :class="sizes[size].box"
-      style="background: linear-gradient(135deg, hsl(340,75%,55%) 0%, hsl(320,70%,60%) 50%, hsl(280,65%,65%) 100%)"
+      :class="[sizes[size].box, variant === 'mono' ? 'bg-white/10 border border-white/20' : '']"
+      :style="variant === 'mono' ? '' : 'background: linear-gradient(135deg, hsl(340,75%,55%) 0%, hsl(320,70%,60%) 50%, hsl(280,65%,65%) 100%)'"
     >
       <ShieldCheck :class="sizes[size].icon" />
     </div>
