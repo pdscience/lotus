@@ -154,6 +154,28 @@ onUnmounted(() => {
               <MapPin class="w-3 h-3 flex-shrink-0" />
               <span class="font-mono text-xs">{{ formatCoordinates(record.latitude, record.longitude) }}</span>
             </button>
+            <div class="flex gap-2 mt-1 sm:hidden">
+              <button
+                v-if="record.audioUrl"
+                @click="playAudio(record)"
+                class="text-xs text-primary hover:underline"
+              >
+                {{ playingAudioId === record.id ? 'Parar áudio' : 'Ouvir áudio' }}
+              </button>
+              <button
+                v-if="record.imageUrl"
+                @click="openImage(record.imageUrl)"
+                class="text-xs text-primary hover:underline"
+              >
+                Ver foto
+              </button>
+            </div>
+            <div v-if="playingAudioId === record.id" class="mt-1 h-1 rounded-full bg-secondary overflow-hidden w-24 sm:hidden">
+              <div
+                class="h-full bg-primary rounded-full transition-all duration-300"
+                :style="{ width: (audioProgress.get(record.id) || 0) + '%' }"
+              ></div>
+            </div>
           </td>
           <td class="hidden sm:table-cell">
             <div class="flex items-center gap-2">
@@ -183,23 +205,6 @@ onUnmounted(() => {
                 class="h-full bg-primary rounded-full transition-all duration-300"
                 :style="{ width: (audioProgress.get(record.id) || 0) + '%' }"
               ></div>
-            </div>
-            <!-- Ações compactas no mobile -->
-            <div class="flex gap-2 mt-1 sm:hidden">
-              <button
-                v-if="record.audioUrl"
-                @click="playAudio(record)"
-                class="text-xs text-primary hover:underline"
-              >
-                {{ playingAudioId === record.id ? 'Parar áudio' : 'Ouvir áudio' }}
-              </button>
-              <button
-                v-if="record.imageUrl"
-                @click="openImage(record.imageUrl)"
-                class="text-xs text-primary hover:underline"
-              >
-                Ver foto
-              </button>
             </div>
           </td>
           <td class="text-right">
