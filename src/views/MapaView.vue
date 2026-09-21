@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import {
-  Map,
   MapPin,
   Users,
   AlertTriangle,
@@ -10,6 +9,9 @@ import {
 } from 'lucide-vue-next'
 import 'leaflet/dist/leaflet.css'
 import { fetchMedidasProtetivas, type MedidaProtetivaAll } from '../services/medidaService'
+import DataTable from '../components/DataTable.vue'
+import SectionHeader from '../components/SectionHeader.vue'
+import StatCard from '../components/StatCard.vue'
 
 let L: typeof import('leaflet') | null = null
 
@@ -274,24 +276,21 @@ watch(filteredLocations, () => {
 </script>
 
 <template>
-  <div class="bg-gradient-to-br from-background via-secondary/5 to-primary/5">
+  <div class="bg-background">
     <main class="px-3 sm:px-4 md:px-6 lg:px-8 py-8">
-      <!-- Título -->
-      <div class="mb-6 animate-fade-in-up">
-        <div class="flex items-center gap-3 mb-2">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white shadow-lg">
-            <Map class="w-6 h-6" />
-          </div>
-          <div>
-            <h1 class="text-2xl sm:text-3xl font-bold text-gradient">
-              Mapa de Georreferenciamento
-            </h1>
-            <p class="text-muted-foreground text-sm sm:text-base">
-              Visualização espacial de vítimas e agressores
-            </p>
-          </div>
-        </div>
-      </div>
+      <SectionHeader>
+        <template #title>Mapa de georreferenciamento</template>
+        <template #desc>Visualização espacial de vítimas e agressores</template>
+        <template #actions>
+          <button
+            @click="handleReset"
+            class="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium hover:bg-secondary/50 transition-colors"
+          >
+            <RefreshCw class="w-4 h-4" />
+            Limpar filtros
+          </button>
+        </template>
+      </SectionHeader>
 
       <!-- Loading -->
       <div v-if="isLoading" class="text-center py-12 text-muted-foreground">
@@ -300,196 +299,129 @@ watch(filteredLocations, () => {
 
       <template v-else>
         <!-- Estatísticas -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 animate-fade-in-up" style="animation-delay: 0.1s">
-          <div class="bg-card rounded-xl shadow-lg p-4">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-muted-foreground mb-1">Total</p>
-                <p class="text-2xl font-bold text-foreground">{{ stats.total }}</p>
-              </div>
-              <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white">
-                <MapPin class="w-6 h-6" />
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-card rounded-xl shadow-lg p-4">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-muted-foreground mb-1">Vítimas</p>
-                <p class="text-2xl font-bold text-blue-600">{{ stats.vitimas }}</p>
-              </div>
-              <div class="w-12 h-12 rounded-lg bg-blue-500 flex items-center justify-center text-white">
-                <Users class="w-6 h-6" />
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-card rounded-xl shadow-lg p-4">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-muted-foreground mb-1">Agressores</p>
-                <p class="text-2xl font-bold text-red-600">{{ stats.agressores }}</p>
-              </div>
-              <div class="w-12 h-12 rounded-lg bg-red-500 flex items-center justify-center text-white">
-                <AlertTriangle class="w-6 h-6" />
-              </div>
-            </div>
-          </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
+          <StatCard label="Total de pontos" :value="String(stats.total)" />
+          <StatCard label="Vítimas" :value="String(stats.vitimas)" />
+          <StatCard label="Agressores" :value="String(stats.agressores)" />
         </div>
 
         <!-- Filtros -->
-        <div class="mb-6 animate-fade-in-up" style="animation-delay: 0.2s">
-          <div class="bg-card rounded-xl shadow-lg p-6">
-            <div class="flex items-center justify-between mb-4">
-              <div>
-                <div class="flex items-center gap-2">
-                  <Filter class="w-5 h-5 text-primary" />
-                  <span class="font-semibold text-lg">Filtros de Localização</span>
-                </div>
-                <p class="text-sm text-muted-foreground mt-1">
-                  Selecione UF e cidade para filtrar os dados no mapa
-                </p>
-              </div>
-              <button
-                @click="handleReset"
-                class="flex items-center gap-2 px-3 py-2 rounded-lg border border-border hover:bg-secondary/50 transition-colors text-sm"
+        <div class="rounded-lg border border-border bg-card p-6 mb-6">
+          <h2 class="font-semibold text-lg flex items-center gap-2 mb-4">
+            <Filter class="w-5 h-5 text-primary" />
+            Filtros de localização
+          </h2>
+          <p class="text-sm text-muted-foreground mb-4">
+            Selecione UF e cidade para filtrar os dados no mapa
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="text-sm font-medium mb-2 block">Estado (UF)</label>
+              <select
+                v-model="selectedUF"
+                :disabled="loadingEstados"
+                class="w-full h-11 rounded-lg border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 disabled:opacity-50"
               >
-                <RefreshCw class="w-4 h-4" />
-                Limpar
-              </button>
+                <option v-if="loadingEstados" value="">Carregando...</option>
+                <option v-for="estado in estados" :key="estado.sigla" :value="estado.sigla">
+                  {{ estado.nome }} ({{ estado.sigla }})
+                </option>
+              </select>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label class="text-sm font-medium text-foreground mb-2 block">
-                  Estado (UF)
-                </label>
-                <select
-                  v-model="selectedUF"
-                  :disabled="loadingEstados"
-                  class="w-full h-11 rounded-xl border border-border/50 bg-input/50 px-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
-                >
-                  <option v-if="loadingEstados" value="">Carregando...</option>
-                  <option v-for="estado in estados" :key="estado.sigla" :value="estado.sigla">
-                    {{ estado.nome }} ({{ estado.sigla }})
-                  </option>
-                </select>
-              </div>
-
-              <div>
-                <label class="text-sm font-medium text-foreground mb-2 block">
-                  Cidade
-                </label>
-                <select
-                  v-model="selectedCidade"
-                  :disabled="loadingCidades || cidades.length === 0"
-                  class="w-full h-11 rounded-xl border border-border/50 bg-input/50 px-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
-                >
-                  <option v-if="loadingCidades" value="">Carregando...</option>
-                  <option v-else-if="cidades.length === 0" value="">Nenhum município</option>
-                  <option value="Todas">Todas</option>
-                  <option v-for="cidade in cidades" :key="cidade.id" :value="cidade.nome">
-                    {{ cidade.nome }}
-                  </option>
-                </select>
-              </div>
-
-              <div>
-                <label class="text-sm font-medium text-foreground mb-2 block">
-                  Bairro
-                </label>
-                <select
-                  v-model="selectedBairro"
-                  class="w-full h-11 rounded-xl border border-border/50 bg-input/50 px-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
-                >
-                  <option value="Todos">Todos</option>
-                  <option v-for="bairro in bairrosDisponiveis" :key="bairro" :value="bairro">
-                    {{ bairro }}
-                  </option>
-                </select>
-              </div>
+            <div>
+              <label class="text-sm font-medium mb-2 block">Cidade</label>
+              <select
+                v-model="selectedCidade"
+                :disabled="loadingCidades || cidades.length === 0"
+                class="w-full h-11 rounded-lg border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 disabled:opacity-50"
+              >
+                <option v-if="loadingCidades" value="">Carregando...</option>
+                <option v-else-if="cidades.length === 0" value="">Nenhum município</option>
+                <option value="Todas">Todas</option>
+                <option v-for="cidade in cidades" :key="cidade.id" :value="cidade.nome">
+                  {{ cidade.nome }}
+                </option>
+              </select>
             </div>
 
-            <!-- Filtros de Tipo -->
-            <div class="mt-4 flex flex-wrap gap-3">
-              <label class="flex items-center gap-2 px-4 py-2 rounded-xl border cursor-pointer transition-all duration-200 select-none"
-                :class="showVitimas ? 'border-blue-400 bg-blue-50 text-blue-700' : 'border-border bg-background text-muted-foreground'">
-                <input type="checkbox" v-model="showVitimas" class="sr-only" />
-                <span class="w-3 h-3 rounded-full" :class="showVitimas ? 'bg-blue-500' : 'bg-gray-300'"></span>
-                <Users class="w-4 h-4" />
-                <span class="text-sm font-medium">Vítimas</span>
-                <span class="text-xs px-1.5 py-0.5 rounded-full font-semibold"
-                  :class="showVitimas ? 'bg-blue-500/20 text-blue-700' : 'bg-gray-200 text-gray-500'">
-                  {{ stats.vitimas }}
-                </span>
-              </label>
-
-              <label class="flex items-center gap-2 px-4 py-2 rounded-xl border cursor-pointer transition-all duration-200 select-none"
-                :class="showAgressores ? 'border-red-400 bg-red-50 text-red-700' : 'border-border bg-background text-muted-foreground'">
-                <input type="checkbox" v-model="showAgressores" class="sr-only" />
-                <span class="w-3 h-3 rounded-full" :class="showAgressores ? 'bg-red-500' : 'bg-gray-300'"></span>
-                <AlertTriangle class="w-4 h-4" />
-                <span class="text-sm font-medium">Agressores</span>
-                <span class="text-xs px-1.5 py-0.5 rounded-full font-semibold"
-                  :class="showAgressores ? 'bg-red-500/20 text-red-700' : 'bg-gray-200 text-gray-500'">
-                  {{ stats.agressores }}
-                </span>
-              </label>
+            <div>
+              <label class="text-sm font-medium mb-2 block">Bairro</label>
+              <select
+                v-model="selectedBairro"
+                class="w-full h-11 rounded-lg border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
+              >
+                <option value="Todos">Todos</option>
+                <option v-for="bairro in bairrosDisponiveis" :key="bairro" :value="bairro">
+                  {{ bairro }}
+                </option>
+              </select>
             </div>
+          </div>
 
-            <div class="mt-4 flex flex-wrap gap-2">
-              <span class="flex items-center gap-1 px-3 py-1 rounded-lg border border-border text-sm">
-                <MapPin class="w-3 h-3" />
-                {{ selectedUF }}
-              </span>
-              <span class="flex items-center gap-1 px-3 py-1 rounded-lg border border-border text-sm">
-                <Map class="w-3 h-3" />
-                {{ selectedCidade }}
-              </span>
-              <span v-if="selectedBairro !== 'Todos'" class="flex items-center gap-1 px-3 py-1 rounded-lg border border-border text-sm">
-                <MapPin class="w-3 h-3" />
-                {{ selectedBairro }}
-              </span>
-            </div>
+          <!-- Filtros de Tipo -->
+          <div class="mt-4 flex flex-wrap gap-3">
+            <label
+              class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer transition-colors select-none"
+              :class="showVitimas ? 'border-info/40 bg-info/10 text-info' : 'border-border text-muted-foreground'"
+            >
+              <input type="checkbox" v-model="showVitimas" class="sr-only" />
+              <Users class="w-4 h-4" />
+              <span class="text-sm font-medium">Vítimas ({{ stats.vitimas }})</span>
+            </label>
+
+            <label
+              class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer transition-colors select-none"
+              :class="showAgressores ? 'border-destructive/40 bg-destructive/10 text-destructive' : 'border-border text-muted-foreground'"
+            >
+              <input type="checkbox" v-model="showAgressores" class="sr-only" />
+              <AlertTriangle class="w-4 h-4" />
+              <span class="text-sm font-medium">Agressores ({{ stats.agressores }})</span>
+            </label>
+          </div>
+
+          <div class="mt-4 flex flex-wrap gap-2 text-sm">
+            <span class="flex items-center gap-1 px-3 py-1 rounded-lg border border-border text-muted-foreground">
+              <MapPin class="w-3 h-3" />
+              {{ selectedUF }}
+            </span>
+            <span class="flex items-center gap-1 px-3 py-1 rounded-lg border border-border text-muted-foreground">
+              <MapPin class="w-3 h-3" />
+              {{ selectedCidade }}
+            </span>
+            <span v-if="selectedBairro !== 'Todos'" class="flex items-center gap-1 px-3 py-1 rounded-lg border border-border text-muted-foreground">
+              <MapPin class="w-3 h-3" />
+              {{ selectedBairro }}
+            </span>
           </div>
         </div>
 
         <!-- Mapa -->
-        <div class="animate-fade-in-up" style="animation-delay: 0.3s">
-          <div class="bg-card rounded-xl shadow-lg p-6">
-            <div id="map" class="h-[500px] rounded-lg z-0"></div>
-          </div>
+        <div class="rounded-lg border border-border bg-card p-6 mb-6">
+          <div id="map" class="h-[500px] rounded-lg border border-border z-0"></div>
         </div>
 
         <!-- Estatísticas por Bairro -->
-        <div v-if="bairroStats.length > 0" class="mt-6 animate-fade-in-up" style="animation-delay: 0.4s">
-          <div class="bg-card rounded-xl shadow-lg p-6">
-            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-              <MapPin class="w-5 h-5 text-primary" />
-              Top Bairros
-            </h3>
-            <div class="overflow-x-auto">
-              <table class="w-full text-sm">
-                <thead>
-                  <tr class="border-b border-border/30">
-                    <th class="text-left py-2 px-3 text-muted-foreground font-medium">Bairro</th>
-                    <th class="text-center py-2 px-3 text-blue-600 font-medium">Vítimas</th>
-                    <th class="text-center py-2 px-3 text-red-600 font-medium">Agressores</th>
-                    <th class="text-center py-2 px-3 text-muted-foreground font-medium">Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="b in bairroStats" :key="b.bairro" class="border-b border-border/20 hover:bg-secondary/30">
-                    <td class="py-2 px-3 font-medium">{{ b.bairro }}</td>
-                    <td class="py-2 px-3 text-center text-blue-600">{{ b.vitimas }}</td>
-                    <td class="py-2 px-3 text-center text-red-600">{{ b.agressores }}</td>
-                    <td class="py-2 px-3 text-center font-semibold">{{ b.total }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+        <div v-if="bairroStats.length > 0" class="rounded-lg border border-border bg-card p-6">
+          <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+            <MapPin class="w-5 h-5 text-primary" />
+            Top bairros
+          </h3>
+          <DataTable>
+            <template #head>
+              <th class="text-left font-medium">Bairro</th>
+              <th class="text-center font-medium">Vítimas</th>
+              <th class="text-center font-medium">Agressores</th>
+              <th class="text-center font-medium">Total</th>
+            </template>
+            <tr v-for="b in bairroStats" :key="b.bairro">
+              <td class="font-medium">{{ b.bairro }}</td>
+              <td class="text-center text-info">{{ b.vitimas }}</td>
+              <td class="text-center text-destructive">{{ b.agressores }}</td>
+              <td class="text-center font-semibold">{{ b.total }}</td>
+            </tr>
+          </DataTable>
         </div>
       </template>
     </main>

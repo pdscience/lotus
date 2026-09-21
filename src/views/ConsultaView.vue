@@ -1,20 +1,16 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { 
-  Search, 
-  Calendar, 
-  MapPin, 
-  User, 
-  Shield, 
+import {
+  Search,
+  Calendar,
   Eye,
   Download,
-  RefreshCw,
-  AlertCircle,
-  CheckCircle,
-  XCircle
+  RefreshCw
 } from 'lucide-vue-next'
 import { fetchMedidasProtetivas, type MedidaProtetivaAll } from '../services/medidaService'
+import DataTable from '../components/DataTable.vue'
+import SectionHeader from '../components/SectionHeader.vue'
 
 interface MedidaProtetiva {
   id: string
@@ -67,7 +63,7 @@ const mockData = computed<MedidaProtetiva[]>(() => {
 
 const exportToPDF = () => {
   const data = filteredData.value
-  
+
   const content = `
     <!DOCTYPE html>
     <html>
@@ -92,7 +88,7 @@ const exportToPDF = () => {
       <h1>Relatório de Medidas Protetivas</h1>
       <p style="text-align: center;">Data de geração: ${new Date().toLocaleDateString('pt-BR')}</p>
       <p style="text-align: center;">Total de registros: ${data.length}</p>
-      
+
       <table>
         <thead>
           <tr>
@@ -121,14 +117,14 @@ const exportToPDF = () => {
           `).join('')}
         </tbody>
       </table>
-      
+
       <div class="footer">
         <p>Sistema Protegida - Acesso a Medidas Protetivas e Ações de Resposta Emergenciais</p>
       </div>
     </body>
     </html>
   `
-  
+
   const printWindow = window.open('', '_blank')
   if (printWindow) {
     printWindow.document.write(content)
@@ -139,56 +135,51 @@ const exportToPDF = () => {
 
 const filteredData = computed(() => {
   return mockData.value.filter(item => {
-    const matchesSearch = 
+    const matchesSearch =
       item.numeroProcesso.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
       item.nomeOfendida.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
       item.nomeOfensor.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
       item.cidade.toLowerCase().includes(searchTerm.value.toLowerCase())
-    
+
     const matchesStatus = selectedStatus.value === 'todos' || item.status === selectedStatus.value
     const matchesUrgencia = selectedUrgencia.value === 'todos' || item.urgencia === selectedUrgencia.value
-    
+
     return matchesSearch && matchesStatus && matchesUrgencia
   })
 })
 
-const getStatusConfig = (status: string) => {
+const getStatusBadgeClass = (status: string) => {
   switch (status) {
-    case 'ativa':
-      return { variant: 'success', icon: CheckCircle, label: 'Ativa' }
-    case 'suspensa':
-      return { variant: 'warning', icon: AlertCircle, label: 'Suspensa' }
-    case 'revogada':
-      return { variant: 'destructive', icon: XCircle, label: 'Revogada' }
-    case 'finalizada':
-      return { variant: 'secondary', icon: CheckCircle, label: 'Finalizada' }
-    default:
-      return { variant: 'secondary', icon: AlertCircle, label: status }
+    case 'ativa': return 'bg-success/10 text-success border border-success/20'
+    case 'suspensa': return 'bg-warning/10 text-warning border border-warning/20'
+    case 'revogada': return 'bg-destructive/10 text-destructive border border-destructive/20'
+    case 'finalizada': return 'bg-secondary text-muted-foreground border border-border'
+    default: return 'bg-secondary text-muted-foreground border border-border'
+  }
+}
+
+const getStatusLabel = (status: string) => {
+  switch (status) {
+    case 'ativa': return 'Ativa'
+    case 'suspensa': return 'Suspensa'
+    case 'revogada': return 'Revogada'
+    case 'finalizada': return 'Finalizada'
+    default: return status
   }
 }
 
 const getUrgenciaConfig = (urgencia: string) => {
   switch (urgencia) {
     case 'critica':
-      return { variant: 'destructive', label: 'Crítica', color: 'bg-red-500' }
+      return { label: 'Crítica', color: 'bg-destructive/10 text-destructive border border-destructive/20' }
     case 'alta':
-      return { variant: 'warning', label: 'Alta', color: 'bg-orange-500' }
+      return { label: 'Alta', color: 'bg-warning/10 text-warning border border-warning/20' }
     case 'media':
-      return { variant: 'info', label: 'Média', color: 'bg-blue-500' }
+      return { label: 'Média', color: 'bg-info/10 text-info border border-info/20' }
     case 'baixa':
-      return { variant: 'success', label: 'Baixa', color: 'bg-green-500' }
+      return { label: 'Baixa', color: 'bg-success/10 text-success border border-success/20' }
     default:
-      return { variant: 'secondary', label: urgencia, color: 'bg-gray-500' }
-  }
-}
-
-const getStatusBadgeClass = (variant: string) => {
-  switch (variant) {
-    case 'success': return 'bg-success/10 text-success'
-    case 'warning': return 'bg-warning/10 text-warning'
-    case 'destructive': return 'bg-destructive/10 text-destructive'
-    case 'info': return 'bg-info/10 text-info'
-    default: return 'bg-muted text-muted-foreground'
+      return { label: urgencia, color: 'bg-secondary text-muted-foreground border border-border' }
   }
 }
 
@@ -205,254 +196,146 @@ const viewMedida = (id: string) => {
 </script>
 
 <template>
-  <div class="bg-gradient-to-br from-background via-secondary/5 to-primary/5">
+  <div class="bg-background">
     <main class="px-3 sm:px-4 md:px-6 lg:px-8 py-8">
-      <!-- Header Section -->
-      <div class="mb-8 animate-fade-in-up">
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+      <SectionHeader>
+        <template #title>Consulta de medidas protetivas</template>
+        <template #desc>Busque e gerencie registros de medidas protetivas</template>
+        <template #actions>
+          <button @click="exportToPDF" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity">
+            <Download class="w-4 h-4" />
+            Exportar relatório
+          </button>
+          <button @click="handleSearch" class="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium hover:bg-secondary/50 transition-colors">
+            <RefreshCw class="w-4 h-4" :class="{ 'animate-spin': isLoading }" />
+            Atualizar
+          </button>
+        </template>
+      </SectionHeader>
+
+      <!-- Filtros -->
+      <div class="rounded-lg border border-border bg-card p-6 mb-6">
+        <div class="flex gap-3 mb-4">
+          <div class="flex-1 relative">
+            <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input
+              v-model="searchTerm"
+              type="text"
+              placeholder="Buscar por processo, nome da vítima, agressor ou cidade..."
+              class="w-full h-11 rounded-lg border border-border bg-input pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
+            />
+          </div>
+          <button
+            @click="handleSearch"
+            class="flex items-center gap-2 px-6 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+            :disabled="isLoading"
+          >
+            <div v-if="isLoading" class="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+            <Search v-else class="w-4 h-4" />
+            Buscar
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <h1 class="text-3xl md:text-4xl font-bold text-gradient mb-2">
-              Consulta de Medidas Protetivas
-            </h1>
-            <p class="text-muted-foreground text-lg">
-              Busque e gerencie registros de medidas protetivas
-            </p>
+            <label class="text-sm font-medium text-foreground mb-2 block">Status</label>
+            <select
+              v-model="selectedStatus"
+              class="w-full h-11 rounded-lg border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
+            >
+              <option value="todos">Todos os Status</option>
+              <option value="ativa">Ativa</option>
+              <option value="suspensa">Suspensa</option>
+              <option value="revogada">Revogada</option>
+              <option value="finalizada">Finalizada</option>
+            </select>
           </div>
-          
-          <div class="flex flex-col sm:flex-row gap-3">
-            <button @click="exportToPDF" class="flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold text-white transition-all duration-300"
-              style="background: linear-gradient(135deg, hsl(340, 75%, 55%) 0%, hsl(320, 70%, 60%) 50%, hsl(280, 65%, 65%) 100%)">
-              <Download class="w-4 h-4" />
-              Exportar Relatório
-            </button>
-            <button @click="handleSearch" class="flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold border border-border bg-background hover:bg-secondary/50 transition-colors">
-              <RefreshCw class="w-4 h-4" :class="{ 'animate-spin': isLoading }" />
-              Atualizar
-            </button>
+
+          <div>
+            <label class="text-sm font-medium text-foreground mb-2 block">Urgência</label>
+            <select
+              v-model="selectedUrgencia"
+              class="w-full h-11 rounded-lg border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
+            >
+              <option value="todos">Todas as Urgências</option>
+              <option value="critica">Crítica</option>
+              <option value="alta">Alta</option>
+              <option value="media">Média</option>
+              <option value="baixa">Baixa</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-sm font-medium text-foreground mb-2 block">Data</label>
+            <div class="relative">
+              <Calendar class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <input
+                type="date"
+                class="w-full h-11 rounded-lg border border-border bg-input pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Search and Filters -->
-      <div class="mb-8 animate-fade-in-up" style="animation-delay: 0.1s">
-        <div class="bg-card rounded-xl shadow-lg p-6">
-          <div class="mb-4">
-            <div class="flex items-center gap-2 mb-2">
-              <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Search class="w-4 h-4 text-primary" />
-              </div>
-              <span class="font-semibold text-lg">Buscar Registros</span>
-            </div>
-            <p class="text-sm text-muted-foreground">
-              Use os filtros abaixo para encontrar medidas protetivas específicas
-            </p>
-          </div>
-          
-          <div class="space-y-6">
-            <!-- Search Bar -->
-            <div class="flex gap-3">
-              <div class="flex-1">
-                <div class="relative">
-                  <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <input
-                    v-model="searchTerm"
-                    type="text"
-                    placeholder="Buscar por processo, nome da vítima, agressor ou cidade..."
-                    class="w-full h-11 rounded-xl border border-border/50 bg-input/50 pl-10 pr-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
-              </div>
-              <button 
-                @click="handleSearch" 
-                class="flex items-center justify-center gap-2 px-6 py-2 rounded-xl font-semibold text-white transition-all duration-300"
-                style="background: linear-gradient(135deg, hsl(340, 75%, 55%) 0%, hsl(320, 70%, 60%) 50%, hsl(280, 65%, 65%) 100%)"
-                :disabled="isLoading"
+      <!-- Resultados -->
+      <div class="rounded-lg border border-border bg-card p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-semibold text-lg">Resultados da busca</h2>
+          <span class="text-sm text-muted-foreground">{{ filteredData.length }} registros encontrados</span>
+        </div>
+
+        <DataTable>
+          <template #head>
+            <th class="text-left font-medium">Processo</th>
+            <th class="text-left font-medium">Vítima</th>
+            <th class="text-left font-medium">Local</th>
+            <th class="text-left font-medium">Status</th>
+            <th class="text-left font-medium">Urgência</th>
+            <th class="text-left font-medium">Registro</th>
+            <th class="text-right font-medium">Ações</th>
+          </template>
+          <tr v-for="item in filteredData" :key="item.id">
+            <td class="font-mono text-xs">{{ item.numeroProcesso }}</td>
+            <td>
+              <p class="font-medium">{{ item.nomeOfendida }}</p>
+              <p class="text-xs text-muted-foreground">Agressor: {{ item.nomeOfensor }}</p>
+            </td>
+            <td>
+              <p>{{ item.cidade }}/{{ item.uf }}</p>
+              <p class="text-xs text-muted-foreground truncate max-w-40">{{ item.tipo.join(', ') }}</p>
+            </td>
+            <td>
+              <span :class="`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${getStatusBadgeClass(item.status)}`">
+                {{ getStatusLabel(item.status) }}
+              </span>
+            </td>
+            <td>
+              <span :class="`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${getUrgenciaConfig(item.urgencia).color}`">
+                {{ getUrgenciaConfig(item.urgencia).label }}
+              </span>
+            </td>
+            <td class="text-muted-foreground">{{ new Date(item.dataRegistro).toLocaleDateString('pt-BR') }}</td>
+            <td class="text-right">
+              <button
+                @click="viewMedida(item.id)"
+                class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-border text-xs font-medium hover:bg-secondary/50 transition-colors"
               >
-                <div v-if="isLoading" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                <Search v-else class="w-4 h-4" />
-                Buscar
+                <Eye class="w-3.5 h-3.5" />
+                Ver
               </button>
-            </div>
-
-            <!-- Filters -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label class="text-sm font-semibold text-foreground/80 mb-2 block">
-                  Status
-                </label>
-                <select
-                  v-model="selectedStatus"
-                  class="w-full h-11 rounded-xl border border-border/50 bg-input/50 px-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
-                >
-                  <option value="todos">Todos os Status</option>
-                  <option value="ativa">Ativa</option>
-                  <option value="suspensa">Suspensa</option>
-                  <option value="revogada">Revogada</option>
-                  <option value="finalizada">Finalizada</option>
-                </select>
-              </div>
-              
-              <div>
-                <label class="text-sm font-semibold text-foreground/80 mb-2 block">
-                  Urgência
-                </label>
-                <select
-                  v-model="selectedUrgencia"
-                  class="w-full h-11 rounded-xl border border-border/50 bg-input/50 px-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
-                >
-                  <option value="todos">Todas as Urgências</option>
-                  <option value="critica">Crítica</option>
-                  <option value="alta">Alta</option>
-                  <option value="media">Média</option>
-                  <option value="baixa">Baixa</option>
-                </select>
-              </div>
-              
-              <div>
-                <label class="text-sm font-semibold text-foreground/80 mb-2 block">
-                  Data
-                </label>
-                <div class="relative">
-                  <Calendar class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <input
-                    type="date"
-                    class="w-full h-11 rounded-xl border border-border/50 bg-input/50 pl-10 pr-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Results -->
-      <div class="animate-fade-in-up" style="animation-delay: 0.2s">
-        <div class="bg-card rounded-xl shadow-lg">
-          <div class="p-6 pb-4">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
-                  <Shield class="w-4 h-4 text-accent" />
-                </div>
-                <span class="font-semibold text-lg">Resultados da Busca</span>
-              </div>
-              <div class="flex items-center gap-1 px-3 py-1 rounded-lg border border-border text-sm">
-                <span class="w-2 h-2 bg-primary rounded-full" />
-                {{ filteredData.length }} registros encontrados
-              </div>
-            </div>
-          </div>
-          
-          <div class="px-6 pb-6">
+            </td>
+          </tr>
+          <template #empty>
             <div v-if="filteredData.length === 0" class="text-center py-12">
-              <div class="w-16 h-16 bg-muted/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div class="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search class="w-8 h-8 text-muted-foreground" />
               </div>
-              <h3 class="text-lg font-semibold text-foreground mb-2">
-                Nenhum registro encontrado
-              </h3>
-              <p class="text-muted-foreground">
-                Tente ajustar os filtros ou termos de busca
-              </p>
+              <h3 class="text-lg font-semibold mb-2">Nenhum registro encontrado</h3>
+              <p class="text-muted-foreground text-sm">Tente ajustar os filtros ou termos de busca</p>
             </div>
-            <div v-else class="space-y-4">
-              <div
-                v-for="item in filteredData"
-                :key="item.id"
-                class="p-6 rounded-xl border border-border/50 bg-secondary/20 hover:bg-secondary/30 transition-all duration-300 hover:shadow-lg"
-              >
-                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                  <div class="flex-1 space-y-4">
-                    <!-- Header Row -->
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                      <div class="flex items-center gap-3">
-                        <span class="px-3 py-1 rounded-lg border border-border font-mono text-sm">
-                          {{ item.numeroProcesso }}
-                        </span>
-                        <div class="flex items-center gap-2">
-                          <span :class="`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${getStatusBadgeClass(getStatusConfig(item.status).variant)}`">
-                            <component :is="getStatusConfig(item.status).icon" class="w-3 h-3" />
-                            {{ getStatusConfig(item.status).label }}
-                          </span>
-                          <span :class="`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium text-white ${getUrgenciaConfig(item.urgencia).color}`">
-                            {{ getUrgenciaConfig(item.urgencia).label }}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <div class="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Calendar class="w-4 h-4" />
-                        {{ new Date(item.dataRegistro).toLocaleDateString('pt-BR') }}
-                      </div>
-                    </div>
-
-                    <!-- Content Row -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <div class="flex items-center gap-2 mb-2">
-                          <User class="w-4 h-4 text-primary" />
-                          <span class="text-sm font-semibold text-foreground">Vítima</span>
-                        </div>
-                        <p class="text-foreground font-medium">{{ item.nomeOfendida }}</p>
-                        <p class="text-sm text-muted-foreground">Agressor: {{ item.nomeOfensor }}</p>
-                      </div>
-                      
-                      <div>
-                        <div class="flex items-center gap-2 mb-2">
-                          <MapPin class="w-4 h-4 text-accent" />
-                          <span class="text-sm font-semibold text-foreground">Localização</span>
-                        </div>
-                        <p class="text-foreground font-medium">{{ item.cidade }}, {{ item.uf }}</p>
-                        <div class="flex flex-wrap gap-1 mt-1">
-                          <span
-                            v-for="(tipo, i) in item.tipo.slice(0, 2)"
-                            :key="i"
-                            class="px-2 py-0.5 rounded text-xs border border-border"
-                          >
-                            {{ tipo }}
-                          </span>
-                          <span v-if="item.tipo.length > 2" class="px-2 py-0.5 rounded text-xs border border-border">
-                            +{{ item.tipo.length - 2 }} mais
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <!-- Locais Proibidos -->
-                    <div v-if="item.localTrabalhoVitima || item.escolaVitima || item.escolaDependente" class="mt-4 pt-4 border-t border-border/30">
-                      <div class="flex items-center gap-2 mb-2">
-                        <MapPin class="w-4 h-4 text-red-500" />
-                        <span class="text-sm font-semibold text-foreground">Locais Proibidos para o Agressor</span>
-                      </div>
-                      <div class="space-y-1">
-                        <p v-if="item.localTrabalhoVitima" class="text-sm text-muted-foreground">
-                          <span class="font-medium">Trabalho:</span> {{ item.localTrabalhoVitima }}
-                        </p>
-                        <p v-if="item.escolaVitima" class="text-sm text-muted-foreground">
-                          <span class="font-medium">Escola da Vítima:</span> {{ item.escolaVitima }}
-                        </p>
-                        <p v-if="item.escolaDependente" class="text-sm text-muted-foreground">
-                          <span class="font-medium">Escola do Dependente:</span> {{ item.escolaDependente }}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Actions -->
-                  <div class="flex flex-row lg:flex-col gap-2">
-                    <button 
-                      @click="viewMedida(item.id)"
-                      class="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-border hover:bg-secondary/50 transition-colors text-sm w-full"
-                    >
-                      <Eye class="w-4 h-4" />
-                      Visualizar
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+          </template>
+        </DataTable>
       </div>
     </main>
   </div>

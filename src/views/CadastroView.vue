@@ -17,6 +17,7 @@ import {
 } from 'lucide-vue-next'
 import { useUserStore } from '../stores/userStore'
 import { supabase } from '../lib/supabase'
+import SectionHeader from '../components/SectionHeader.vue'
 import { geocodificarEndereco, reverseGeocode } from '../services/geocodingService'
 import 'leaflet/dist/leaflet.css'
 
@@ -418,21 +419,16 @@ const handleSave = async () => {
 </script>
 
 <template>
-  <div class="bg-gradient-to-br from-background via-secondary/5 to-primary/5">
+  <div class="bg-background">
     <main class="px-3 sm:px-4 md:px-6 lg:px-8 py-8">
-      <!-- Header Section -->
-      <div class="mb-8 animate-fade-in-up">
-        <h1 class="text-3xl md:text-4xl font-bold text-gradient mb-2">
-          Cadastrar Nova Medida Protetiva
-        </h1>
-        <p class="text-muted-foreground text-lg">
-          Registro completo de medida protetiva de urgência
-        </p>
-      </div>
+      <SectionHeader>
+        <template #title>Cadastrar nova medida protetiva</template>
+        <template #desc>Registro completo de medida protetiva de urgência</template>
+      </SectionHeader>
 
       <!-- Progress Steps -->
-      <div class="mb-8 animate-fade-in-up" style="animation-delay: 0.1s">
-        <div class="bg-card rounded-xl shadow-lg p-6">
+      <div class="mb-8">
+        <div class="rounded-lg border border-border bg-card p-6">
           <div class="flex items-center justify-between">
             <div 
               v-for="(step, index) in steps" 
@@ -442,12 +438,12 @@ const handleSave = async () => {
               <div class="flex flex-col items-center">
                 <button
                   @click="currentStep = step.id"
-                  :class="`w-12 h-12 rounded-xl flex items-center justify-center font-semibold transition-all duration-300 mb-2 ${
+                  :class="`w-12 h-12 rounded-xl flex items-center justify-center font-semibold transition-colors mb-2 ${
                     currentStep === step.id
-                      ? `${step.color} shadow-lg scale-110 text-white`
+                      ? 'bg-primary text-primary-foreground'
                       : index < getCurrentStepIndex()
-                      ? 'bg-success shadow-md text-white'
-                      : 'bg-muted text-muted-foreground'
+                      ? 'bg-success/15 text-success border border-success/20'
+                      : 'bg-secondary text-muted-foreground'
                   }`"
                 >
                   <Check v-if="index < getCurrentStepIndex()" class="w-5 h-5" />
@@ -469,7 +465,7 @@ const handleSave = async () => {
               <div 
                 v-if="index < steps.length - 1" 
                 :class="`h-1 w-16 mx-4 rounded-full transition-colors duration-300 ${
-                  index < getCurrentStepIndex() ? 'bg-success' : 'bg-muted'
+                  index < getCurrentStepIndex() ? 'bg-success' : 'bg-border'
                 }`" 
               />
             </div>
@@ -478,9 +474,9 @@ const handleSave = async () => {
       </div>
 
       <!-- Form Content -->
-      <div class="mb-8 animate-fade-in-up" :key="currentStep">
+      <div class="mb-8" :key="currentStep">
         <!-- Ofendida Form -->
-        <div v-if="currentStep === 'ofendida'" class="bg-card rounded-xl shadow-lg p-6">
+        <div v-if="currentStep === 'ofendida'" class="rounded-lg border border-border bg-card p-6">
           <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
             <User class="w-5 h-5 text-blue-500" />
             Dados da Vítima (Ofendida)
@@ -560,7 +556,7 @@ const handleSave = async () => {
               <button
                 type="button"
                 @click="useMyLocation('vitima')"
-                class="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-blue-300 text-blue-600 hover:bg-blue-50 text-sm transition-colors"
+                class="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-border hover:bg-secondary/50 text-sm transition-colors"
               >
                 <Navigation class="w-3.5 h-3.5" />
                 Usar minha localização
@@ -621,7 +617,7 @@ const handleSave = async () => {
         </div>
 
         <!-- Ofensor Form -->
-        <div v-else-if="currentStep === 'ofensor'" class="bg-card rounded-xl shadow-lg p-6">
+        <div v-else-if="currentStep === 'ofensor'" class="rounded-lg border border-border bg-card p-6">
           <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
             <UserX class="w-5 h-5 text-red-500" />
             Dados do Agressor (Ofensor)
@@ -692,7 +688,7 @@ const handleSave = async () => {
               <button
                 type="button"
                 @click="useMyLocation('agressor')"
-                class="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-red-300 text-red-600 hover:bg-red-50 text-sm transition-colors"
+                class="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-border hover:bg-secondary/50 text-sm transition-colors"
               >
                 <Navigation class="w-3.5 h-3.5" />
                 Usar minha localização
@@ -753,7 +749,7 @@ const handleSave = async () => {
         </div>
 
         <!-- Dependentes Form -->
-        <div v-else-if="currentStep === 'dependentes'" class="bg-card rounded-xl shadow-lg p-6">
+        <div v-else-if="currentStep === 'dependentes'" class="rounded-lg border border-border bg-card p-6">
           <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
             <Users class="w-5 h-5 text-green-500" />
             Dependentes
@@ -836,7 +832,7 @@ const handleSave = async () => {
         </div>
 
         <!-- Medidas Protetivas Form -->
-        <div v-else-if="currentStep === 'medidas'" class="bg-card rounded-xl shadow-lg p-6">
+        <div v-else-if="currentStep === 'medidas'" class="rounded-lg border border-border bg-card p-6">
           <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
             <Shield class="w-5 h-5 text-purple-500" />
             Medidas Protetivas
@@ -924,8 +920,8 @@ const handleSave = async () => {
       </div>
 
       <!-- Navigation -->
-      <div class="animate-fade-in-up" style="animation-delay: 0.3s">
-        <div class="bg-card rounded-xl shadow-lg p-6">
+      <div>
+        <div class="rounded-lg border border-border bg-card p-6">
           <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-3">
               <div class="flex items-center gap-1 px-3 py-1 rounded-lg border border-border text-sm">
@@ -943,7 +939,7 @@ const handleSave = async () => {
               <button
                 v-if="getCurrentStepIndex() > 0"
                 @click="handlePrevious"
-                class="flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold border border-border bg-background hover:bg-secondary/50 transition-colors flex-1 sm:flex-initial"
+                class="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-border bg-background hover:bg-secondary/50 transition-colors text-sm font-semibold flex-1 sm:flex-initial"
               >
                 <ChevronLeft class="w-4 h-4" />
                 Anterior
@@ -953,8 +949,7 @@ const handleSave = async () => {
                 v-if="getCurrentStepIndex() < steps.length - 1"
                 @click="handleNext"
                 :disabled="!canProceed()"
-                class="flex items-center justify-center gap-2 px-6 py-2 rounded-xl font-semibold text-white transition-all duration-300 disabled:opacity-50 flex-1 sm:flex-initial"
-                style="background: linear-gradient(135deg, hsl(340, 75%, 55%) 0%, hsl(320, 70%, 60%) 50%, hsl(280, 65%, 65%) 100%)"
+                class="flex items-center justify-center gap-2 px-6 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex-1 sm:flex-initial"
               >
                 Próximo
                 <ChevronRight class="w-4 h-4" />
@@ -963,11 +958,10 @@ const handleSave = async () => {
                 v-else
                 @click="handleSave"
                 :disabled="!canProceed() || isSaving"
-                class="flex items-center justify-center gap-2 px-6 py-2 rounded-xl font-semibold text-white transition-all duration-300 disabled:opacity-50 flex-1 sm:flex-initial"
-                style="background: linear-gradient(135deg, hsl(340, 75%, 55%) 0%, hsl(320, 70%, 60%) 50%, hsl(280, 65%, 65%) 100%)"
+                class="flex items-center justify-center gap-2 px-6 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex-1 sm:flex-initial"
               >
                 <div v-if="isSaving" class="flex items-center gap-2">
-                  <div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div class="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                   Salvando...
                 </div>
                 <template v-else>
