@@ -6,20 +6,20 @@
 
 @layer base {
   :root {
-    /* Core Colors - Enhanced Lilac/Purple Palette */
-    --background: 310 25% 98%;
+    /* Core Colors - Rosa Protetivo */
+    --background: 340 20% 98%;
     --foreground: 240 20% 12%;
     --card: 0 0% 100%;
     --card-foreground: 240 20% 12%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 20% 12%;
-    --primary: 275 65% 65%;
+    --primary: 340 75% 55%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 310 25% 95%;
+    --secondary: 340 20% 95%;
     --secondary-foreground: 240 20% 12%;
-    --muted: 310 25% 96%;
+    --muted: 340 20% 96%;
     --muted-foreground: 240 15% 45%;
-    --accent: 285 70% 70%;
+    --accent: 320 70% 60%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -29,9 +29,9 @@
     --success-foreground: 0 0% 100%;
     --info: 217 91% 60%;
     --info-foreground: 0 0% 100%;
-    --border: 310 25% 88%;
-    --input: 310 25% 94%;
-    --ring: 275 65% 65%;
+    --border: 340 20% 88%;
+    --input: 340 20% 94%;
+    --ring: 340 75% 55%;
     --radius: 0.75rem;
   }
 
@@ -42,13 +42,13 @@
     --card-foreground: 310 25% 95%;
     --popover: 240 15% 10%;
     --popover-foreground: 310 25% 95%;
-    --primary: 275 70% 70%;
+    --primary: 340 70% 65%;
     --primary-foreground: 240 15% 8%;
     --secondary: 240 10% 15%;
     --secondary-foreground: 310 25% 95%;
     --muted: 240 10% 15%;
     --muted-foreground: 310 20% 70%;
-    --accent: 285 75% 75%;
+    --accent: 320 75% 70%;
     --accent-foreground: 240 15% 8%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -60,7 +60,7 @@
     --info-foreground: 0 0% 100%;
     --border: 240 10% 18%;
     --input: 240 10% 15%;
-    --ring: 275 70% 70%;
+    --ring: 340 70% 65%;
   }
 }
 
@@ -144,7 +144,7 @@
   
   .step-active {
     @apply text-primary-foreground shadow-lg;
-    background: linear-gradient(135deg, hsl(275, 65%, 65%) 0%, hsl(285, 70%, 70%) 50%, hsl(295, 75%, 75%) 100%);
+    background: linear-gradient(135deg, hsl(340, 75%, 55%) 0%, hsl(320, 70%, 60%) 50%, hsl(280, 65%, 65%) 100%);
   }
   
   .step-completed {
@@ -158,7 +158,7 @@
   /* Enhanced Buttons */
   .btn-primary {
     @apply relative overflow-hidden rounded-xl px-6 py-3 font-semibold text-primary-foreground shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105;
-    background: linear-gradient(135deg, hsl(275, 65%, 65%) 0%, hsl(285, 70%, 70%) 50%, hsl(295, 75%, 75%) 100%);
+    background: linear-gradient(135deg, hsl(340, 75%, 55%) 0%, hsl(320, 70%, 60%) 50%, hsl(280, 65%, 65%) 100%);
   }
   
   .btn-secondary {
@@ -326,7 +326,7 @@
 }
 
 .animate-shimmer {
-  background: linear-gradient(90deg, transparent, rgba(157, 91, 210, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(229, 72, 107, 0.1), transparent);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
