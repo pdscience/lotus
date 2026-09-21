@@ -21,6 +21,7 @@ import { fetchContatosAnjo } from "../services/contatoAnjoService";
 import { fetchMedidasVitima } from "../services/medidaVitimaService";
 import { fetchPanicRecords, type PanicRecord } from "../services/panicService";
 import { fetchUsuario, saveUsuario } from "../services/usuarioService";
+import { isConfigured, gerarApoio } from "../services/iaAconselhamentoService";
 import { useUserStore } from "../stores/userStore";
 
 const userStore = useUserStore()
@@ -33,6 +34,7 @@ const atividadeRecente = ref<PanicRecord[]>([]);
 
 const isAdmin = computed(() => user.value?.tipo === "admin");
 const medidaAtiva = computed(() => medidaVitima.value?.status === "ativa" ? "1" : medidaVitima.value ? "0" : "0");
+const resumoIa = ref("");
 
 onMounted(async () => {
   await userStore.init();
@@ -55,6 +57,14 @@ onMounted(async () => {
     profileForm.value.telefonePrincipal = usuario.telefone || "";
     profileForm.value.dataNascimento = usuario.data_nascimento || "";
     profileForm.value.endereco = usuario.endereco || "";
+  }
+
+  if (isConfigured()) {
+    try {
+      resumoIa.value = await gerarApoio('Resuma em 2 frases a situação de proteção da usuária.');
+    } catch {
+      resumoIa.value = '';
+    }
   }
 })
 
@@ -155,6 +165,14 @@ const getStatusColor = (status: string) => {
         <template #title>Meu painel</template>
         <template #desc>Visão geral da sua proteção</template>
       </SectionHeader>
+
+      <div
+        v-if="!isAdmin && resumoIa"
+        class="rounded-lg border border-primary/30 bg-primary/5 p-4 mb-4"
+      >
+        <p class="text-xs font-semibold text-primary mb-1">Resumo da situação</p>
+        <p class="text-sm">{{ resumoIa }}</p>
+      </div>
 
       <!-- Bento StatCards - Apenas para Vítima -->
       <div

@@ -9,9 +9,11 @@ import {
   AlertTriangle,
   Users,
   Shield,
-  CheckCircle
+  CheckCircle,
+  Sparkles
 } from 'lucide-vue-next'
 import SectionHeader from '../components/SectionHeader.vue'
+import { isConfigured, gerarApoio } from '../services/iaAconselhamentoService'
 
 interface RegistroCompleto {
   id: string
@@ -188,6 +190,30 @@ const situacao = computed(() => {
   if (!registro.value) return { color: 'bg-success/10 text-success border-success/20', text: 'Ativa' }
   return getSituacaoBadge(registro.value.medidaProtetiva.situacao)
 })
+
+const iaDisponivel = isConfigured()
+const sugestaoIa = ref('')
+const erroIa = ref('')
+const carregandoIa = ref(false)
+const contextoIa = computed(() => {
+  if (!registro.value) return ''
+  const m = registro.value.medidaProtetiva
+  return `Medida ${m.numero || 'sem número'} (${m.tipoMedida || 'tipo não informado'}), situação ${m.situacao || 'desconhecida'}, expedida em ${m.dataExpedicao || 'data não informada'}.`
+})
+
+const gerarSugestoes = async () => {
+  if (carregandoIa.value) return
+  erroIa.value = ''
+  carregandoIa.value = true
+  try {
+    sugestaoIa.value = await gerarApoio(`Com base neste contexto: ${contextoIa.value}. Sugira 3 ações práticas de proteção e organização para a usuária.`)
+  } catch {
+    erroIa.value = 'Não foi possível gerar as sugestões agora. Tente novamente em instantes.'
+    sugestaoIa.value = ''
+  } finally {
+    carregandoIa.value = false
+  }
+}
 </script>
 
 <template>
@@ -434,6 +460,32 @@ const situacao = computed(() => {
                   <span>Proibição de contato</span>
                 </div>
               </div>
+            </div>
+
+            <!-- Sugestões de ação (IA nativa, opt-in) -->
+            <div v-if="iaDisponivel" class="rounded-lg border border-border bg-card p-6">
+              <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
+                <Sparkles class="w-5 h-5 text-primary" />
+                Sugestões de ação
+              </h2>
+              <p class="text-sm text-muted-foreground mb-4">Conteúdo gerado por IA como apoio — não substitui orientação jurídica ou policial.</p>
+              <label class="text-sm font-medium text-muted-foreground mb-2 block">Contexto usado</label>
+              <textarea
+                :value="contextoIa"
+                disabled
+                rows="2"
+                class="w-full rounded-lg border border-border bg-secondary/20 px-3 py-2 text-sm text-muted-foreground resize-none mb-4"
+              />
+              <button
+                @click="gerarSugestoes"
+                :disabled="carregandoIa"
+                class="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium disabled:opacity-50"
+              >
+                {{ carregandoIa ? 'Gerando...' : sugestaoIa ? 'Gerar novamente' : 'Gerar sugestões' }}
+              </button>
+              <p v-if="erroIa" class="mt-3 text-sm text-destructive">{{ erroIa }}</p>
+              <p v-if="sugestaoIa" class="mt-3 text-sm whitespace-pre-line">{{ sugestaoIa }}</p>
+              <p class="mt-4 text-xs text-muted-foreground">Em emergência, ligue 180 ou 190.</p>
             </div>
           </div>
         </div>
