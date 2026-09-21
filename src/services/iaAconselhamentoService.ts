@@ -17,6 +17,11 @@ export async function gerarApoio(prompt: string): Promise<string> {
     if (!res.ok) throw new Error('Falha na IA')
     const data = await res.json() as { texto?: string }
     return data.texto ?? 'Respire com calma. Você não está sozinha. Procure sua rede de apoio.'
+  } catch (e: unknown) {
+    if (e instanceof DOMException && e.name === 'AbortError') {
+      throw new Error('Tempo esgotado. Tente novamente em instantes.')
+    }
+    throw e
   } finally {
     clearTimeout(t)
   }

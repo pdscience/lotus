@@ -565,7 +565,7 @@ const goBack = () => {
           <div class="bg-gradient-to-r from-pink-500 to-rose-500 rounded-xl shadow-lg py-3 px-6 text-center">
             <div class="flex items-center justify-center gap-4">
               <div class="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center shadow-xl flex-shrink-0">
-                <ProtegidaLogo size="sm" />
+                <ProtegidaLogo size="sm" variant="light" />
               </div>
               <div class="text-left">
                 <h2 class="text-lg font-bold text-white">Você não está sozinha!</h2>
