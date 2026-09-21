@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { ArrowLeft, Lock, Mail, Shield, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-vue-next'
+import ProtegidaLogo from './ProtegidaLogo.vue'
 
 const emit = defineEmits<{
   (e: 'back'): void
@@ -48,13 +49,7 @@ const handleSubmit = async () => {
       <div class="text-center mb-8">
         <!-- Logo -->
         <div class="flex justify-center mb-6">
-          <div class="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-sm border border-white/10 shadow-xl flex items-center justify-center">
-            <img
-              src="/ampare-logo.svg"
-              alt="AMPARE"
-              class="w-14 h-14 object-contain"
-            />
-          </div>
+          <ProtegidaLogo size="md" />
         </div>
 
         <h1 class="text-2xl sm:text-3xl font-bold text-gradient mb-2">

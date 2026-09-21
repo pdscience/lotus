@@ -16,6 +16,7 @@ import {
   ClipboardList
 } from 'lucide-vue-next'
 import { useUserStore } from '../stores/userStore'
+import ProtegidaLogo from './ProtegidaLogo.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -93,9 +94,7 @@ const closeMenu = () => {
       <!-- Logo -->
       <div class="p-4 border-b border-border/30">
         <router-link to="/dashboard" class="flex items-center justify-center hover:scale-105 transition-transform">
-          <div class="relative w-full h-28 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center overflow-hidden shadow-lg">
-            <img src="@/assets/Logo AMPARE.png" alt="AMPARE Logo" class="w-24 h-24 object-contain" />
-          </div>
+          <ProtegidaLogo size="sm" />
         </router-link>
       </div>
 

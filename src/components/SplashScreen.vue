@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ProtegidaLogo from './ProtegidaLogo.vue'
 const emit = defineEmits<{
   (e: 'complete'): void
 }>()
@@ -16,21 +17,7 @@ const emit = defineEmits<{
     <div class="text-center relative z-10 px-4 max-w-lg mx-auto animate-fade-in-up">
       <!-- Logo Container -->
       <div class="flex justify-center mb-6">
-        <div class="relative">
-          <!-- Logo Glow Effect -->
-          <div class="absolute inset-0 w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 blur-xl animate-pulse-slow" />
-          
-          <!-- Logo -->
-          <div class="relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 p-2">
-            <div class="w-full h-full rounded-3xl bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-sm border border-white/10 shadow-2xl flex items-center justify-center">
-              <img
-                src="/ampare-logo.svg"
-                alt="AMPARE"
-                class="w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 object-contain drop-shadow-lg"
-              />
-            </div>
-          </div>
-        </div>
+        <ProtegidaLogo size="lg" />
       </div>
 
       <!-- Subtitle with Enhanced Typography -->
