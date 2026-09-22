@@ -386,7 +386,7 @@ watch(filteredLocations, () => {
             <div class="mt-4 flex flex-wrap gap-3">
               <label
                 class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer transition-colors select-none"
-                :class="showVitimas ? 'border-info/60 bg-info/25 text-info font-semibold' : 'border-border text-muted-foreground'"
+                :class="showVitimas ? 'border-info/60 bg-info/30 text-info dark:text-sky-300 font-semibold' : 'border-border text-muted-foreground'"
               >
                 <input type="checkbox" v-model="showVitimas" class="sr-only" />
                 <Users class="w-4 h-4" />
@@ -395,7 +395,7 @@ watch(filteredLocations, () => {
 
               <label
                 class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer transition-colors select-none"
-                :class="showAgressores ? 'border-destructive/60 bg-destructive/25 text-destructive font-semibold' : 'border-border text-muted-foreground'"
+                :class="showAgressores ? 'border-destructive/60 bg-destructive/30 text-destructive dark:text-red-300 font-semibold' : 'border-border text-muted-foreground'"
               >
                 <input type="checkbox" v-model="showAgressores" class="sr-only" />
                 <AlertTriangle class="w-4 h-4" />
