@@ -312,7 +312,7 @@ watch(filteredLocations, () => {
             @click="filtrosAbertos = true"
             type="button"
             title="Mostrar filtros"
-            class="absolute left-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-xl border border-border glass-card shadow-lg text-primary hover:scale-105 transition-transform"
+            class="absolute left-4 top-24 z-10 flex h-11 w-11 items-center justify-center rounded-xl border border-border glass-card shadow-lg text-primary hover:scale-105 transition-transform"
           >
             <Filter class="w-5 h-5" />
           </button>
