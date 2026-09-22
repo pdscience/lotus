@@ -305,7 +305,7 @@ watch(filteredLocations, () => {
           </div>
 
           <!-- Painel flutuante: filtros + lista -->
-          <div class="absolute left-4 top-4 bottom-4 z-10 w-80 max-w-[calc(100%-2rem)] rounded-lg border border-border bg-card/95 backdrop-blur p-4 overflow-y-auto">
+          <div class="absolute left-4 top-4 bottom-4 z-10 w-80 max-w-[calc(100%-2rem)] rounded-lg border border-border glass-card/95 backdrop-blur p-4 overflow-y-auto">
             <h2 class="font-semibold text-lg flex items-center gap-2 mb-2">
               <Filter class="w-5 h-5 text-primary" />
               Filtros de localização
@@ -405,7 +405,7 @@ watch(filteredLocations, () => {
         </div>
 
         <!-- Estatísticas por Bairro -->
-        <div v-if="bairroStats.length > 0" class="mt-6 rounded-lg border border-border bg-card p-6">
+        <div v-if="bairroStats.length > 0" class="mt-6 rounded-lg border border-border glass-card p-6">
           <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
             <MapPin class="w-5 h-5 text-primary" />
             Top bairros

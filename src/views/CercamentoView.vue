@@ -490,7 +490,7 @@ function resetar() {
         </div>
 
         <!-- Painel flutuante -->
-        <div class="absolute left-4 top-4 bottom-4 z-10 w-80 max-w-[calc(100%-2rem)] rounded-lg border border-border bg-card/95 backdrop-blur p-4 overflow-y-auto">
+        <div class="absolute left-4 top-4 bottom-4 z-10 w-80 max-w-[calc(100%-2rem)] rounded-lg border border-border glass-card/95 backdrop-blur p-4 overflow-y-auto">
           <div class="flex items-center gap-2 mb-1">
             <MapPin class="w-5 h-5 text-primary" />
             <span class="font-semibold">Mapa de Monitoramento</span>
@@ -507,7 +507,7 @@ function resetar() {
           </div>
 
           <!-- Dados da Vítima -->
-          <div class="rounded-lg border border-border bg-card p-4 mb-3">
+          <div class="rounded-lg border border-border glass-card p-4 mb-3">
             <div class="flex items-center gap-2 mb-3">
               <div class="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center text-white">
                 <User class="w-4 h-4" />
@@ -571,7 +571,7 @@ function resetar() {
           </div>
 
           <!-- Dados do Agressor -->
-          <div class="rounded-lg border border-border bg-card p-4 mb-3">
+          <div class="rounded-lg border border-border glass-card p-4 mb-3">
             <div class="flex items-center gap-2 mb-3">
               <div class="w-8 h-8 rounded-lg bg-red-500 flex items-center justify-center text-white">
                 <UserX class="w-4 h-4" />
@@ -635,7 +635,7 @@ function resetar() {
           </div>
 
           <!-- Raio de Proteção -->
-          <div class="rounded-lg border border-border bg-card p-4 mb-3">
+          <div class="rounded-lg border border-border glass-card p-4 mb-3">
             <div class="flex items-center gap-2 mb-3">
               <div class="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center text-white">
                 <Radius class="w-4 h-4" />
@@ -679,7 +679,7 @@ function resetar() {
           </div>
 
           <!-- Controles -->
-          <div class="rounded-lg border border-border bg-card p-4 mb-3">
+          <div class="rounded-lg border border-border glass-card p-4 mb-3">
             <div class="space-y-3">
               <button
                 v-if="!monitorando"
@@ -753,7 +753,7 @@ function resetar() {
           </div>
 
           <!-- Legenda -->
-          <div class="rounded-lg border border-border bg-card p-4">
+          <div class="rounded-lg border border-border glass-card p-4">
             <h4 class="text-sm font-semibold mb-3 text-foreground">Legenda</h4>
             <div class="space-y-2">
               <div class="flex items-center gap-2">
@@ -774,13 +774,13 @@ function resetar() {
 
         <!-- StatCards sobrepostos -->
         <div class="absolute top-4 right-4 z-10 hidden sm:flex gap-2">
-          <div class="rounded-lg border border-border bg-card/95 backdrop-blur px-4 py-2 shadow-lg">
+          <div class="rounded-lg border border-border glass-card/95 backdrop-blur px-4 py-2 shadow-lg">
             <p class="text-xs text-muted-foreground">Distância</p>
             <p class="text-lg font-bold" :class="alertaAtivo ? 'text-red-600' : 'text-green-600'">
               {{ distanciaAtual !== null ? formatarDistancia(distanciaAtual) : '—' }}
             </p>
           </div>
-          <div class="rounded-lg border border-border bg-card/95 backdrop-blur px-4 py-2 shadow-lg">
+          <div class="rounded-lg border border-border glass-card/95 backdrop-blur px-4 py-2 shadow-lg">
             <p class="text-xs text-muted-foreground">Raio</p>
             <p class="text-lg font-bold">{{ raioMetros }}m</p>
           </div>

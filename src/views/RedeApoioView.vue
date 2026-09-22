@@ -196,7 +196,7 @@ const goBack = () => {
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <button
             @click="callPhone('180')"
-            class="rounded-lg border border-border bg-card hover:bg-secondary/30 p-4 text-center transition-colors"
+            class="rounded-lg border border-border glass-card hover:bg-secondary/30 p-4 text-center transition-colors"
           >
             <span class="text-2xl font-bold tnum">180</span>
             <p class="text-xs mt-1 text-muted-foreground">Central Mulher</p>
@@ -204,7 +204,7 @@ const goBack = () => {
 
           <button
             @click="callPhone('190')"
-            class="rounded-lg border border-border bg-card hover:bg-secondary/30 p-4 text-center transition-colors"
+            class="rounded-lg border border-border glass-card hover:bg-secondary/30 p-4 text-center transition-colors"
           >
             <span class="text-2xl font-bold tnum">190</span>
             <p class="text-xs mt-1 text-muted-foreground">Polícia Militar</p>
@@ -212,7 +212,7 @@ const goBack = () => {
 
           <button
             @click="callPhone('192')"
-            class="rounded-lg border border-border bg-card hover:bg-secondary/30 p-4 text-center transition-colors"
+            class="rounded-lg border border-border glass-card hover:bg-secondary/30 p-4 text-center transition-colors"
           >
             <span class="text-2xl font-bold tnum">192</span>
             <p class="text-xs mt-1 text-muted-foreground">SAMU</p>
@@ -220,7 +220,7 @@ const goBack = () => {
 
           <button
             @click="callPhone('129')"
-            class="rounded-lg border border-border bg-card hover:bg-secondary/30 p-4 text-center transition-colors"
+            class="rounded-lg border border-border glass-card hover:bg-secondary/30 p-4 text-center transition-colors"
           >
             <span class="text-2xl font-bold tnum">129</span>
             <p class="text-xs mt-1 text-muted-foreground">Defensoria</p>
@@ -230,7 +230,7 @@ const goBack = () => {
 
       <!-- Locais de Atendimento -->
       <div>
-        <div class="rounded-lg border border-border bg-card">
+        <div class="rounded-lg border border-border glass-card">
           <div class="p-6 pb-4">
             <div class="flex items-center justify-between">
               <h2 class="font-semibold text-lg text-foreground">Locais de Atendimento</h2>

@@ -163,6 +163,12 @@ useClickOutside(navRef, closeDropdown)
 
 <template>
   <div class="min-h-screen bg-background">
+    <!-- Ambient background for glass cards -->
+    <div aria-hidden="true" class="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+      <div class="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-primary/15 blur-3xl" />
+      <div class="absolute top-1/3 -right-32 h-96 w-96 rounded-full bg-accent/10 blur-3xl" />
+      <div class="absolute -bottom-32 left-1/3 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
+    </div>
     <!-- Main Content Area -->
     <div>
       <!-- Header -->
@@ -313,7 +319,7 @@ useClickOutside(navRef, closeDropdown)
 
       <!-- Main Content (centered column with empty side gutters, except full-bleed map routes) -->
       <main
-        class="pb-16 px-0 py-0"
+        class="relative z-10 pb-20 px-4 py-4"
         :class="route.path === '/dashboard/mapa' || route.path === '/dashboard/cercamento' ? '' : 'mx-auto w-full max-w-6xl'"
       >
         <router-view />

@@ -165,7 +165,7 @@ const goBack = () => {
 
       <!-- Info Card -->
       <div class="mb-6">
-        <div class="rounded-lg border border-border bg-card p-4 sm:p-6">
+        <div class="rounded-lg border border-border glass-card p-4 sm:p-6">
           <div class="flex items-start gap-3">
             <div class="w-10 h-10 rounded-lg bg-secondary/50 flex items-center justify-center text-foreground flex-shrink-0">
               <Shield class="w-5 h-5" />

@@ -78,13 +78,13 @@ const setUserType = (type: UserType) => {
     <div class="relative z-10 w-full max-w-lg px-4">
       <!-- Logo -->
       <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center rounded-3xl bg-card border border-border p-4 mb-4">
+        <div class="inline-flex items-center justify-center rounded-3xl glass-card border border-border p-4 mb-4">
           <ProtegidaLogo size="md" variant="mono" />
         </div>
       </div>
 
       <!-- Card de Login -->
-      <div class="bg-card rounded-3xl shadow-2xl p-8 border border-border">
+      <div class="glass-card rounded-3xl shadow-2xl p-8 border border-border">
         <!-- Seleção de Tipo -->
         <div class="flex rounded-xl bg-secondary/50 p-1 mb-6">
           <button

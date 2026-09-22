@@ -340,7 +340,7 @@ onMounted(() => {
       </div>
 
       <!-- Filtros -->
-      <div class="rounded-lg border border-border bg-card p-6 mb-6">
+      <div class="rounded-lg border border-border glass-card p-6 mb-6">
         <div class="flex flex-col sm:flex-row gap-3">
           <select
             v-model="filterRisco"
@@ -376,7 +376,7 @@ onMounted(() => {
         <button @click="openModal" class="rounded-lg px-3 py-1.5 text-xs font-semibold" :style="{ background: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }">+ Novo</button>
       </div>
 
-      <div class="rounded-lg border border-border bg-card p-6">
+      <div class="rounded-lg border border-border glass-card p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="font-semibold text-lg flex items-center gap-2">
             <Shield class="w-5 h-5 text-primary" />

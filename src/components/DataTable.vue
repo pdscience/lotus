@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-lg border border-border bg-card overflow-hidden">
+  <div class="rounded-lg border border-border glass-card overflow-hidden">
     <table class="w-full text-sm">
       <thead><tr class="border-b border-border text-left text-muted-foreground"><slot name="head" /></tr></thead>
       <tbody><slot /></tbody>

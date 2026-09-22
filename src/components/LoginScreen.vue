@@ -62,7 +62,7 @@ const handleSubmit = async () => {
 
       <!-- Login Card -->
       <div class="animate-fade-in-up" style="animation-delay: 0.2s">
-        <div class="bg-card shadow-2xl border border-border/30 rounded-xl">
+        <div class="glass-card shadow-2xl border border-border/30 rounded-xl">
           <div class="text-center pb-6 pt-6 px-6">
             <div class="flex items-center justify-center gap-3 text-xl mb-2">
               <div class="p-2 rounded-lg bg-primary/10 text-primary">

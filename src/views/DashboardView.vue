@@ -174,7 +174,7 @@ const getStatusColor = (status: string) => {
         <template #desc>Visão geral da sua proteção</template>
       </SectionHeader>
 
-      <div v-if="!isAdmin" class="rounded-lg border border-border bg-card p-4 mb-4 flex items-center justify-between">
+      <div v-if="!isAdmin" class="rounded-lg border border-border glass-card p-4 mb-4 flex items-center justify-between">
         <div><p class="font-bold text-lg">{{ saudacao }}</p><p class="text-sm text-muted-foreground">{{ hoje }}</p></div>
         <router-link to="/dashboard/rede-apoio" class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold" :style="{ color: 'hsl(var(--accent-foreground))' }">{{ ctaLabel }}</router-link>
       </div>
@@ -204,7 +204,7 @@ const getStatusColor = (status: string) => {
       >
         <router-link
           to="/dashboard/rede-apoio"
-          class="rounded-lg border border-border bg-card p-4 sm:p-5 hover:bg-secondary/30 transition-colors"
+          class="rounded-lg border border-border glass-card p-4 sm:p-5 hover:bg-secondary/30 transition-colors"
         >
           <div class="flex flex-col items-center text-center gap-2">
             <div
@@ -223,7 +223,7 @@ const getStatusColor = (status: string) => {
 
         <router-link
           to="/dashboard/aconselhamento"
-          class="rounded-lg border border-border bg-card p-4 sm:p-5 hover:bg-secondary/30 transition-colors"
+          class="rounded-lg border border-border glass-card p-4 sm:p-5 hover:bg-secondary/30 transition-colors"
         >
           <div class="flex flex-col items-center text-center gap-2">
             <div
@@ -242,7 +242,7 @@ const getStatusColor = (status: string) => {
 
         <router-link
           to="/dashboard/contatos"
-          class="rounded-lg border border-border bg-card p-4 sm:p-5 hover:bg-secondary/30 transition-colors"
+          class="rounded-lg border border-border glass-card p-4 sm:p-5 hover:bg-secondary/30 transition-colors"
         >
           <div class="flex flex-col items-center text-center gap-2">
             <div
@@ -261,7 +261,7 @@ const getStatusColor = (status: string) => {
 
         <button
           @click="openProfileModal"
-          class="rounded-lg border border-border bg-card p-4 sm:p-5 hover:bg-secondary/30 transition-colors"
+          class="rounded-lg border border-border glass-card p-4 sm:p-5 hover:bg-secondary/30 transition-colors"
         >
           <div class="flex flex-col items-center text-center gap-2">
             <div
@@ -280,7 +280,7 @@ const getStatusColor = (status: string) => {
       <!-- Card da Medida Protetiva - Apenas para Vítima -->
       <div v-if="!isAdmin && medidaVitima" class="mt-6 sm:mt-8 mb-4 sm:mb-6">
         <div
-          class="rounded-lg border border-border bg-card overflow-hidden"
+          class="rounded-lg border border-border glass-card overflow-hidden"
         >
           <div class="bg-secondary/30 border-b border-border px-4 sm:px-6 py-3 sm:py-4">
             <div class="flex items-center justify-between">
@@ -347,10 +347,10 @@ const getStatusColor = (status: string) => {
 
       <!-- Atividade recente - Apenas para Vítima -->
       <div v-if="!isAdmin" class="mt-6 sm:mt-8">
-        <div class="rounded-lg border border-border bg-card p-4 sm:p-6">
+        <div class="rounded-lg border border-border glass-card p-4 sm:p-6">
           <h3 class="font-semibold text-foreground mb-1">Atividade recente</h3>
           <p class="text-xs text-muted-foreground mb-4">Últimos acionamentos de pânico</p>
-          <ul v-if="atividadeRecente.length > 0" class="rounded-lg border border-border bg-card divide-y divide-border">
+          <ul v-if="atividadeRecente.length > 0" class="rounded-lg border border-border glass-card divide-y divide-border">
             <li
               v-for="item in atividadeRecente"
               :key="item.id"
@@ -379,7 +379,7 @@ const getStatusColor = (status: string) => {
 
       <!-- Panic Button - Para Vítimas (Maior) -->
       <div v-if="!isAdmin" class="py-6 sm:py-12">
-        <div class="rounded-lg border border-border bg-card p-6 sm:p-12 md:p-16 text-center max-w-2xl mx-auto">
+        <div class="rounded-lg border border-border glass-card p-6 sm:p-12 md:p-16 text-center max-w-2xl mx-auto">
           <div class="flex justify-center">
             <PanicButton />
           </div>

@@ -246,7 +246,7 @@ const estiloSeloPendente = (status: string) =>
       </SectionHeader>
 
       <!-- Filtros -->
-      <div class="rounded-lg border border-border bg-card p-6 mb-6">
+      <div class="rounded-lg border border-border glass-card p-6 mb-6">
         <div class="flex gap-3 mb-4">
           <div class="flex-1 relative">
             <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -311,7 +311,7 @@ const estiloSeloPendente = (status: string) =>
       </div>
 
       <!-- Resultados -->
-      <div class="rounded-lg border border-border bg-card p-6">
+      <div class="rounded-lg border border-border glass-card p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="font-semibold text-lg">Resultados da busca</h2>
           <span class="text-sm text-muted-foreground">{{ filteredData.length }} registros encontrados</span>

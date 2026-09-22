@@ -262,7 +262,7 @@ const gerarSugestoes = async () => {
 
           <div class="space-y-4 sm:space-y-6">
             <!-- Dados da Medida -->
-            <div class="rounded-lg border border-border bg-card p-6">
+            <div class="rounded-lg border border-border glass-card p-6">
               <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
                 <Shield class="w-5 h-5 text-primary" />
                 Dados da Medida Protetiva
@@ -309,7 +309,7 @@ const gerarSugestoes = async () => {
             </div>
 
             <!-- Dados da Ofendida -->
-            <div class="rounded-lg border border-border bg-card p-6">
+            <div class="rounded-lg border border-border glass-card p-6">
               <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
                 <User class="w-5 h-5 text-info" />
                 Dados da Ofendida (Vítima)
@@ -361,7 +361,7 @@ const gerarSugestoes = async () => {
             </div>
 
             <!-- Dados do Ofensor -->
-            <div class="rounded-lg border border-border bg-card p-6">
+            <div class="rounded-lg border border-border glass-card p-6">
               <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
                 <AlertTriangle class="w-5 h-5 text-destructive" />
                 Dados do Ofensor (Agressor)
@@ -408,7 +408,7 @@ const gerarSugestoes = async () => {
             </div>
 
             <!-- Dependentes -->
-            <div v-if="registro.dependentes && registro.dependentes.length > 0" class="rounded-lg border border-border bg-card p-6">
+            <div v-if="registro.dependentes && registro.dependentes.length > 0" class="rounded-lg border border-border glass-card p-6">
               <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
                 <Users class="w-5 h-5 text-success" />
                 Dependentes ({{ registro.dependentes.length }})
@@ -441,7 +441,7 @@ const gerarSugestoes = async () => {
             </div>
 
             <!-- Tipos de Restrição -->
-            <div v-if="registro.medidaProtetiva.tiposRestricao" class="rounded-lg border border-border bg-card p-6">
+            <div v-if="registro.medidaProtetiva.tiposRestricao" class="rounded-lg border border-border glass-card p-6">
               <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
                 <AlertTriangle class="w-5 h-5 text-warning" />
                 Tipos de Restrição Aplicados
@@ -463,7 +463,7 @@ const gerarSugestoes = async () => {
             </div>
 
             <!-- Sugestões de ação (IA nativa, opt-in) -->
-            <div v-if="iaDisponivel" class="rounded-lg border border-border bg-card p-6 max-w-2xl mx-auto">
+            <div v-if="iaDisponivel" class="rounded-lg border border-border glass-card p-6 max-w-2xl mx-auto">
               <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
                 <Sparkles class="w-5 h-5 text-primary" />
                 Sugestões de ação

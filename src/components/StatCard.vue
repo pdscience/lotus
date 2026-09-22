@@ -5,7 +5,7 @@ const points = props.trend.length
   : ''
 </script>
 <template>
-  <div class="rounded-lg border border-border bg-card p-4">
+  <div class="rounded-lg border border-border glass-card p-4">
     <div v-if="accentTop" class="h-1 -mx-4 -mt-4 mb-3 rounded-t-lg bg-primary" />
     <p class="text-xs text-muted-foreground">{{ label }}</p>
     <p class="tnum text-2xl font-bold mt-1">{{ value }}</p>

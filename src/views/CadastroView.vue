@@ -430,7 +430,7 @@ const handleSave = async () => {
       <div class="flex flex-col lg:flex-row gap-6 mb-8">
         <!-- Progress Steps (lateral vertical) -->
         <aside class="lg:w-64 shrink-0">
-          <div class="rounded-lg border border-border bg-card p-6">
+          <div class="rounded-lg border border-border glass-card p-6">
             <div class="flex flex-row lg:flex-col items-start justify-between lg:justify-start gap-2">
               <div
                 v-for="(step, index) in steps"
@@ -478,7 +478,7 @@ const handleSave = async () => {
         <!-- Form Content -->
         <div class="flex-1 min-w-0" :key="currentStep">
         <!-- Ofendida Form -->
-        <div v-if="currentStep === 'ofendida'" class="rounded-lg border border-border bg-card p-6">
+        <div v-if="currentStep === 'ofendida'" class="rounded-lg border border-border glass-card p-6">
           <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
             <User class="w-5 h-5 text-blue-500" />
             Dados da Vítima (Ofendida)
@@ -619,7 +619,7 @@ const handleSave = async () => {
         </div>
 
         <!-- Ofensor Form -->
-        <div v-else-if="currentStep === 'ofensor'" class="rounded-lg border border-border bg-card p-6">
+        <div v-else-if="currentStep === 'ofensor'" class="rounded-lg border border-border glass-card p-6">
           <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
             <UserX class="w-5 h-5 text-red-500" />
             Dados do Agressor (Ofensor)
@@ -751,7 +751,7 @@ const handleSave = async () => {
         </div>
 
         <!-- Dependentes Form -->
-        <div v-else-if="currentStep === 'dependentes'" class="rounded-lg border border-border bg-card p-6">
+        <div v-else-if="currentStep === 'dependentes'" class="rounded-lg border border-border glass-card p-6">
           <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
             <Users class="w-5 h-5 text-green-500" />
             Dependentes
@@ -834,7 +834,7 @@ const handleSave = async () => {
         </div>
 
         <!-- Medidas Protetivas Form -->
-        <div v-else-if="currentStep === 'medidas'" class="rounded-lg border border-border bg-card p-6">
+        <div v-else-if="currentStep === 'medidas'" class="rounded-lg border border-border glass-card p-6">
           <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
             <Shield class="w-5 h-5 text-purple-500" />
             Medidas Protetivas
@@ -924,7 +924,7 @@ const handleSave = async () => {
 
       <!-- Navigation -->
       <div>
-        <div class="rounded-lg border border-border bg-card p-6">
+        <div class="rounded-lg border border-border glass-card p-6">
           <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-3">
               <div class="flex items-center gap-1 px-3 py-1 rounded-lg border border-border text-sm">

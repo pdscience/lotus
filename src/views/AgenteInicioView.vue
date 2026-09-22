@@ -78,7 +78,7 @@ const getStatusClass = (status: string) => {
         </template>
       </SectionHeader>
 
-      <div class="rounded-lg border border-border bg-card p-4 mb-4 flex items-center justify-between">
+      <div class="rounded-lg border border-border glass-card p-4 mb-4 flex items-center justify-between">
         <div><p class="font-bold text-lg">{{ saudacao }}</p><p class="text-sm text-muted-foreground">{{ hoje }}</p></div>
         <router-link to="/dashboard/consulta" class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold" :style="{ color: 'hsl(var(--accent-foreground))' }">Nova consulta</router-link>
       </div>
@@ -92,7 +92,7 @@ const getStatusClass = (status: string) => {
       </div>
 
       <!-- Últimas Medidas Registradas -->
-      <div class="rounded-lg border border-border bg-card p-6">
+      <div class="rounded-lg border border-border glass-card p-6">
         <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
           <FileText class="w-5 h-5 text-primary" />
           Últimas medidas registradas
@@ -107,7 +107,7 @@ const getStatusClass = (status: string) => {
         </div>
 
         <div v-else class="space-y-0">
-          <ul class="rounded-lg border border-border bg-card divide-y divide-border">
+          <ul class="rounded-lg border border-border glass-card divide-y divide-border">
             <li
               v-for="m in medidas.slice(0, 5)"
               :key="m.id"
@@ -140,7 +140,7 @@ const getStatusClass = (status: string) => {
       <div class="grid grid-cols-3 gap-3 sm:gap-4">
         <router-link
           to="/dashboard/monitoramento"
-          class="rounded-lg border border-border bg-card p-4 hover:bg-secondary/30 transition-colors text-center"
+          class="rounded-lg border border-border glass-card p-4 hover:bg-secondary/30 transition-colors text-center"
         >
           <ClipboardList class="w-8 h-8 mx-auto mb-2 text-primary" />
           <p class="font-medium text-sm">Monitoramento</p>
@@ -148,7 +148,7 @@ const getStatusClass = (status: string) => {
 
         <router-link
           to="/dashboard/consulta"
-          class="rounded-lg border border-border bg-card p-4 hover:bg-secondary/30 transition-colors text-center"
+          class="rounded-lg border border-border glass-card p-4 hover:bg-secondary/30 transition-colors text-center"
         >
           <Shield class="w-8 h-8 mx-auto mb-2 text-success" />
           <p class="font-medium text-sm">Consultar</p>
@@ -156,7 +156,7 @@ const getStatusClass = (status: string) => {
 
         <router-link
           to="/dashboard/cercamento"
-          class="rounded-lg border border-border bg-card p-4 hover:bg-secondary/30 transition-colors text-center"
+          class="rounded-lg border border-border glass-card p-4 hover:bg-secondary/30 transition-colors text-center"
         >
           <MapPin class="w-8 h-8 mx-auto mb-2 text-info" />
           <p class="font-medium text-sm">Cercamento</p>

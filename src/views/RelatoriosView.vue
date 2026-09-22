@@ -202,7 +202,7 @@ const municipioStats = computed(() => {
         <template #desc>Visão geral do sistema de proteção</template>
       </SectionHeader>
 
-      <div class="rounded-lg border border-border bg-card p-4 mb-4 flex items-center justify-between">
+      <div class="rounded-lg border border-border glass-card p-4 mb-4 flex items-center justify-between">
         <div><p class="font-bold text-lg">{{ saudacao }}</p><p class="text-sm text-muted-foreground">{{ hoje }}</p></div>
         <button class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold" :style="{ color: 'hsl(var(--accent-foreground))' }">Exportar relatório</button>
       </div>
@@ -254,7 +254,7 @@ const municipioStats = computed(() => {
         <template v-else>
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
             <!-- Tipos de Medidas Protetivas -->
-            <div class="rounded-lg border border-border bg-card p-6">
+            <div class="rounded-lg border border-border glass-card p-6">
               <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
                 <Shield class="w-5 h-5 text-primary" />
                 Tipos de medidas protetivas
@@ -279,7 +279,7 @@ const municipioStats = computed(() => {
             </div>
 
             <!-- Urgência dos Casos (donut, 3 fatias) -->
-            <div class="rounded-lg border border-border bg-card p-6">
+            <div class="rounded-lg border border-border glass-card p-6">
               <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
                 <AlertTriangle class="w-5 h-5 text-destructive" />
                 Urgência dos casos
@@ -313,7 +313,7 @@ const municipioStats = computed(() => {
 
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
             <!-- Medidas por Mês (linha SVG) -->
-            <div class="rounded-lg border border-border bg-card p-6">
+            <div class="rounded-lg border border-border glass-card p-6">
               <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
                 <TrendingUp class="w-5 h-5 text-success" />
                 Medidas por mês
@@ -335,7 +335,7 @@ const municipioStats = computed(() => {
             </div>
 
             <!-- Distribuição por Município -->
-            <div class="rounded-lg border border-border bg-card p-6">
+            <div class="rounded-lg border border-border glass-card p-6">
               <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
                 <MapPin class="w-5 h-5 text-info" />
                 Distribuição por município
@@ -362,7 +362,7 @@ const municipioStats = computed(() => {
         </template>
 
         <!-- Informações por Tipo de Usuário -->
-        <div class="rounded-lg border border-border bg-card p-6">
+        <div class="rounded-lg border border-border glass-card p-6">
           <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
             <Eye class="w-5 h-5 text-primary" />
             Informações por tipo de acesso
