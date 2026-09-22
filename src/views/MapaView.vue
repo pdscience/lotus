@@ -5,7 +5,8 @@ import {
   Users,
   AlertTriangle,
   Filter,
-  RefreshCw
+  RefreshCw,
+  ChevronLeft
 } from 'lucide-vue-next'
 import 'leaflet/dist/leaflet.css'
 import { fetchMedidasProtetivas, type MedidaProtetivaAll } from '../services/medidaService'
@@ -97,6 +98,7 @@ const selectedCidade = ref('Todas')
 const selectedBairro = ref('Todos')
 const showVitimas = ref(true)
 const showAgressores = ref(true)
+const filtrosAbertos = ref(true)
 
 const estados = ref<IBGEEstado[]>([])
 const cidades = ref<IBGEMunicipio[]>([])
@@ -304,12 +306,33 @@ watch(filteredLocations, () => {
             <div id="map" class="h-full w-full z-0"></div>
           </div>
 
+          <!-- Botão flutuante quando recolhido -->
+          <button
+            v-if="!filtrosAbertos"
+            @click="filtrosAbertos = true"
+            type="button"
+            title="Mostrar filtros"
+            class="absolute left-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-xl border border-border glass-card shadow-lg text-primary hover:scale-105 transition-transform"
+          >
+            <Filter class="w-5 h-5" />
+          </button>
+
           <!-- Painel flutuante: filtros + lista -->
-          <div class="absolute left-4 top-4 bottom-4 z-10 w-80 max-w-[calc(100%-2rem)] rounded-lg border border-border glass-card/95 backdrop-blur p-4 overflow-y-auto">
-            <h2 class="font-semibold text-lg flex items-center gap-2 mb-2">
-              <Filter class="w-5 h-5 text-primary" />
-              Filtros de localização
-            </h2>
+          <div v-if="filtrosAbertos" class="absolute left-4 top-4 bottom-4 z-10 w-80 max-w-[calc(100%-2rem)] rounded-lg border border-border glass-card backdrop-blur p-4 overflow-y-auto">
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="font-semibold text-lg flex items-center gap-2">
+                <Filter class="w-5 h-5 text-primary" />
+                Filtros de localização
+              </h2>
+              <button
+                @click="filtrosAbertos = false"
+                type="button"
+                title="Recolher filtros"
+                class="p-1.5 rounded-lg hover:bg-secondary/50 transition-colors text-muted-foreground"
+              >
+                <ChevronLeft class="w-5 h-5" />
+              </button>
+            </div>
             <p class="text-sm text-muted-foreground mb-4">
               Selecione UF e cidade para filtrar os dados no mapa
             </p>
