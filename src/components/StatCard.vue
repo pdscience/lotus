@@ -7,7 +7,7 @@ const points = props.trend.length
 <template>
   <div class="rounded-lg border border-border glass-card p-4">
     <div v-if="accentTop" class="h-1 -mx-4 -mt-4 mb-3 rounded-t-lg bg-primary" />
-    <p class="text-xs text-muted-foreground">{{ label }}</p>
+    <p class="text-xs text-muted-foreground dark:text-white">{{ label }}</p>
     <p class="tnum text-2xl font-bold mt-1">{{ value }}</p>
     <div class="flex items-end justify-between mt-2">
       <span v-if="delta" class="text-xs" :class="delta.trim().startsWith('-') ? 'text-destructive' : 'text-success'">{{ delta }}</span>
