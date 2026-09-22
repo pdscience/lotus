@@ -194,7 +194,7 @@ const getStatusColor = (status: string) => {
       >
         <StatCard label="Medidas ativas" :value="medidaAtiva" accent-top />
         <StatCard label="Pânicos (30d)" :value="String(panicos30d)" accent-top />
-        <StatCard label="Contatos anjo" :value="String(contatosCount)" accent-top />
+        <StatCard label="Protetores" :value="String(contatosCount)" accent-top />
       </div>
 
       <!-- Quick Access Cards - Apenas para Vítima -->
@@ -251,7 +251,7 @@ const getStatusColor = (status: string) => {
               <Users class="w-5 sm:w-6 h-5 sm:h-6" />
             </div>
             <div>
-              <h3 class="font-semibold text-foreground text-sm">Meus Anjos</h3>
+              <h3 class="font-semibold text-foreground text-sm">Meus Protetores</h3>
               <p class="text-xs text-muted-foreground">
                 {{ contatosCount }} contatos
               </p>

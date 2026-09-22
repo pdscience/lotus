@@ -145,7 +145,7 @@ const goBack = () => {
     <main class="px-3 sm:px-4 md:px-6 lg:px-8 py-8">
       <SectionHeader>
         <template #title>Contatos de emergência</template>
-        <template #desc>Seus "Anjos" — pessoas de confiança para emergências</template>
+        <template #desc>Seus protetores — pessoas de confiança para emergências</template>
         <template #actions>
           <button
             @click="goBack"
@@ -158,7 +158,7 @@ const goBack = () => {
             class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm"
           >
             <UserPlus class="w-4 h-4" />
-            Novo Anjo
+            Novo Protetor
           </button>
         </template>
       </SectionHeader>
@@ -172,10 +172,10 @@ const goBack = () => {
             </div>
             <div>
               <h3 class="font-bold text-foreground text-sm sm:text-base mb-1">
-                Como funciona o SOS Anjo da Guarda?
+                Como funciona o SOS Protetores?
               </h3>
               <p class="text-muted-foreground text-xs sm:text-sm">
-                Ao acionar o botão de SOS Anjo da Guarda, seus contatos cadastrados aqui receberão automaticamente sua localização atual via SMS e/ou WhatsApp para que possam ajudá-lo rapidamente.
+                Ao acionar o botão de SOS Protetores, seus contatos cadastrados aqui receberão automaticamente sua localização atual via SMS e/ou WhatsApp para que possam ajudá-lo rapidamente.
               </p>
             </div>
           </div>
@@ -254,7 +254,7 @@ const goBack = () => {
       <div class="bg-card rounded-2xl border border-border w-full max-w-md animate-scale-in">
         <div class="flex items-center justify-between p-6 border-b border-border">
           <h2 class="text-xl font-bold text-foreground">
-            {{ isEditing ? 'Editar Contato' : 'Novo Anjo' }}
+            {{ isEditing ? 'Editar Contato' : 'Novo Protetor' }}
           </h2>
           <button
             @click="closeModal"

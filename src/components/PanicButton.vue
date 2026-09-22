@@ -14,7 +14,7 @@ import { sendPanicAlert } from '../services/panicService'
 type StatusType = 'seguro' | 'ativando' | 'enviando' | 'sucesso' | 'erro'
 
 const status = ref<StatusType>('seguro')
-const statusMessage = ref('Chamar Anjos')
+const statusMessage = ref('Protegida')
 const enviados = ref<{ tipo: string; contato: string; sucesso: boolean }[]>([])
 const locationInterval = ref<number | null>(null)
 const progress = ref(0)
@@ -63,7 +63,7 @@ const cancelPress = () => {
   }
   
   status.value = 'seguro'
-  statusMessage.value = 'SOS Anjos da Guarda'
+  statusMessage.value = 'SOS Protetores'
   progress.value = 0
 }
 
@@ -240,7 +240,7 @@ function reset() {
   stopAudioRecording()
   stopTracking()
   status.value = 'seguro'
-  statusMessage.value = 'SOS Anjos da Guarda'
+  statusMessage.value = 'SOS Protetores'
   enviados.value = []
   progress.value = 0
   if (audioUrl) {

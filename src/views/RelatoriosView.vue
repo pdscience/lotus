@@ -426,7 +426,7 @@ const municipioStats = computed(() => {
                 </li>
                 <li class="flex items-center gap-2">
                   <CheckCircle class="w-4 h-4 text-success" />
-                  Contatos de emergência (Anjos)
+                  Contatos de emergência (Protetores)
                 </li>
                 <li class="flex items-center gap-2">
                   <CheckCircle class="w-4 h-4 text-success" />

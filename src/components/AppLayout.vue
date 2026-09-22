@@ -64,7 +64,7 @@ const navigationItems = computed(() => {
   }
   
   items.push(
-    { href: '/dashboard/contatos', label: 'Anjos', icon: Heart },
+      { href: '/dashboard/contatos', label: 'Protetores', icon: Heart },
     { href: '/dashboard/historico-panico', label: 'Histórico', icon: History }
   )
   
@@ -77,7 +77,7 @@ const navGroups = computed<NavEntry[]>(() => {
   const pessoas: NavGroup = {
     kind: 'group', label: 'Pessoas', icon: Heart,
     items: [
-      { href: '/dashboard/contatos', label: 'Anjos', icon: Heart },
+    { href: '/dashboard/contatos', label: 'Protetores', icon: Heart },
       { href: '/dashboard/historico-panico', label: 'Histórico', icon: History }
     ]
   }
@@ -109,7 +109,7 @@ const navGroups = computed<NavEntry[]>(() => {
   return [
     { kind: 'link', href: '/dashboard', label: 'Início', icon: Home },
     { kind: 'link', href: '/dashboard/cercamento', label: 'Cercamento', icon: Shield },
-    { kind: 'link', href: '/dashboard/contatos', label: 'Anjos', icon: Heart },
+      { kind: 'link', href: '/dashboard/contatos', label: 'Protetores', icon: Heart },
     { kind: 'link', href: '/dashboard/historico-panico', label: 'Histórico', icon: History }
   ]
 })
@@ -313,7 +313,7 @@ useClickOutside(navRef, closeDropdown)
 
       <!-- Main Content (centered column with empty side gutters, except full-bleed map routes) -->
       <main
-        class="pb-20 px-4 py-4"
+        class="pb-16 px-0 py-0"
         :class="route.path === '/dashboard/mapa' || route.path === '/dashboard/cercamento' ? '' : 'mx-auto w-full max-w-6xl'"
       >
         <router-view />
