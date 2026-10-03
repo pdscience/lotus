@@ -8,10 +8,10 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <title>Protegida - Acesso a Medidas Protetivas</title>
+    <title>Lótus - Acesso a Medidas Protetivas</title>
     <script>
       try {
-        var t = localStorage.getItem('protegida-theme')
+        var t = localStorage.getItem('lotus-theme') || localStorage.getItem('protegida-theme')
         if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
         if (t === 'dark') document.documentElement.classList.add('dark')
       } catch (e) {}

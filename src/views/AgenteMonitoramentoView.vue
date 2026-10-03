@@ -323,7 +323,7 @@ onMounted(() => {
         <template #actions>
           <button
             @click="openModal"
-            class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+            class="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white text-sm font-medium shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all"
           >
             <Plus class="w-4 h-4" />
             Novo registro
@@ -340,11 +340,11 @@ onMounted(() => {
       </div>
 
       <!-- Filtros -->
-      <div class="rounded-lg border border-border glass-card p-6 mb-6">
+      <div class="rounded-2xl border border-border glass-card shadow-lg p-6 mb-6">
         <div class="flex flex-col sm:flex-row gap-3">
           <select
             v-model="filterRisco"
-            class="h-11 px-4 rounded-lg border border-border bg-input text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
+            class="h-11 px-4 rounded-xl border border-border bg-input text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
           >
             <option value="todos">Todos os Riscos</option>
             <option value="baixo">Baixo</option>
@@ -354,14 +354,14 @@ onMounted(() => {
           </select>
           <select
             v-model="filterStatusVisita"
-            class="h-11 px-4 rounded-lg border border-border bg-input text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
+            class="h-11 px-4 rounded-xl border border-border bg-input text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
           >
             <option value="todos">Todas as Visitas</option>
             <option v-for="s in statusVisitaOptions" :key="s.value" :value="s.value">{{ s.label }}</option>
           </select>
           <select
             v-model="filterStatusPatrulha"
-            class="h-11 px-4 rounded-lg border border-border bg-input text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
+            class="h-11 px-4 rounded-xl border border-border bg-input text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
           >
             <option value="todos">Todas as Patrulhas</option>
             <option v-for="s in statusPatrulhaOptions" :key="s.value" :value="s.value">{{ s.label }}</option>
@@ -373,13 +373,15 @@ onMounted(() => {
       <div class="flex flex-wrap items-center gap-2 mb-4">
         <input v-model="searchTerm" placeholder="Buscar..." class="input-enhanced !w-64" />
         <button v-for="f in filtros" :key="f" @click="filterRisco = filtroParaValor[f]" :class="['rounded-full px-3 py-1 text-xs border', filterRisco === filtroParaValor[f] ? 'bg-primary text-primary-foreground border-transparent' : 'border-border text-muted-foreground']">{{ f }}</button>
-        <button @click="openModal" class="rounded-lg px-3 py-1.5 text-xs font-semibold" :style="{ background: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }">+ Novo</button>
+        <button @click="openModal" class="rounded-xl px-3 py-1.5 text-xs font-medium border border-border hover:bg-secondary/50 transition-colors">+ Novo</button>
       </div>
 
-      <div class="rounded-lg border border-border glass-card p-6">
+      <div class="rounded-2xl border border-border glass-card shadow-lg p-6">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="font-semibold text-lg flex items-center gap-2">
-            <Shield class="w-5 h-5 text-primary" />
+          <h2 class="font-heading font-semibold text-lg flex items-center gap-3">
+            <span class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+              <Shield class="w-5 h-5" />
+            </span>
             Monitoramentos
           </h2>
           <span class="text-sm text-muted-foreground">{{ filteredData.length }} registros</span>
@@ -466,7 +468,7 @@ onMounted(() => {
               </p>
               <button
                 @click="openModal"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+                 class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white text-sm font-medium shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all"
               >
                 <Plus class="w-4 h-4" />
                 Novo Registro
@@ -483,9 +485,9 @@ onMounted(() => {
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
       @click.self="closeModal"
     >
-      <div class="rounded-lg border border-border bg-card w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div class="rounded-2xl border border-border bg-card shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div class="sticky top-0 bg-card border-b border-border p-6 flex items-center justify-between z-10">
-          <h2 class="text-xl font-bold">Novo Registro de Monitoramento</h2>
+          <h2 class="text-xl font-bold font-heading">Novo Registro de Monitoramento</h2>
           <button @click="closeModal" class="p-2 rounded-lg hover:bg-secondary transition-colors">
             <X class="w-5 h-5" />
           </button>
@@ -494,66 +496,72 @@ onMounted(() => {
         <form @submit.prevent="handleSave" class="p-6 space-y-6">
           <!-- Dados da Vítima -->
           <div class="space-y-4">
-            <h3 class="font-semibold flex items-center gap-2">
-              <User class="w-4 h-4 text-info" />
+            <h3 class="font-heading font-semibold text-foreground flex items-center gap-3">
+              <span class="w-9 h-9 rounded-xl bg-info/10 text-info flex items-center justify-center">
+                <User class="w-4 h-4" />
+              </span>
               Dados da Vítima
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="text-sm font-medium mb-1 block">Nome da Vítima *</label>
-                <input v-model="formData.vitima_nome" type="text" required placeholder="Nome completo" class="w-full h-10 rounded-lg border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
+                <input v-model="formData.vitima_nome" type="text" required placeholder="Nome completo" class="w-full h-10 rounded-xl border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
               </div>
               <div>
                 <label class="text-sm font-medium mb-1 block">CPF</label>
-                <input v-model="formData.vitima_cpf" type="text" placeholder="000.000.000-00" class="w-full h-10 rounded-lg border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
+                <input v-model="formData.vitima_cpf" type="text" placeholder="000.000.000-00" class="w-full h-10 rounded-xl border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
               </div>
               <div>
                 <label class="text-sm font-medium mb-1 block">Telefone</label>
-                <input v-model="formData.vitima_telefone" type="tel" placeholder="(00) 00000-0000" class="w-full h-10 rounded-lg border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
+                <input v-model="formData.vitima_telefone" type="tel" placeholder="(00) 00000-0000" class="w-full h-10 rounded-xl border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
               </div>
               <div>
                 <label class="text-sm font-medium mb-1 block">Endereço</label>
-                <input v-model="formData.vitima_endereco" type="text" placeholder="Rua, número - Bairro" class="w-full h-10 rounded-lg border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
+                <input v-model="formData.vitima_endereco" type="text" placeholder="Rua, número - Bairro" class="w-full h-10 rounded-xl border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
               </div>
             </div>
           </div>
 
           <!-- Dados do Agressor -->
           <div class="space-y-4">
-            <h3 class="font-semibold flex items-center gap-2">
-              <UserX class="w-4 h-4 text-destructive" />
+            <h3 class="font-heading font-semibold text-foreground flex items-center gap-3">
+              <span class="w-9 h-9 rounded-xl bg-destructive/10 text-destructive flex items-center justify-center">
+                <UserX class="w-4 h-4" />
+              </span>
               Dados do Agressor
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="text-sm font-medium mb-1 block">Nome do Agressor *</label>
-                <input v-model="formData.agressor_nome" type="text" required placeholder="Nome completo" class="w-full h-10 rounded-lg border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
+                <input v-model="formData.agressor_nome" type="text" required placeholder="Nome completo" class="w-full h-10 rounded-xl border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
               </div>
               <div>
                 <label class="text-sm font-medium mb-1 block">CPF</label>
-                <input v-model="formData.agressor_cpf" type="text" placeholder="000.000.000-00" class="w-full h-10 rounded-lg border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
+                <input v-model="formData.agressor_cpf" type="text" placeholder="000.000.000-00" class="w-full h-10 rounded-xl border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
               </div>
               <div>
                 <label class="text-sm font-medium mb-1 block">Telefone</label>
-                <input v-model="formData.agressor_telefone" type="tel" placeholder="(00) 00000-0000" class="w-full h-10 rounded-lg border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
+                <input v-model="formData.agressor_telefone" type="tel" placeholder="(00) 00000-0000" class="w-full h-10 rounded-xl border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
               </div>
               <div>
                 <label class="text-sm font-medium mb-1 block">Endereço</label>
-                <input v-model="formData.agressor_endereco" type="text" placeholder="Rua, número - Bairro" class="w-full h-10 rounded-lg border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
+                <input v-model="formData.agressor_endereco" type="text" placeholder="Rua, número - Bairro" class="w-full h-10 rounded-xl border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
               </div>
             </div>
           </div>
 
           <!-- Dados do Monitoramento -->
           <div class="space-y-4">
-            <h3 class="font-semibold flex items-center gap-2">
-              <FileText class="w-4 h-4 text-primary" />
+            <h3 class="font-heading font-semibold text-foreground flex items-center gap-3">
+              <span class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                <FileText class="w-4 h-4" />
+              </span>
               Dados do Monitoramento
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="md:col-span-2">
                 <label class="text-sm font-medium mb-1 block">Medida Protetiva Vinculada</label>
-                <select v-model="formData.medida_id" class="w-full h-10 rounded-lg border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50">
+                <select v-model="formData.medida_id" class="w-full h-10 rounded-xl border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50">
                   <option value="">Nenhuma medida vinculada</option>
                   <option v-for="med in medidas" :key="med.id" :value="med.id">
                     {{ med.numero_processo }} - {{ med.nome_ofendida }} ({{ med.status }})
@@ -562,29 +570,29 @@ onMounted(() => {
               </div>
               <div>
                 <label class="text-sm font-medium mb-1 block">Nº Processo</label>
-                <input v-model="formData.numero_processo" type="text" placeholder="2024-0001" class="w-full h-10 rounded-lg border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
+                <input v-model="formData.numero_processo" type="text" placeholder="2024-0001" class="w-full h-10 rounded-xl border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
               </div>
               <div>
                 <label class="text-sm font-medium mb-1 block">Data *</label>
-                <input v-model="formData.data_monitoramento" type="date" required class="w-full h-10 rounded-lg border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
+                <input v-model="formData.data_monitoramento" type="date" required class="w-full h-10 rounded-xl border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
               </div>
               <div>
                 <label class="text-sm font-medium mb-1 block">Hora *</label>
-                <input v-model="formData.hora" type="time" required class="w-full h-10 rounded-lg border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
+                <input v-model="formData.hora" type="time" required class="w-full h-10 rounded-xl border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50" />
               </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="text-sm font-medium mb-1 block">Condição da Vítima *</label>
-                <select v-model="formData.condicao_vitima" required class="w-full h-10 rounded-lg border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50">
+                <select v-model="formData.condicao_vitima" required class="w-full h-10 rounded-xl border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50">
                   <option value="">Selecione...</option>
                   <option v-for="c in condicoesVitima" :key="c" :value="c">{{ c }}</option>
                 </select>
               </div>
               <div>
                 <label class="text-sm font-medium mb-1 block">Situação Monitorada *</label>
-                <select v-model="formData.situacao_monitorada" required class="w-full h-10 rounded-lg border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50">
+                <select v-model="formData.situacao_monitorada" required class="w-full h-10 rounded-xl border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50">
                   <option value="">Selecione...</option>
                   <option v-for="s in situacoesMonitoramento" :key="s" :value="s">{{ s }}</option>
                 </select>
@@ -599,7 +607,7 @@ onMounted(() => {
                   :key="r.value"
                   type="button"
                   @click="formData.risco = r.value as any"
-                  class="flex-1 py-2 rounded-lg text-sm font-medium border-2 transition-all"
+                  class="flex-1 py-2 rounded-xl text-sm font-medium border-2 transition-all"
                   :class="formData.risco === r.value ? r.color + ' border-current' : 'border-border bg-secondary/30 text-muted-foreground hover:bg-secondary/50'"
                 >
                   {{ r.label }}
@@ -620,20 +628,20 @@ onMounted(() => {
 
             <div>
               <label class="text-sm font-medium mb-1 block">Observações</label>
-              <textarea v-model="formData.observacoes" rows="3" placeholder="Descreva detalhes do monitoramento..." class="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 resize-none"></textarea>
+              <textarea v-model="formData.observacoes" rows="3" placeholder="Descreva detalhes do monitoramento..." class="w-full rounded-xl border border-border bg-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 resize-none"></textarea>
             </div>
 
             <div>
               <label class="text-sm font-medium mb-1 block">Encaminhamentos</label>
-              <textarea v-model="formData.encaminhamentos" rows="2" placeholder="Descreva encaminhamentos realizados..." class="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 resize-none"></textarea>
+              <textarea v-model="formData.encaminhamentos" rows="2" placeholder="Descreva encaminhamentos realizados..." class="w-full rounded-xl border border-border bg-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 resize-none"></textarea>
             </div>
           </div>
 
           <div class="flex gap-3 pt-4">
-            <button type="button" @click="closeModal" class="flex-1 px-4 py-3 rounded-lg border border-border hover:bg-secondary/50 transition-colors font-medium">
+            <button type="button" @click="closeModal" class="flex-1 px-4 py-3 rounded-xl border border-border hover:bg-secondary/50 transition-colors font-medium">
               Cancelar
             </button>
-            <button type="submit" class="flex-1 px-4 py-3 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity font-medium flex items-center justify-center gap-2">
+            <button type="submit" class="flex-1 px-4 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all flex items-center justify-center gap-2">
               <Save class="w-4 h-4" />
               Salvar Registro
             </button>
@@ -648,10 +656,10 @@ onMounted(() => {
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
       @click.self="closeEdit"
     >
-      <div class="rounded-lg border border-border bg-card w-full max-w-xl max-h-[90vh] overflow-y-auto">
+      <div class="rounded-2xl border border-border bg-card shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
         <div class="sticky top-0 bg-card border-b border-border p-6 flex items-center justify-between z-10">
           <div>
-            <h2 class="text-xl font-bold">Atualizar Monitoramento</h2>
+            <h2 class="text-xl font-bold font-heading">Atualizar Monitoramento</h2>
             <p class="text-sm text-muted-foreground">{{ editingMonitoramento.vitima_nome }} → {{ editingMonitoramento.agressor_nome }}</p>
           </div>
           <button @click="closeEdit" class="p-2 rounded-lg hover:bg-secondary transition-colors">
@@ -673,7 +681,7 @@ onMounted(() => {
                 type="button"
                 @click="editForm.status_visita = s.value as any"
                 :class="[
-                  'flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg text-sm font-medium border-2 transition-all',
+                  'flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-sm font-medium border-2 transition-all',
                   editForm.status_visita === s.value ? s.color + ' border-current' : 'border-border bg-secondary/30 text-muted-foreground hover:bg-secondary/50'
                 ]"
               >
@@ -696,7 +704,7 @@ onMounted(() => {
                 type="button"
                 @click="editForm.status_patrulha = s.value as any"
                 :class="[
-                  'flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg text-sm font-medium border-2 transition-all',
+                  'flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-sm font-medium border-2 transition-all',
                   editForm.status_patrulha === s.value ? s.color + ' border-current' : 'border-border bg-secondary/30 text-muted-foreground hover:bg-secondary/50'
                 ]"
               >
@@ -710,14 +718,14 @@ onMounted(() => {
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="text-sm font-medium mb-1 block">Condição da Vítima</label>
-              <select v-model="editForm.condicao_vitima" class="w-full h-10 rounded-lg border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50">
+              <select v-model="editForm.condicao_vitima" class="w-full h-10 rounded-xl border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50">
                 <option value="">Selecione...</option>
                 <option v-for="c in condicoesVitima" :key="c" :value="c">{{ c }}</option>
               </select>
             </div>
             <div>
               <label class="text-sm font-medium mb-1 block">Situação Monitorada</label>
-              <select v-model="editForm.situacao_monitorada" class="w-full h-10 rounded-lg border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50">
+              <select v-model="editForm.situacao_monitorada" class="w-full h-10 rounded-xl border border-border bg-input px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50">
                 <option value="">Selecione...</option>
                 <option v-for="s in situacoesMonitoramento" :key="s" :value="s">{{ s }}</option>
               </select>
@@ -734,7 +742,7 @@ onMounted(() => {
                 type="button"
                 @click="editForm.risco = r.value as any"
                 :class="[
-                  'flex-1 py-2 rounded-lg text-sm font-medium border-2 transition-all',
+                  'flex-1 py-2 rounded-xl text-sm font-medium border-2 transition-all',
                   editForm.risco === r.value ? r.color + ' border-current' : 'border-border bg-secondary/30 text-muted-foreground hover:bg-secondary/50'
                 ]"
               >
@@ -758,7 +766,7 @@ onMounted(() => {
           <!-- Observações -->
           <div>
             <label class="text-sm font-medium mb-1 block">Observações</label>
-            <textarea v-model="editForm.observacoes" rows="2" class="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 resize-none"></textarea>
+            <textarea v-model="editForm.observacoes" rows="2" class="w-full rounded-xl border border-border bg-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 resize-none"></textarea>
           </div>
 
           <!-- Obs Patrulha -->
@@ -767,20 +775,20 @@ onMounted(() => {
               <Car class="w-3 h-3 text-info" />
               Observações da Patrulha
             </label>
-            <textarea v-model="editForm.obs_patrulha" rows="2" placeholder="Registro da patrulha no local..." class="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 resize-none"></textarea>
+            <textarea v-model="editForm.obs_patrulha" rows="2" placeholder="Registro da patrulha no local..." class="w-full rounded-xl border border-border bg-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 resize-none"></textarea>
           </div>
 
           <!-- Encaminhamentos -->
           <div>
             <label class="text-sm font-medium mb-1 block">Encaminhamentos</label>
-            <textarea v-model="editForm.encaminhamentos" rows="2" class="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 resize-none"></textarea>
+            <textarea v-model="editForm.encaminhamentos" rows="2" class="w-full rounded-xl border border-border bg-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 resize-none"></textarea>
           </div>
 
           <div class="flex gap-3 pt-2">
-            <button type="button" @click="closeEdit" class="flex-1 px-4 py-3 rounded-lg border border-border hover:bg-secondary/50 transition-colors font-medium">
+            <button type="button" @click="closeEdit" class="flex-1 px-4 py-3 rounded-xl border border-border hover:bg-secondary/50 transition-colors font-medium">
               Cancelar
             </button>
-            <button type="submit" class="flex-1 px-4 py-3 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity font-medium flex items-center justify-center gap-2">
+            <button type="submit" class="flex-1 px-4 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all flex items-center justify-center gap-2">
               <Save class="w-4 h-4" />
               Atualizar
             </button>
@@ -795,9 +803,9 @@ onMounted(() => {
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
       @click.self="closeDetail"
     >
-      <div class="rounded-lg border border-border bg-card w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div class="rounded-2xl border border-border bg-card shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div class="sticky top-0 bg-card border-b border-border p-6 flex items-center justify-between z-10">
-          <h2 class="text-xl font-bold">Detalhes do Monitoramento</h2>
+          <h2 class="text-xl font-bold font-heading">Detalhes do Monitoramento</h2>
           <button @click="closeDetail" class="p-2 rounded-lg hover:bg-secondary transition-colors">
             <X class="w-5 h-5" />
           </button>
@@ -831,9 +839,11 @@ onMounted(() => {
           </div>
 
           <!-- Vítima -->
-          <div class="bg-secondary/30 border border-border rounded-lg p-4">
-            <h4 class="font-semibold flex items-center gap-2 mb-2">
-              <User class="w-4 h-4" />
+          <div class="bg-secondary/30 border border-border rounded-xl p-4">
+            <h4 class="font-heading font-semibold flex items-center gap-3 mb-2">
+              <span class="w-8 h-8 rounded-lg bg-info/10 text-info flex items-center justify-center">
+                <User class="w-4 h-4" />
+              </span>
               Vítima
             </h4>
             <div class="grid grid-cols-2 gap-2 text-sm">
@@ -845,9 +855,11 @@ onMounted(() => {
           </div>
 
           <!-- Agressor -->
-          <div class="bg-secondary/30 border border-border rounded-lg p-4">
-            <h4 class="font-semibold flex items-center gap-2 mb-2">
-              <UserX class="w-4 h-4" />
+          <div class="bg-secondary/30 border border-border rounded-xl p-4">
+            <h4 class="font-heading font-semibold flex items-center gap-3 mb-2">
+              <span class="w-8 h-8 rounded-lg bg-destructive/10 text-destructive flex items-center justify-center">
+                <UserX class="w-4 h-4" />
+              </span>
               Agressor
             </h4>
             <div class="grid grid-cols-2 gap-2 text-sm">
@@ -886,7 +898,7 @@ onMounted(() => {
 
             <div v-if="selectedMonitoramento.observacoes">
               <p class="text-xs text-muted-foreground mb-1">Observações</p>
-              <p class="text-sm bg-secondary/30 border border-border rounded-lg p-3">{{ selectedMonitoramento.observacoes }}</p>
+              <p class="text-sm bg-secondary/30 border border-border rounded-xl p-3">{{ selectedMonitoramento.observacoes }}</p>
             </div>
 
             <div v-if="selectedMonitoramento.obs_patrulha">
@@ -894,12 +906,12 @@ onMounted(() => {
                 <Car class="w-3 h-3" />
                 Observações da Patrulha
               </p>
-              <p class="text-sm bg-secondary/30 border border-border rounded-lg p-3">{{ selectedMonitoramento.obs_patrulha }}</p>
+              <p class="text-sm bg-secondary/30 border border-border rounded-xl p-3">{{ selectedMonitoramento.obs_patrulha }}</p>
             </div>
 
             <div v-if="selectedMonitoramento.encaminhamentos">
               <p class="text-xs text-muted-foreground mb-1">Encaminhamentos</p>
-              <p class="text-sm bg-secondary/30 border border-border rounded-lg p-3">{{ selectedMonitoramento.encaminhamentos }}</p>
+              <p class="text-sm bg-secondary/30 border border-border rounded-xl p-3">{{ selectedMonitoramento.encaminhamentos }}</p>
             </div>
 
             <div v-if="selectedMonitoramento.ultima_atualizacao" class="text-xs text-muted-foreground flex items-center gap-1">

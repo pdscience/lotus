@@ -1,4 +1,4 @@
-# AGENTS.md - Projeto AMPARE Vue
+# AGENTS.md - Projeto Lótus Vue
 
 ## Commands
 
@@ -52,7 +52,7 @@ src/
 
 ### Configuração
 
-- **Project**: Protegida
+- **Project**: Lótus
 - **Project ID**: 47386ba3-8e89-4d77-8f76-ec98995a0b04
 - **App Key**: tna9zi8t
 - **Region**: us-east

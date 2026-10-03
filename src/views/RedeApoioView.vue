@@ -183,7 +183,7 @@ const goBack = () => {
         <template #actions>
           <button
             @click="goBack"
-            class="px-4 py-2 rounded-lg border border-border hover:bg-secondary/50 transition-colors text-sm font-medium"
+            class="px-4 py-2 rounded-xl border border-border hover:bg-secondary/50 transition-colors text-sm font-medium"
           >
             Voltar
           </button>
@@ -191,78 +191,90 @@ const goBack = () => {
       </SectionHeader>
 
       <!-- Telefones Úteis -->
-      <div class="mb-8">
-        <h2 class="font-semibold text-lg text-foreground mb-3">Telefones de Emergência</h2>
+      <div class="mb-8 animate-fade-in-up">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-9 h-9 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center flex-shrink-0">
+            <Phone class="w-4 h-4" />
+          </div>
+          <h2 class="font-heading font-semibold text-lg text-foreground">Telefones de Emergência</h2>
+        </div>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <button
             @click="callPhone('180')"
-            class="rounded-lg border border-border glass-card hover:bg-secondary/30 p-4 text-center transition-colors"
+            class="rounded-2xl border border-border glass-card p-4 text-center shadow-sm hover:shadow-lg hover:bg-secondary/40 transition-all"
           >
-            <span class="text-2xl font-bold tnum">180</span>
-            <p class="text-xs mt-1 text-muted-foreground">Central Mulher</p>
+            <span class="text-2xl font-bold font-heading tnum text-foreground">180</span>
+            <p class="text-xs mt-1.5 text-muted-foreground">Central Mulher</p>
           </button>
 
           <button
             @click="callPhone('190')"
-            class="rounded-lg border border-border glass-card hover:bg-secondary/30 p-4 text-center transition-colors"
+            class="rounded-2xl border border-border glass-card p-4 text-center shadow-sm hover:shadow-lg hover:bg-secondary/40 transition-all"
           >
-            <span class="text-2xl font-bold tnum">190</span>
-            <p class="text-xs mt-1 text-muted-foreground">Polícia Militar</p>
+            <span class="text-2xl font-bold font-heading tnum text-foreground">190</span>
+            <p class="text-xs mt-1.5 text-muted-foreground">Polícia Militar</p>
           </button>
 
           <button
             @click="callPhone('192')"
-            class="rounded-lg border border-border glass-card hover:bg-secondary/30 p-4 text-center transition-colors"
+            class="rounded-2xl border border-border glass-card p-4 text-center shadow-sm hover:shadow-lg hover:bg-secondary/40 transition-all"
           >
-            <span class="text-2xl font-bold tnum">192</span>
-            <p class="text-xs mt-1 text-muted-foreground">SAMU</p>
+            <span class="text-2xl font-bold font-heading tnum text-foreground">192</span>
+            <p class="text-xs mt-1.5 text-muted-foreground">SAMU</p>
           </button>
 
           <button
             @click="callPhone('129')"
-            class="rounded-lg border border-border glass-card hover:bg-secondary/30 p-4 text-center transition-colors"
+            class="rounded-2xl border border-border glass-card p-4 text-center shadow-sm hover:shadow-lg hover:bg-secondary/40 transition-all"
           >
-            <span class="text-2xl font-bold tnum">129</span>
-            <p class="text-xs mt-1 text-muted-foreground">Defensoria</p>
+            <span class="text-2xl font-bold font-heading tnum text-foreground">129</span>
+            <p class="text-xs mt-1.5 text-muted-foreground">Defensoria</p>
           </button>
         </div>
       </div>
 
       <!-- Locais de Atendimento -->
       <div>
-        <div class="rounded-lg border border-border glass-card">
+        <div class="rounded-2xl border border-border glass-card shadow-lg overflow-hidden animate-fade-in-up">
           <div class="p-6 pb-4">
-            <div class="flex items-center justify-between">
-              <h2 class="font-semibold text-lg text-foreground">Locais de Atendimento</h2>
-              <span class="text-sm text-muted-foreground">{{ locaisFiltrados.length }} locais</span>
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center flex-shrink-0">
+                  <MapPin class="w-4 h-4" />
+                </div>
+                <h2 class="font-heading font-semibold text-lg text-foreground">Locais de Atendimento</h2>
+              </div>
+              <span class="rounded-lg px-3 py-1 text-xs font-medium bg-primary/10 text-primary">{{ locaisFiltrados.length }} locais</span>
             </div>
           </div>
 
           <div class="px-6 pb-6">
             <div class="flex flex-wrap items-center gap-2 mb-4">
               <input v-model="busca" placeholder="Buscar..." class="input-enhanced !w-64" />
-              <button v-for="f in filtros" :key="f" @click="filtroAtivo = f" :class="['rounded-full px-3 py-1 text-xs border', filtroAtivo === f ? 'bg-primary text-primary-foreground border-transparent' : 'border-border text-muted-foreground']">{{ f }}</button>
-              <button @click="openModal()" class="rounded-lg px-3 py-1.5 text-xs font-semibold" :style="{ background: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }">+ Novo</button>
+              <button v-for="f in filtros" :key="f" @click="filtroAtivo = f" :class="['rounded-lg px-3 py-1.5 text-xs border transition-colors', filtroAtivo === f ? 'bg-primary/10 text-primary border-primary/30 font-semibold' : 'border-border text-muted-foreground hover:bg-secondary/50']">{{ f }}</button>
+              <button @click="openModal()" class="rounded-lg px-3 py-1.5 text-xs font-semibold transition-all hover:opacity-90" :style="{ background: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }">+ Novo</button>
             </div>
 
             <DataTable v-if="locaisFiltrados.length > 0">
               <template #head>
-                <th class="font-medium py-3">Nome</th>
-                <th class="font-medium py-3">Tipo</th>
-                <th class="font-medium py-3 hidden md:table-cell">Endereço</th>
-                <th class="font-medium py-3 hidden sm:table-cell">Contato</th>
-                <th class="font-medium py-3 text-right">Ações</th>
+                <th class="text-xs font-semibold uppercase tracking-wider text-muted-foreground py-3">Nome</th>
+                <th class="text-xs font-semibold uppercase tracking-wider text-muted-foreground py-3">Tipo</th>
+                <th class="text-xs font-semibold uppercase tracking-wider text-muted-foreground py-3 hidden md:table-cell">Endereço</th>
+                <th class="text-xs font-semibold uppercase tracking-wider text-muted-foreground py-3 hidden sm:table-cell">Contato</th>
+                <th class="text-xs font-semibold uppercase tracking-wider text-muted-foreground py-3 text-right">Ações</th>
               </template>
               <tr v-for="local in locaisFiltrados" :key="local.id">
                 <td>
-                  <div class="flex items-center gap-2 py-1">
-                    <MapPin class="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                  <div class="flex items-center gap-3 py-1">
+                    <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center flex-shrink-0">
+                      <MapPin class="w-4 h-4" />
+                    </div>
                     <span class="font-semibold text-foreground">{{ local.nome }}</span>
                   </div>
                   <p class="text-xs text-muted-foreground md:hidden">{{ local.endereco }}, {{ local.cidade }}-{{ local.uf }}</p>
                 </td>
                 <td>
-                  <span class="rounded-full px-2 py-0.5 text-xs" :class="classePorStatus(local.tipo || '')" :style="estiloSeloPendente(local.tipo || '')">{{ labelTipo(local.tipo) }}</span>
+                  <span class="rounded-lg px-2.5 py-1 text-xs font-medium" :class="classePorStatus(local.tipo || '')" :style="estiloSeloPendente(local.tipo || '')">{{ labelTipo(local.tipo) }}</span>
                 </td>
                 <td class="hidden md:table-cell text-sm text-muted-foreground">{{ local.endereco }}, {{ local.cidade }}-{{ local.uf }}</td>
                 <td class="hidden sm:table-cell">
@@ -278,31 +290,31 @@ const goBack = () => {
                 <td class="text-right">
                   <details class="relative inline-block">
                     <summary class="cursor-pointer list-none px-3 py-1.5 rounded-lg border border-border text-xs font-medium hover:bg-secondary/50 transition-colors">•••</summary>
-                    <div class="absolute right-0 z-10 rounded-lg border border-border bg-popover p-1 shadow-lg min-w-36">
+                    <div class="absolute right-0 z-10 rounded-xl border border-border bg-popover p-1.5 shadow-xl min-w-36">
                       <button
                         @click="callPhone(local.telefone)"
-                        class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
+                        class="flex w-full items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
                       >
                         <Phone class="w-4 h-4" />
                         Ligar
                       </button>
                       <button
                         @click="openInMaps(local)"
-                        class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
+                        class="flex w-full items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
                       >
                         <ExternalLink class="w-4 h-4" />
                         Abrir no Maps
                       </button>
                       <button
                         @click="openModal(local)"
-                        class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
+                        class="flex w-full items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
                       >
                         <Edit3 class="w-4 h-4" />
                         Editar
                       </button>
                       <button
                         @click="deleteLocal(local.id)"
-                        class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left text-destructive"
+                        class="flex w-full items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-secondary/50 transition-colors text-left text-destructive"
                       >
                         <Trash2 class="w-4 h-4" />
                         Excluir
@@ -313,14 +325,17 @@ const goBack = () => {
               </tr>
             </DataTable>
 
-            <div v-else class="text-center py-8">
-              <MapPin class="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
-              <p class="text-muted-foreground">{{ locaisApoio.length === 0 ? 'Nenhum local cadastrado' : 'Nenhum local para este filtro' }}</p>
+            <div v-else class="rounded-xl border border-dashed border-border bg-secondary/20 text-center py-10 px-4">
+              <div class="w-14 h-14 rounded-2xl bg-secondary/50 flex items-center justify-center mx-auto mb-4">
+                <MapPin class="w-7 h-7 text-muted-foreground/70" />
+              </div>
+              <p class="text-sm text-muted-foreground">{{ locaisApoio.length === 0 ? 'Nenhum local cadastrado' : 'Nenhum local para este filtro' }}</p>
               <button
                 v-if="locaisApoio.length === 0"
                 @click="openModal()"
-                class="mt-3 text-primary hover:underline text-sm"
+                class="mt-4 inline-flex items-center gap-2 rounded-xl border border-border hover:bg-secondary/50 transition-colors px-4 py-2 text-sm font-medium"
               >
+                <MapPin class="w-4 h-4" />
                 Adicionar primeiro local
               </button>
             </div>
@@ -335,9 +350,10 @@ const goBack = () => {
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
       @click.self="closeModal"
     >
-      <div class="bg-card rounded-2xl border border-border w-full max-w-md animate-scale-in">
+      <div class="bg-card rounded-2xl border border-border w-full max-w-md animate-scale-in shadow-2xl">
         <div class="flex items-center justify-between p-6 border-b border-border">
-          <h2 class="text-xl font-bold text-foreground">
+          <h2 class="text-xl font-bold font-heading text-foreground flex items-center gap-2">
+            <MapPin class="w-5 h-5 text-primary" />
             {{ isEditing ? 'Editar Local' : 'Novo Local de Apoio' }}
           </h2>
           <button
@@ -436,7 +452,7 @@ const goBack = () => {
             </button>
             <button
               type="submit"
-              class="flex-1 px-4 py-3 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium flex items-center justify-center gap-2"
+              class="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all font-medium flex items-center justify-center gap-2"
             >
               <Save class="w-4 h-4" />
               Salvar

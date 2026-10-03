@@ -16,7 +16,7 @@ export async function geocodificarEndereco(endereco: string): Promise<GeocodingR
       `https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1&countrycodes=br`,
       {
         headers: {
-          'User-Agent': 'ProtegidaApp/1.0 (projeto_protegida)'
+          'User-Agent': 'LotusApp/1.0 (projeto_lotus)'
         }
       }
     )
@@ -60,7 +60,7 @@ export async function reverseGeocode(lat: number, lng: number): Promise<Geocodin
       `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
       {
         headers: {
-          'User-Agent': 'ProtegidaApp/1.0 (projeto_protegida)'
+          'User-Agent': 'LotusApp/1.0 (projeto_lotus)'
         }
       }
     )

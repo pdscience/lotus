@@ -149,13 +149,13 @@ const goBack = () => {
         <template #actions>
           <button
             @click="goBack"
-            class="px-4 py-2 rounded-lg border border-border hover:bg-secondary/50 transition-colors text-sm font-medium"
+            class="px-4 py-2 rounded-xl border border-border hover:bg-secondary/50 transition-colors text-sm font-medium"
           >
             Voltar
           </button>
           <button
             @click="openModal()"
-            class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all font-semibold text-sm"
           >
             <UserPlus class="w-4 h-4" />
             Novo Protetor
@@ -165,13 +165,13 @@ const goBack = () => {
 
       <!-- Info Card -->
       <div class="mb-6">
-        <div class="rounded-lg border border-border glass-card p-4 sm:p-6">
+        <div class="rounded-2xl border border-border glass-card p-4 sm:p-6 shadow-lg animate-fade-in-up">
           <div class="flex items-start gap-3">
-            <div class="w-10 h-10 rounded-lg bg-secondary/50 flex items-center justify-center text-foreground flex-shrink-0">
-              <Shield class="w-5 h-5" />
+            <div class="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center flex-shrink-0">
+              <Shield class="w-4 h-4" />
             </div>
             <div>
-              <h3 class="font-bold text-foreground text-sm sm:text-base mb-1">
+              <h3 class="font-heading font-semibold text-base sm:text-lg text-foreground mb-1">
                 Como funciona o SOS Protetores?
               </h3>
               <p class="text-muted-foreground text-xs sm:text-sm">
@@ -185,21 +185,23 @@ const goBack = () => {
       <!-- Contatos Table -->
       <div class="flex flex-wrap items-center gap-2 mb-4">
         <input v-model="busca" placeholder="Buscar..." class="input-enhanced !w-64" />
-        <button v-for="f in filtros" :key="f" @click="filtroAtivo = f" :class="['rounded-full px-3 py-1 text-xs border', filtroAtivo === f ? 'bg-primary text-primary-foreground border-transparent' : 'border-border text-muted-foreground']">{{ f }}</button>
-        <button @click="openModal()" class="rounded-lg px-3 py-1.5 text-xs font-semibold" :style="{ background: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }">+ Novo</button>
+        <button v-for="f in filtros" :key="f" @click="filtroAtivo = f" :class="['rounded-lg px-3 py-1.5 text-xs border transition-colors', filtroAtivo === f ? 'bg-primary/10 text-primary border-primary/30 font-semibold' : 'border-border text-muted-foreground hover:bg-secondary/50']">{{ f }}</button>
+        <button @click="openModal()" class="rounded-lg px-3 py-1.5 text-xs font-semibold transition-all hover:opacity-90" :style="{ background: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }">+ Novo</button>
       </div>
 
       <DataTable v-if="contatosFiltrados.length > 0">
         <template #head>
-          <th class="font-medium py-3">Nome</th>
-          <th class="font-medium py-3">Telefone</th>
-          <th class="font-medium py-3 hidden sm:table-cell">Parentesco</th>
-          <th class="font-medium py-3 text-right">Ações</th>
+          <th class="text-xs font-semibold uppercase tracking-wider text-muted-foreground py-3">Nome</th>
+          <th class="text-xs font-semibold uppercase tracking-wider text-muted-foreground py-3">Telefone</th>
+          <th class="text-xs font-semibold uppercase tracking-wider text-muted-foreground py-3 hidden sm:table-cell">Parentesco</th>
+          <th class="text-xs font-semibold uppercase tracking-wider text-muted-foreground py-3 text-right">Ações</th>
         </template>
         <tr v-for="contato in contatosFiltrados" :key="contato.id">
           <td>
-            <div class="flex items-center gap-2 py-1">
-              <Heart class="w-4 h-4 text-muted-foreground flex-shrink-0" />
+            <div class="flex items-center gap-3 py-1">
+              <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                <Heart class="w-4 h-4" />
+              </div>
               <span class="font-medium text-foreground">{{ contato.nome }}</span>
             </div>
           </td>
@@ -210,22 +212,22 @@ const goBack = () => {
             </span>
           </td>
           <td class="hidden sm:table-cell">
-            <span class="rounded-full px-2 py-0.5 text-xs" :class="classePorStatus(contato.parentesco || '—')" :style="estiloSeloPendente(contato.parentesco || '')">{{ contato.parentesco || '—' }}</span>
+            <span class="rounded-lg px-2.5 py-1 text-xs font-medium" :class="classePorStatus(contato.parentesco || '—')" :style="estiloSeloPendente(contato.parentesco || '')">{{ contato.parentesco || '—' }}</span>
           </td>
           <td class="text-right">
             <details class="relative inline-block">
               <summary class="cursor-pointer list-none px-3 py-1.5 rounded-lg border border-border text-xs font-medium hover:bg-secondary/50 transition-colors">•••</summary>
-              <div class="absolute right-0 z-10 rounded-lg border border-border bg-popover p-1 shadow-lg min-w-32">
+              <div class="absolute right-0 z-10 rounded-xl border border-border bg-popover p-1.5 shadow-xl min-w-36">
                 <button
                   @click="openModal(contato)"
-                  class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
+                  class="flex w-full items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
                 >
                   <Edit3 class="w-4 h-4" />
                   Editar
                 </button>
                 <button
                   @click="deleteContato(contato.id)"
-                  class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left text-destructive"
+                  class="flex w-full items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-secondary/50 transition-colors text-left text-destructive"
                 >
                   <Trash2 class="w-4 h-4" />
                   Excluir
@@ -251,9 +253,10 @@ const goBack = () => {
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
       @click.self="closeModal"
     >
-      <div class="bg-card rounded-2xl border border-border w-full max-w-md animate-scale-in">
+      <div class="bg-card rounded-2xl border border-border w-full max-w-md animate-scale-in shadow-2xl">
         <div class="flex items-center justify-between p-6 border-b border-border">
-          <h2 class="text-xl font-bold text-foreground">
+          <h2 class="text-xl font-bold font-heading text-foreground flex items-center gap-2">
+            <UserPlus class="w-5 h-5 text-primary" />
             {{ isEditing ? 'Editar Contato' : 'Novo Protetor' }}
           </h2>
           <button
@@ -314,7 +317,7 @@ const goBack = () => {
             </button>
             <button
               type="submit"
-              class="flex-1 px-4 py-3 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium flex items-center justify-center gap-2"
+              class="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all font-medium flex items-center justify-center gap-2"
             >
               <Save class="w-4 h-4" />
               Salvar

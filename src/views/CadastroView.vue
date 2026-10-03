@@ -478,11 +478,13 @@ const handleSave = async () => {
         <!-- Form Content -->
         <div class="flex-1 min-w-0" :key="currentStep">
         <!-- Ofendida Form -->
-        <div v-if="currentStep === 'ofendida'" class="rounded-lg border border-border glass-card p-6">
-          <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
-            <User class="w-5 h-5 text-blue-500" />
-            Dados da Vítima (Ofendida)
-          </h2>
+        <div v-if="currentStep === 'ofendida'" class="rounded-2xl border border-border glass-card shadow-lg p-6 animate-fade-in-up">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center flex-shrink-0">
+              <User class="w-5 h-5" />
+            </span>
+            <h2 class="font-heading font-semibold text-lg">Dados da Vítima (Ofendida)</h2>
+          </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="text-sm font-semibold text-foreground/80 mb-2 block">Nome Completo *</label>
@@ -551,9 +553,11 @@ const handleSave = async () => {
           <!-- Mapa Localização da Vítima -->
           <div class="mt-6 pt-6 border-t border-border/30">
             <div class="flex items-center justify-between mb-4">
-              <div class="flex items-center gap-2">
-                <MapPin class="w-5 h-5 text-blue-500" />
-                <h3 class="text-lg font-semibold">Localização da Vítima</h3>
+              <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                  <MapPin class="w-4 h-4" />
+                </span>
+                <h3 class="font-heading font-semibold text-base">Localização da Vítima</h3>
               </div>
               <button
                 type="button"
@@ -619,11 +623,13 @@ const handleSave = async () => {
         </div>
 
         <!-- Ofensor Form -->
-        <div v-else-if="currentStep === 'ofensor'" class="rounded-lg border border-border glass-card p-6">
-          <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
-            <UserX class="w-5 h-5 text-red-500" />
-            Dados do Agressor (Ofensor)
-          </h2>
+        <div v-else-if="currentStep === 'ofensor'" class="rounded-2xl border border-border glass-card shadow-lg p-6 animate-fade-in-up">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-9 h-9 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center flex-shrink-0">
+              <UserX class="w-5 h-5" />
+            </span>
+            <h2 class="font-heading font-semibold text-lg">Dados do Agressor (Ofensor)</h2>
+          </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="text-sm font-semibold text-foreground/80 mb-2 block">Nome Completo *</label>
@@ -683,9 +689,11 @@ const handleSave = async () => {
           <!-- Mapa Localização do Agressor -->
           <div class="mt-6 pt-6 border-t border-border/30">
             <div class="flex items-center justify-between mb-4">
-              <div class="flex items-center gap-2">
-                <MapPin class="w-5 h-5 text-red-500" />
-                <h3 class="text-lg font-semibold">Localização do Agressor</h3>
+              <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-lg bg-red-500/10 text-red-500 flex items-center justify-center">
+                  <MapPin class="w-4 h-4" />
+                </span>
+                <h3 class="font-heading font-semibold text-base">Localização do Agressor</h3>
               </div>
               <button
                 type="button"
@@ -751,18 +759,20 @@ const handleSave = async () => {
         </div>
 
         <!-- Dependentes Form -->
-        <div v-else-if="currentStep === 'dependentes'" class="rounded-lg border border-border glass-card p-6">
-          <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
-            <Users class="w-5 h-5 text-green-500" />
-            Dependentes
-          </h2>
+        <div v-else-if="currentStep === 'dependentes'" class="rounded-2xl border border-border glass-card shadow-lg p-6 animate-fade-in-up">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-9 h-9 rounded-xl bg-success/10 text-success flex items-center justify-center flex-shrink-0">
+              <Users class="w-5 h-5" />
+            </span>
+            <h2 class="font-heading font-semibold text-lg">Dependentes</h2>
+          </div>
           
           <!-- Lista de Dependentes -->
           <div v-if="dependentesData.length > 0" class="space-y-4 mb-6">
             <div
               v-for="(dependente, index) in dependentesData"
               :key="dependente.id"
-              class="p-4 rounded-xl border border-border/50 bg-secondary/20"
+              class="p-4 rounded-2xl border border-border/60 bg-secondary/30"
             >
               <div class="flex items-center justify-between mb-4">
                 <h3 class="font-semibold text-foreground">Dependente {{ index + 1 }}</h3>
@@ -826,7 +836,7 @@ const handleSave = async () => {
             <button
               type="button"
               @click="addDependente"
-              class="px-4 py-2 rounded-lg border border-dashed border-border hover:bg-secondary/50 transition-colors"
+              class="px-4 py-2 rounded-xl border border-dashed border-border hover:bg-secondary/50 transition-colors text-sm font-medium"
             >
               + Adicionar Dependente
             </button>
@@ -834,11 +844,13 @@ const handleSave = async () => {
         </div>
 
         <!-- Medidas Protetivas Form -->
-        <div v-else-if="currentStep === 'medidas'" class="rounded-lg border border-border glass-card p-6">
-          <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
-            <Shield class="w-5 h-5 text-purple-500" />
-            Medidas Protetivas
-          </h2>
+        <div v-else-if="currentStep === 'medidas'" class="rounded-2xl border border-border glass-card shadow-lg p-6 animate-fade-in-up">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center flex-shrink-0">
+              <Shield class="w-5 h-5" />
+            </span>
+            <h2 class="font-heading font-semibold text-lg">Medidas Protetivas</h2>
+          </div>
           <div class="space-y-4">
             <div>
               <label class="text-sm font-semibold text-foreground/80 mb-2 block">Tipo de Medida</label>
@@ -881,10 +893,12 @@ const handleSave = async () => {
           
           <!-- Locais Proibidos para o Agressor -->
           <div class="mt-6 pt-6 border-t border-border/30">
-            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-              <MapPin class="w-5 h-5 text-red-500" />
-              Locais Proibidos para o Agressor
-            </h3>
+            <div class="flex items-center gap-2.5 mb-4">
+              <span class="w-8 h-8 rounded-lg bg-red-500/10 text-red-500 flex items-center justify-center">
+                <MapPin class="w-4 h-4" />
+              </span>
+              <h3 class="font-heading font-semibold text-base">Locais Proibidos para o Agressor</h3>
+            </div>
             <p class="text-sm text-muted-foreground mb-4">
               Informe os locais onde o agressor não pode se aproximar
             </p>
@@ -924,11 +938,11 @@ const handleSave = async () => {
 
       <!-- Navigation -->
       <div>
-        <div class="rounded-lg border border-border glass-card p-6">
+        <div class="rounded-2xl border border-border glass-card shadow-lg p-6">
           <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-3">
-              <div class="flex items-center gap-1 px-3 py-1 rounded-lg border border-border text-sm">
-                <FileText class="w-3 h-3" />
+              <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary/50 border border-border/60 text-xs font-semibold text-muted-foreground">
+                <FileText class="w-3.5 h-3.5" />
                 Etapa {{ getCurrentStepIndex() + 1 }} de {{ steps.length }}
               </div>
               
@@ -942,7 +956,7 @@ const handleSave = async () => {
               <button
                 v-if="getCurrentStepIndex() > 0"
                 @click="handlePrevious"
-                class="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-border bg-background hover:bg-secondary/50 transition-colors text-sm font-semibold flex-1 sm:flex-initial"
+                class="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-border bg-background hover:bg-secondary/50 transition-colors text-sm font-semibold flex-1 sm:flex-initial"
               >
                 <ChevronLeft class="w-4 h-4" />
                 Anterior
@@ -952,7 +966,7 @@ const handleSave = async () => {
                 v-if="getCurrentStepIndex() < steps.length - 1"
                 @click="handleNext"
                 :disabled="!canProceed()"
-                class="flex items-center justify-center gap-2 px-6 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex-1 sm:flex-initial"
+                class="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex-1 sm:flex-initial"
               >
                 Próximo
                 <ChevronRight class="w-4 h-4" />
@@ -961,7 +975,7 @@ const handleSave = async () => {
                 v-else
                 @click="handleSave"
                 :disabled="!canProceed() || isSaving"
-                class="flex items-center justify-center gap-2 px-6 py-2 rounded-lg bg-accent text-accent-foreground text-sm font-semibold hover:bg-accent/90 transition-opacity disabled:opacity-50 flex-1 sm:flex-initial"
+                class="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex-1 sm:flex-initial"
               >
                 <div v-if="isSaving" class="flex items-center gap-2">
                   <div class="w-4 h-4 border-2 border-accent-foreground/30 border-t-accent-foreground rounded-full animate-spin" />

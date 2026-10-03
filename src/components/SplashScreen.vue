@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ProtegidaLogo from './ProtegidaLogo.vue'
+import LotusLogo from './LotusLogo.vue'
 const emit = defineEmits<{
   (e: 'complete'): void
 }>()
@@ -17,7 +17,7 @@ const emit = defineEmits<{
     <div class="text-center relative z-10 px-4 max-w-lg mx-auto animate-fade-in-up">
       <!-- Logo Container -->
       <div class="flex justify-center mb-6">
-        <ProtegidaLogo size="lg" />
+        <LotusLogo size="lg" />
       </div>
 
       <!-- Subtitle with Enhanced Typography -->

@@ -3,6 +3,8 @@ import { ref, onMounted } from 'vue'
 import { 
   Scale,
   Shield,
+  Sparkles,
+  Loader2,
   AlertTriangle,
   Home,
   FileText,
@@ -26,7 +28,7 @@ import {
   type LocalApoio,
   type RedeApoio
 } from '../services/redeApoioService'
-import ProtegidaLogo from '../components/ProtegidaLogo.vue'
+import LotusLogo from '../components/LotusLogo.vue'
 import SectionHeader from '../components/SectionHeader.vue'
 import { isConfigured, gerarApoio } from '../services/iaAconselhamentoService'
 
@@ -233,13 +235,26 @@ const goBack = () => {
 <template>
   <div class="bg-background">
     <main class="px-3 sm:px-4 md:px-6 lg:px-8 py-8">
-      <div v-if="iaAtiva" class="mb-6 p-4 rounded-lg border border-border glass-card">
-        <p class="font-semibold mb-1">Apoio com IA (opcional)</p>
-        <p class="text-xs text-muted-foreground mb-3">Não substitui ajuda profissional. Em risco imediato ligue 180 ou 190.</p>
+      <div v-if="iaAtiva" class="mb-6 p-6 rounded-2xl border border-border glass-card shadow-lg">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+            <Sparkles class="w-4 h-4" />
+          </span>
+          <div>
+            <p class="font-heading font-semibold text-foreground">Apoio com IA <span class="text-xs font-semibold uppercase tracking-wider text-muted-foreground ml-1">opcional</span></p>
+            <p class="text-xs text-muted-foreground">Não substitui ajuda profissional. Em risco imediato ligue 180 ou 190.</p>
+          </div>
+        </div>
         <textarea v-model="promptIa" rows="3" placeholder="Como você está se sentindo?" class="w-full input-enhanced"></textarea>
-        <button @click="enviarIa" :disabled="loadingIa" class="btn-primary mt-3">{{ loadingIa ? 'Gerando...' : 'Receber apoio' }}</button>
-        <p v-if="erroIa" class="text-sm text-destructive mt-2">{{ erroIa }}</p>
-        <p v-if="respostaIa" class="text-sm mt-2 whitespace-pre-wrap">{{ respostaIa }}</p>
+        <button @click="enviarIa" :disabled="loadingIa" class="mt-4 w-full h-11 rounded-xl font-semibold text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+          <Loader2 v-if="loadingIa" class="w-4 h-4 animate-spin" />
+          {{ loadingIa ? 'Gerando...' : 'Receber apoio' }}
+        </button>
+        <div v-if="erroIa" class="mt-3 flex items-center gap-2 p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+          <AlertTriangle class="w-4 h-4 flex-shrink-0" />
+          {{ erroIa }}
+        </div>
+        <div v-if="respostaIa" class="mt-3 p-4 rounded-2xl bg-secondary/30 border border-border text-sm text-foreground whitespace-pre-wrap shadow-sm">{{ respostaIa }}</div>
       </div>
       <!-- Header -->
       <SectionHeader>
@@ -248,7 +263,7 @@ const goBack = () => {
         <template #actions>
           <button
             @click="goBack"
-            class="px-4 py-2 rounded-lg border border-border hover:bg-secondary/50 transition-colors text-sm font-medium"
+            class="px-4 py-2 rounded-xl border border-border hover:bg-secondary/50 transition-colors text-sm font-medium"
           >
             Voltar
           </button>
@@ -263,9 +278,9 @@ const goBack = () => {
             :key="section.id"
             @click="activeSection = section.id"
             :class="[
-              'flex items-center gap-2 px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all',
+              'flex items-center gap-2 px-4 py-2 rounded-xl font-medium whitespace-nowrap transition-all',
               activeSection === section.id 
-                ? 'bg-primary text-primary-foreground' 
+                ? 'bg-primary text-primary-foreground shadow-md shadow-primary/20' 
                 : 'bg-card text-muted-foreground hover:bg-secondary'
             ]"
           >
@@ -279,13 +294,13 @@ const goBack = () => {
       <div class="space-y-6">
         <!-- Lei Maria da Penha -->
         <div v-if="activeSection === 'lei'" class="animate-fade-in-up">
-          <div class="rounded-lg border border-border glass-card p-6">
+          <div class="rounded-2xl border border-border glass-card shadow-lg p-6">
             <div class="flex items-start gap-4 mb-4">
-              <div class="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground flex-shrink-0">
+              <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
                 <Scale class="w-6 h-6" />
               </div>
               <div>
-                <h2 class="text-xl font-bold text-foreground">Lei nº 11.340/2006</h2>
+                <h2 class="text-xl font-bold font-heading text-foreground">Lei nº 11.340/2006</h2>
                 <p class="text-primary font-medium">Lei Maria da Penha</p>
               </div>
             </div>
@@ -294,7 +309,7 @@ const goBack = () => {
               A lei foi criada em 2006 em homenagem à Maria da Penha, que sofreu violência 
               doméstica por anos e cujo caso teve repercussão internacional.
             </p>
-            <div class="mt-4 p-4 bg-secondary/30 border border-border rounded-lg">
+            <div class="mt-4 p-4 bg-secondary/30 border border-border rounded-xl">
               <p class="text-sm text-muted-foreground">
                 <strong>Importante:</strong> A lei considera violência doméstica qualquer ação ou omissão baseada no gênero que cause morte, lesão, sofrimento físico, sexual ou psicológico.
               </p>
@@ -304,20 +319,20 @@ const goBack = () => {
 
         <!-- Seus Direitos -->
         <div v-if="activeSection === 'direitos'" class="animate-fade-in-up">
-          <div class="rounded-lg border border-border glass-card p-6">
+          <div class="rounded-2xl border border-border glass-card shadow-lg p-6">
             <div class="flex items-center gap-3 mb-6">
-              <div class="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground">
+              <div class="w-12 h-12 rounded-xl bg-success/10 text-success flex items-center justify-center">
                 <Shield class="w-6 h-6" />
               </div>
-              <h2 class="text-xl font-bold text-foreground">Seus Direitos</h2>
+              <h2 class="text-xl font-bold font-heading text-foreground">Seus Direitos</h2>
             </div>
             <div class="space-y-3">
               <div 
                 v-for="(direito, index) in direitos" 
                 :key="index"
-                class="flex items-start gap-3 p-3 rounded-lg bg-secondary/30"
+                class="flex items-start gap-3 p-3 rounded-xl bg-secondary/30"
               >
-                <CheckCircle class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <CheckCircle class="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
                 <span class="text-foreground">{{ direito }}</span>
               </div>
             </div>
@@ -326,17 +341,17 @@ const goBack = () => {
 
         <!-- Tipos de Violência -->
         <div v-if="activeSection === 'violencia'" class="animate-fade-in-up space-y-4">
-          <h2 class="text-xl font-bold text-foreground">Tipos de Violência</h2>
+          <h2 class="text-xl font-bold font-heading text-foreground">Tipos de Violência</h2>
           <div 
             v-for="(violencia, index) in tiposViolencia" 
             :key="index"
-            class="rounded-lg border border-border glass-card p-6"
+            class="rounded-2xl border border-border glass-card shadow-lg p-6"
           >
             <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 rounded-lg bg-secondary/50 flex items-center justify-center text-foreground">
+              <div class="w-10 h-10 rounded-xl bg-warning/10 text-warning flex items-center justify-center">
                 <AlertTriangle class="w-5 h-5" />
               </div>
-              <h3 class="font-bold text-foreground">{{ violencia.tipo }}</h3>
+              <h3 class="font-heading font-bold text-foreground">{{ violencia.tipo }}</h3>
             </div>
             <p class="text-muted-foreground mb-3">{{ violencia.descricao }}</p>
             <div class="flex flex-wrap gap-2">
@@ -353,17 +368,17 @@ const goBack = () => {
 
         <!-- Medidas Protetivas -->
         <div v-if="activeSection === 'medidas'" class="animate-fade-in-up space-y-4">
-          <div class="rounded-lg border border-border glass-card p-6">
+          <div class="rounded-2xl border border-border glass-card shadow-lg p-6">
             <div class="flex items-center gap-3 mb-4">
-              <div class="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground">
+              <div class="w-12 h-12 rounded-xl bg-info/10 text-info flex items-center justify-center">
                 <Home class="w-6 h-6" />
               </div>
               <div>
-                <h2 class="text-xl font-bold text-foreground">Medidas Protetivas</h2>
+                <h2 class="text-xl font-bold font-heading text-foreground">Medidas Protetivas</h2>
                 <p class="text-muted-foreground text-sm">Garantidas pela Lei Maria da Penha</p>
               </div>
             </div>
-            <div class="p-4 bg-secondary/30 border border-border rounded-lg mb-4">
+            <div class="p-4 bg-secondary/30 border border-border rounded-xl mb-4">
               <p class="text-sm text-muted-foreground">
                 <strong>Importante:</strong> As medidas protetivas devem ser concedidas em até 48 horas após a solicitação.
               </p>
@@ -374,13 +389,13 @@ const goBack = () => {
             <div 
               v-for="(medida, index) in medidas" 
               :key="index"
-              class="rounded-lg border border-border glass-card p-5 flex items-start gap-4"
+              class="rounded-2xl border border-border glass-card shadow-sm p-5 flex items-start gap-4"
             >
-              <div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold flex-shrink-0">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-bold shadow-md shadow-primary/25 flex-shrink-0">
                 {{ index + 1 }}
               </div>
               <div>
-                <h3 class="font-bold text-foreground">{{ medida.titulo }}</h3>
+                <h3 class="font-heading font-bold text-foreground">{{ medida.titulo }}</h3>
                 <p class="text-muted-foreground text-sm">{{ medida.descricao }}</p>
               </div>
             </div>
@@ -389,12 +404,12 @@ const goBack = () => {
 
         <!-- O que Fazer -->
         <div v-if="activeSection === 'passos'" class="animate-fade-in-up space-y-4">
-          <div class="rounded-lg border border-border glass-card p-6">
+          <div class="rounded-2xl border border-border glass-card shadow-lg p-6">
             <div class="flex items-center gap-3 mb-6">
-              <div class="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center text-foreground">
+              <div class="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center">
                 <FileText class="w-6 h-6" />
               </div>
-              <h2 class="text-xl font-bold text-foreground">O que Fazer?</h2>
+              <h2 class="text-xl font-bold font-heading text-foreground">O que Fazer?</h2>
             </div>
           </div>
           
@@ -402,13 +417,13 @@ const goBack = () => {
             <div 
               v-for="passo in passos" 
               :key="passo.num"
-              class="rounded-lg border border-border glass-card p-5 flex items-start gap-4"
+              class="rounded-2xl border border-border glass-card shadow-sm p-5 flex items-start gap-4"
             >
-              <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-lg flex-shrink-0">
+              <div class="w-12 h-12 rounded-full bg-primary shadow-lg shadow-primary/25 flex items-center justify-center text-primary-foreground font-bold text-lg flex-shrink-0">
                 {{ passo.num }}
               </div>
               <div>
-                <h3 class="font-bold text-foreground mb-1">{{ passo.titulo }}</h3>
+                <h3 class="font-heading font-bold text-foreground mb-1">{{ passo.titulo }}</h3>
                 <p class="text-muted-foreground text-sm">{{ passo.desc }}</p>
               </div>
             </div>
@@ -419,37 +434,42 @@ const goBack = () => {
         <div v-if="activeSection === 'rede-apoio'" class="animate-fade-in-up space-y-6">
           <!-- Telefones Úteis -->
           <div class="mb-6">
-            <h2 class="font-semibold text-lg text-foreground mb-3">Telefones de Emergência</h2>
+            <div class="flex items-center gap-3 mb-4">
+              <span class="w-9 h-9 rounded-xl bg-destructive/10 text-destructive flex items-center justify-center">
+                <Phone class="w-5 h-5" />
+              </span>
+              <h2 class="font-heading font-semibold text-lg text-foreground">Telefones de Emergência</h2>
+            </div>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <button
                 @click="callPhone('180')"
-                class="rounded-lg border border-border glass-card hover:bg-secondary/30 p-4 text-center transition-colors"
+                class="rounded-2xl border border-border glass-card shadow-sm hover:shadow-md hover:-translate-y-0.5 p-4 text-center transition-all"
               >
-                <span class="text-2xl font-bold tnum">180</span>
+                <span class="text-2xl font-bold tnum text-primary">180</span>
                 <p class="text-xs mt-1 text-muted-foreground">Central Mulher</p>
               </button>
 
               <button
                 @click="callPhone('190')"
-                class="rounded-lg border border-border glass-card hover:bg-secondary/30 p-4 text-center transition-colors"
+                class="rounded-2xl border border-border glass-card shadow-sm hover:shadow-md hover:-translate-y-0.5 p-4 text-center transition-all"
               >
-                <span class="text-2xl font-bold tnum">190</span>
+                <span class="text-2xl font-bold tnum text-destructive">190</span>
                 <p class="text-xs mt-1 text-muted-foreground">Polícia Militar</p>
               </button>
 
               <button
                 @click="callPhone('192')"
-                class="rounded-lg border border-border glass-card hover:bg-secondary/30 p-4 text-center transition-colors"
+                class="rounded-2xl border border-border glass-card shadow-sm hover:shadow-md hover:-translate-y-0.5 p-4 text-center transition-all"
               >
-                <span class="text-2xl font-bold tnum">192</span>
+                <span class="text-2xl font-bold tnum text-warning">192</span>
                 <p class="text-xs mt-1 text-muted-foreground">SAMU</p>
               </button>
 
               <button
                 @click="callPhone('129')"
-                class="rounded-lg border border-border glass-card hover:bg-secondary/30 p-4 text-center transition-colors"
+                class="rounded-2xl border border-border glass-card shadow-sm hover:shadow-md hover:-translate-y-0.5 p-4 text-center transition-all"
               >
-                <span class="text-2xl font-bold tnum">129</span>
+                <span class="text-2xl font-bold tnum text-info">129</span>
                 <p class="text-xs mt-1 text-muted-foreground">Defensoria</p>
               </button>
             </div>
@@ -457,13 +477,18 @@ const goBack = () => {
 
           <!-- Locais de Atendimento -->
           <div>
-            <div class="rounded-lg border border-border glass-card">
+            <div class="rounded-2xl border border-border glass-card shadow-lg">
               <div class="p-6 pb-4">
                 <div class="flex items-center justify-between">
-                  <h2 class="font-semibold text-lg text-foreground">Locais de Atendimento</h2>
+                  <div class="flex items-center gap-3">
+                    <span class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                      <MapPin class="w-5 h-5" />
+                    </span>
+                    <h2 class="font-heading font-semibold text-lg text-foreground">Locais de Atendimento</h2>
+                  </div>
                   <button
                     @click="openModal()"
-                    class="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm"
+                    class="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white font-medium shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all text-sm"
                   >
                     <Plus class="w-4 h-4" />
                     Adicionar
@@ -475,9 +500,9 @@ const goBack = () => {
                 <div
                   v-for="local in locaisApoio"
                   :key="local.id"
-                  class="flex items-start gap-4 p-4 rounded-xl bg-secondary/30 hover:bg-secondary/50 transition-colors"
+                    class="flex items-start gap-4 p-4 rounded-2xl bg-secondary/30 border border-border/50 hover:bg-secondary/50 hover:shadow-sm transition-all"
                 >
-                  <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                    <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
                     <MapPin class="w-5 h-5" />
                   </div>
                   
@@ -550,13 +575,13 @@ const goBack = () => {
 
         <!-- Frase Final -->
         <div class="animate-fade-in-up">
-          <div class="rounded-lg border border-border glass-card py-3 px-6 text-center">
+          <div class="rounded-2xl border border-border glass-card shadow-lg py-4 px-6 text-center">
             <div class="flex items-center justify-center gap-4">
               <div class="w-14 h-14 rounded-full bg-secondary/50 border border-border flex items-center justify-center flex-shrink-0">
-                <ProtegidaLogo size="sm" />
+                <LotusLogo size="sm" />
               </div>
               <div class="text-left">
-                <h2 class="text-lg font-bold text-foreground">Você não está sozinha!</h2>
+                <h2 class="text-lg font-bold font-heading text-foreground">Você não está sozinha!</h2>
                 <p class="text-muted-foreground text-sm">
                   Há uma rede de apoio pronta para ajudá-la. Não tenha medo de buscar seus direitos.
                 </p>
@@ -573,9 +598,9 @@ const goBack = () => {
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
       @click.self="closeModal"
     >
-      <div class="bg-card rounded-2xl border border-border w-full max-w-2xl mx-auto animate-scale-in">
+      <div class="bg-card rounded-2xl border border-border shadow-2xl w-full max-w-2xl mx-auto animate-scale-in">
         <div class="flex items-center justify-between p-6 border-b border-border">
-          <h2 class="text-xl font-bold text-foreground">
+          <h2 class="text-xl font-bold font-heading text-foreground">
             {{ isEditing ? 'Editar Local' : 'Novo Local de Apoio' }}
           </h2>
           <button
@@ -674,7 +699,7 @@ const goBack = () => {
             </button>
             <button
               type="submit"
-              class="flex-1 px-4 py-3 rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 transition-colors font-medium flex items-center justify-center gap-2"
+              class="flex-1 px-4 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
             >
               <Save class="w-4 h-4" />
               Salvar

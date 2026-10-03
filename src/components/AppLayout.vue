@@ -18,7 +18,7 @@ import {
 } from 'lucide-vue-next'
 import { useUserStore } from '../stores/userStore'
 import { useTheme } from '../composables/useTheme'
-import ProtegidaLogo from './ProtegidaLogo.vue'
+import LotusLogo from './LotusLogo.vue'
 import ThemeToggle from './ThemeToggle.vue'
 import { useClickOutside } from '../composables/useClickOutside'
 
@@ -187,7 +187,7 @@ useClickOutside(navRef, closeDropdown)
                 <Menu class="w-6 h-6" />
               </button>
               <router-link to="/dashboard" class="flex items-center hover:scale-105 transition-transform">
-                <ProtegidaLogo size="sm" :variant="theme === 'dark' ? 'mono' : 'dark'" />
+                <LotusLogo size="sm" :variant="theme === 'dark' ? 'mono' : 'dark'" />
               </router-link>
             </div>
 

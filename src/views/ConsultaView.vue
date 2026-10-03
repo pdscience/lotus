@@ -6,7 +6,8 @@ import {
   Calendar,
   Eye,
   Download,
-  RefreshCw
+  RefreshCw,
+  FileText
 } from 'lucide-vue-next'
 import { fetchMedidasProtetivas, type MedidaProtetivaAll } from '../services/medidaService'
 import DataTable from '../components/DataTable.vue'
@@ -119,7 +120,7 @@ const exportToPDF = () => {
       </table>
 
       <div class="footer">
-        <p>Sistema Protegida - Acesso a Medidas Protetivas e Ações de Resposta Emergenciais</p>
+        <p>Sistema Lótus - Acesso a Medidas Protetivas e Ações de Resposta Emergenciais</p>
       </div>
     </body>
     </html>
@@ -234,11 +235,11 @@ const estiloSeloPendente = (status: string) =>
         <template #title>Consulta de medidas protetivas</template>
         <template #desc>Busque e gerencie registros de medidas protetivas</template>
         <template #actions>
-          <button @click="exportToPDF" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity">
+          <button @click="exportToPDF" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all text-sm font-semibold">
             <Download class="w-4 h-4" />
             Exportar relatório
           </button>
-          <button @click="handleSearch" class="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium hover:bg-secondary/50 transition-colors">
+          <button @click="handleSearch" class="flex items-center gap-2 px-4 py-2 rounded-xl border border-border text-sm font-medium hover:bg-secondary/50 transition-colors">
             <RefreshCw class="w-4 h-4" :class="{ 'animate-spin': isLoading }" />
             Atualizar
           </button>
@@ -246,23 +247,23 @@ const estiloSeloPendente = (status: string) =>
       </SectionHeader>
 
       <!-- Filtros -->
-      <div class="rounded-lg border border-border glass-card p-6 mb-6">
-        <div class="flex gap-3 mb-4">
+      <div class="rounded-2xl border border-border glass-card shadow-lg p-6 mb-6 animate-fade-in-up">
+        <div class="flex flex-col sm:flex-row gap-3 mb-5">
           <div class="flex-1 relative">
-            <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
             <input
               v-model="searchTerm"
               type="text"
               placeholder="Buscar por processo, nome da vítima, agressor ou cidade..."
-              class="w-full h-11 rounded-lg border border-border bg-input pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
+              class="w-full h-12 rounded-xl border border-border/50 bg-input/50 pl-11 pr-4 text-base focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:bg-background"
             />
           </div>
           <button
             @click="handleSearch"
-            class="flex items-center gap-2 px-6 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+            class="flex items-center justify-center gap-2 px-6 h-12 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             :disabled="isLoading"
           >
-            <div v-if="isLoading" class="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+            <div v-if="isLoading" class="w-4 h-4 border-2 border-accent-foreground/30 border-t-accent-foreground rounded-full animate-spin" />
             <Search v-else class="w-4 h-4" />
             Buscar
           </button>
@@ -270,10 +271,10 @@ const estiloSeloPendente = (status: string) =>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label class="text-sm font-medium text-foreground mb-2 block">Status</label>
+            <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 block">Status</label>
             <select
               v-model="selectedStatus"
-              class="w-full h-11 rounded-lg border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
+              class="w-full h-12 rounded-xl border border-border/50 bg-input/50 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:bg-background"
             >
               <option value="todos">Todos os Status</option>
               <option value="ativa">Ativa</option>
@@ -284,10 +285,10 @@ const estiloSeloPendente = (status: string) =>
           </div>
 
           <div>
-            <label class="text-sm font-medium text-foreground mb-2 block">Urgência</label>
+            <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 block">Urgência</label>
             <select
               v-model="selectedUrgencia"
-              class="w-full h-11 rounded-lg border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
+              class="w-full h-12 rounded-xl border border-border/50 bg-input/50 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:bg-background"
             >
               <option value="todos">Todas as Urgências</option>
               <option value="critica">Crítica</option>
@@ -298,12 +299,12 @@ const estiloSeloPendente = (status: string) =>
           </div>
 
           <div>
-            <label class="text-sm font-medium text-foreground mb-2 block">Data</label>
+            <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 block">Data</label>
             <div class="relative">
-              <Calendar class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Calendar class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
               <input
                 type="date"
-                class="w-full h-11 rounded-lg border border-border bg-input pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
+                class="w-full h-12 rounded-xl border border-border/50 bg-input/50 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:bg-background"
               />
             </div>
           </div>
@@ -311,16 +312,21 @@ const estiloSeloPendente = (status: string) =>
       </div>
 
       <!-- Resultados -->
-      <div class="rounded-lg border border-border glass-card p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="font-semibold text-lg">Resultados da busca</h2>
-          <span class="text-sm text-muted-foreground">{{ filteredData.length }} registros encontrados</span>
+      <div class="rounded-2xl border border-border glass-card shadow-lg p-6 animate-fade-in-up">
+        <div class="flex items-center justify-between mb-5">
+          <div class="flex items-center gap-2.5">
+            <span class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+              <FileText class="w-5 h-5" />
+            </span>
+            <h2 class="font-heading font-semibold text-lg">Resultados da busca</h2>
+          </div>
+          <span class="rounded-lg px-3 py-1 text-xs font-medium bg-secondary/50 text-muted-foreground">{{ filteredData.length }} registros encontrados</span>
         </div>
 
-        <div class="flex flex-wrap items-center gap-2 mb-4">
+        <div class="flex flex-wrap items-center gap-2 mb-5">
           <input v-model="searchTerm" placeholder="Buscar..." class="input-enhanced !w-64" />
-          <button v-for="f in filtros" :key="f" @click="selectedStatus = filtroParaValor[f]" :class="['rounded-full px-3 py-1 text-xs border', valorParaFiltro[selectedStatus] === f ? 'bg-primary text-primary-foreground border-transparent' : 'border-border text-muted-foreground']">{{ f }}</button>
-          <button @click="novaMedida" class="rounded-lg px-3 py-1.5 text-xs font-semibold" :style="{ background: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }">+ Novo</button>
+          <button v-for="f in filtros" :key="f" @click="selectedStatus = filtroParaValor[f]" :class="['rounded-lg px-3 py-1 text-xs font-medium border transition-colors', valorParaFiltro[selectedStatus] === f ? 'bg-primary text-primary-foreground border-transparent shadow-sm' : 'border-border text-muted-foreground hover:bg-secondary/50']">{{ f }}</button>
+          <button @click="novaMedida" class="rounded-lg px-3 py-1 text-xs font-semibold shadow-sm" :style="{ background: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }">+ Novo</button>
         </div>
 
         <DataTable>
@@ -344,19 +350,19 @@ const estiloSeloPendente = (status: string) =>
               <p class="text-xs text-muted-foreground truncate max-w-40">{{ item.tipo.join(', ') }}</p>
             </td>
             <td>
-              <span class="rounded-full px-2 py-0.5 text-xs" :class="classePorStatus(item.status)" :style="estiloSeloPendente(item.status)">
+              <span class="rounded-lg px-3 py-1 text-xs font-medium" :class="classePorStatus(item.status)" :style="estiloSeloPendente(item.status)">
                 {{ getStatusLabel(item.status) }}
               </span>
             </td>
             <td>
-              <span class="rounded-full px-2 py-0.5 text-xs" :class="classePorStatus(item.urgencia)">
+              <span class="rounded-lg px-3 py-1 text-xs font-medium" :class="classePorStatus(item.urgencia)">
                 {{ getUrgenciaConfig(item.urgencia).label }}
               </span>
             </td>
             <td class="text-muted-foreground">{{ new Date(item.dataRegistro).toLocaleDateString('pt-BR') }}</td>
             <td class="text-right">
               <details class="relative inline-block">
-                <summary class="cursor-pointer list-none px-3 py-1.5 rounded-lg border border-border text-xs font-medium hover:bg-secondary/50 transition-colors">•••</summary>
+                <summary class="cursor-pointer list-none px-3 py-1.5 rounded-xl border border-border/60 text-xs font-medium hover:bg-secondary/50 transition-colors">•••</summary>
                 <div class="absolute right-0 z-10 rounded-lg border border-border bg-popover p-1 shadow-lg min-w-32">
                   <button @click="viewMedida(item.id)" class="flex w-full items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left">
                     <Eye class="w-3.5 h-3.5" />

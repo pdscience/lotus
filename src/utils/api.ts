@@ -6,18 +6,22 @@ export interface ApiError {
   status?: number
 }
 
-const CSRF_KEY = 'protegida-csrf-token'
-const LEGACY_CSRF_KEY = 'ampare-csrf-token'
-const TOKEN_KEY = 'protegida-token'
-const LEGACY_TOKEN_KEY = 'ampare-token'
+const CSRF_KEY = 'lotus-csrf-token'
+const LEGACY_CSRF_KEYS = ['protegida-csrf-token', 'ampare-csrf-token']
+const TOKEN_KEY = 'lotus-token'
+const LEGACY_TOKEN_KEYS = ['protegida-token', 'ampare-token']
+const USER_KEY = 'lotus-user'
+const LEGACY_USER_KEYS = ['protegida-user', 'ampare-user']
+const USER_TYPE_KEY = 'lotus-user-type'
+const LEGACY_USER_TYPE_KEYS = ['protegida-user-type', 'ampare-user-type']
 
 function migrate(key: string, legacy: string): void {
   const v = localStorage.getItem(legacy)
   if (v && !localStorage.getItem(key)) localStorage.setItem(key, v)
   if (v) localStorage.removeItem(legacy)
 }
-migrate(TOKEN_KEY, LEGACY_TOKEN_KEY)
-migrate(CSRF_KEY, LEGACY_CSRF_KEY)
+for (const legacy of LEGACY_TOKEN_KEYS) migrate(TOKEN_KEY, legacy)
+for (const legacy of LEGACY_CSRF_KEYS) migrate(CSRF_KEY, legacy)
 
 function generateCSRFToken(): string {
   const array = new Uint8Array(32)
@@ -55,7 +59,7 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('protegida-token')
+  const token = localStorage.getItem(TOKEN_KEY)
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`
   }
@@ -83,8 +87,10 @@ api.interceptors.response.use(
     }
 
     if (error.response?.status === 401) {
-      localStorage.removeItem('protegida-user')
-      localStorage.removeItem('protegida-user-type')
+      localStorage.removeItem(USER_KEY)
+      localStorage.removeItem(USER_TYPE_KEY)
+      for (const legacy of LEGACY_USER_KEYS) localStorage.removeItem(legacy)
+      for (const legacy of LEGACY_USER_TYPE_KEYS) localStorage.removeItem(legacy)
       removeCSRFToken()
       window.location.href = '/login'
     }

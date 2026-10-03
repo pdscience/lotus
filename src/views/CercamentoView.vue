@@ -385,7 +385,7 @@ function resetar() {
 
       <!-- Permissão de Localização - Negada -->
       <div v-if="localizacaoNegada" class="mb-6 animate-fade-in-up">
-        <div class="bg-red-500/10 border-2 border-red-500 rounded-xl p-4 flex items-center gap-4">
+        <div class="bg-red-500/10 border-2 border-red-500 rounded-2xl p-4 flex items-center gap-4">
           <div class="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white flex-shrink-0">
             <Navigation class="w-5 h-5" />
           </div>
@@ -407,7 +407,7 @@ function resetar() {
 
       <!-- Permissão de Localização - Solicitando -->
       <div v-else-if="!localizacaoPermitida" class="mb-6 animate-fade-in-up">
-        <div class="bg-yellow-500/10 border-2 border-yellow-500 rounded-xl p-4 flex items-center gap-4">
+        <div class="bg-yellow-500/10 border-2 border-yellow-500 rounded-2xl p-4 flex items-center gap-4">
           <div class="w-10 h-10 rounded-full bg-yellow-500 flex items-center justify-center text-white flex-shrink-0">
             <Navigation class="w-5 h-5" />
           </div>
@@ -429,10 +429,10 @@ function resetar() {
 
       <!-- Localização Ativada -->
       <div v-else class="mb-6 animate-fade-in-up">
-        <div class="bg-green-500/10 border-2 border-green-500 rounded-xl p-4 flex items-center gap-3">
-          <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white">
-            <MapPin class="w-4 h-4" />
-          </div>
+          <div class="bg-green-500/10 border-2 border-green-500 rounded-2xl p-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white">
+              <MapPin class="w-4 h-4" />
+            </div>
           <p class="text-sm font-medium text-green-700">Localização ativada ✓</p>
         </div>
       </div>
@@ -442,7 +442,7 @@ function resetar() {
         v-if="alertaAtivo && monitorando"
         class="mb-6 animate-fade-in-up"
       >
-        <div class="bg-red-500/10 border-2 border-red-500 rounded-xl p-4 sm:p-6">
+        <div class="bg-red-500/10 border-2 border-red-500 rounded-2xl p-4 sm:p-6">
           <div class="flex items-center gap-3">
             <div class="w-12 h-12 rounded-full bg-red-500 flex items-center justify-center text-white animate-pulse">
               <AlertTriangle class="w-6 h-6" />
@@ -466,10 +466,10 @@ function resetar() {
         v-if="monitorando && !alertaAtivo"
         class="mb-6 animate-fade-in-up"
       >
-        <div class="bg-green-500/10 border-2 border-green-500 rounded-xl p-4 flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white">
-            <Bell class="w-5 h-5" />
-          </div>
+          <div class="bg-green-500/10 border-2 border-green-500 rounded-2xl p-4 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white">
+              <Bell class="w-5 h-5" />
+            </div>
           <div>
             <p class="font-semibold text-green-700">Monitoramento Ativo</p>
             <p class="text-sm text-green-600">
@@ -479,25 +479,19 @@ function resetar() {
         </div>
       </div>
 
-      <!-- Molde Mapa: full-bleed + painel flutuante + stats sobrepostos -->
-      <div class="relative h-[calc(100vh-8rem)] rounded-lg overflow-hidden border border-border animate-fade-in-up">
-        <div class="absolute inset-0">
-          <div
-            id="cercamento-map"
-            class="h-full w-full z-0"
-            :class="modoSelecao ? 'cursor-crosshair' : ''"
-          ></div>
-        </div>
-
-        <!-- Painel flutuante -->
-        <div class="absolute left-4 top-4 bottom-4 z-10 w-80 max-w-[calc(100%-2rem)] rounded-lg border border-border glass-card/95 backdrop-blur p-4 overflow-y-auto">
-          <div class="flex items-center gap-2 mb-1">
-            <MapPin class="w-5 h-5 text-primary" />
-            <span class="font-semibold">Mapa de Monitoramento</span>
+      <!-- Molde Mapa: painel de monitoramento ao lado + mapa -->
+      <div class="flex flex-col lg:flex-row items-start gap-4 animate-fade-in-up">
+        <!-- Painel: monitoramento -->
+        <aside class="w-full lg:w-80 shrink-0 rounded-2xl border border-border glass-card/95 shadow-lg p-4 lg:h-[calc(100vh-16rem)] lg:overflow-y-auto">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+              <MapPin class="w-5 h-5" />
+            </span>
+            <span class="font-heading font-semibold">Mapa de Monitoramento</span>
           </div>
           <div
             v-if="modoSelecao"
-            class="mb-3 flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium animate-pulse"
+            class="mb-3 flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium animate-pulse"
             :class="modoSelecao === 'vitima'
               ? 'bg-blue-500/10 text-blue-600'
               : 'bg-red-500/10 text-red-600'"
@@ -507,16 +501,16 @@ function resetar() {
           </div>
 
           <!-- Dados da Vítima -->
-          <div class="rounded-lg border border-border glass-card p-4 mb-3">
+          <div class="rounded-2xl border border-border glass-card shadow-sm p-4 mb-3">
             <div class="flex items-center gap-2 mb-3">
-              <div class="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center text-white">
+              <div class="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
                 <User class="w-4 h-4" />
               </div>
-              <h3 class="font-semibold">Dados da Vítima</h3>
+              <h3 class="font-heading font-semibold text-base">Vítima</h3>
             </div>
             <div class="space-y-3">
               <div>
-                <label class="text-sm font-medium text-foreground mb-1 block">Nome da Vítima</label>
+                <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1 block">Nome da Vítima</label>
                 <input
                   v-model="vitimaNome"
                   type="text"
@@ -525,7 +519,7 @@ function resetar() {
                 />
               </div>
               <div>
-                <label class="text-sm font-medium text-foreground mb-1 block">Telefone da Vítima</label>
+                <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1 block">Telefone da Vítima</label>
                 <input
                   v-model="vitimaTelefone"
                   type="tel"
@@ -534,7 +528,7 @@ function resetar() {
                 />
               </div>
               <div>
-                <label class="text-sm font-medium text-foreground mb-1 block">Endereço de Referência</label>
+                <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1 block">Endereço de Referência</label>
                 <input
                   v-model="vitimaEndereco"
                   type="text"
@@ -571,25 +565,25 @@ function resetar() {
           </div>
 
           <!-- Dados do Agressor -->
-          <div class="rounded-lg border border-border glass-card p-4 mb-3">
+          <div class="rounded-2xl border border-border glass-card shadow-sm p-4 mb-3">
             <div class="flex items-center gap-2 mb-3">
-              <div class="w-8 h-8 rounded-lg bg-red-500 flex items-center justify-center text-white">
+              <div class="w-8 h-8 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center">
                 <UserX class="w-4 h-4" />
               </div>
-              <h3 class="font-semibold">Dados do Agressor</h3>
+              <h3 class="font-heading font-semibold text-base">Agressor</h3>
             </div>
             <div class="space-y-3">
               <div>
-                <label class="text-sm font-medium text-foreground mb-1 block">Nome do Agressor</label>
+                <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1 block">Nome do Agressor</label>
                 <input
                   v-model="agressorNome"
                   type="text"
-                  placeholder="Ex: João Silva"
+                  placeholder="Ex: João da Penha"
                   class="w-full h-11 rounded-xl border border-border/50 bg-input/50 px-4 py-3 text-sm focus:border-primary/50 focus:bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
               </div>
               <div>
-                <label class="text-sm font-medium text-foreground mb-1 block">Telefone do Agressor</label>
+                <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1 block">Telefone do Agressor</label>
                 <input
                   v-model="agressorTelefone"
                   type="tel"
@@ -598,7 +592,7 @@ function resetar() {
                 />
               </div>
               <div>
-                <label class="text-sm font-medium text-foreground mb-1 block">Endereço do Agressor</label>
+                <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1 block">Endereço do Agressor</label>
                 <input
                   v-model="agressorEndereco"
                   type="text"
@@ -635,17 +629,17 @@ function resetar() {
           </div>
 
           <!-- Raio de Proteção -->
-          <div class="rounded-lg border border-border glass-card p-4 mb-3">
+          <div class="rounded-2xl border border-border glass-card shadow-sm p-4 mb-3">
             <div class="flex items-center gap-2 mb-3">
-              <div class="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center text-white">
+              <div class="w-8 h-8 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center">
                 <Radius class="w-4 h-4" />
               </div>
-              <h3 class="font-semibold">Raio de Proteção</h3>
+              <h3 class="font-heading font-semibold">Raio de Proteção</h3>
             </div>
             <div class="space-y-4">
               <div>
                 <div class="flex items-center justify-between mb-2">
-                  <label class="text-sm font-medium text-foreground">Distância do raio</label>
+                  <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Distância do raio</label>
                   <span class="text-sm font-bold text-primary">{{ raioMetros }}m ({{ raioKm.toFixed(1) }}km)</span>
                 </div>
                 <input
@@ -667,7 +661,7 @@ function resetar() {
                   v-for="preset in [200, 500, 1000, 2000]"
                   :key="preset"
                   @click="raioMetros = preset"
-                  class="h-9 rounded-lg text-xs font-medium transition-colors"
+                  class="h-9 rounded-xl text-xs font-medium transition-colors"
                   :class="raioMetros === preset
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-secondary/50 hover:bg-secondary text-foreground'"
@@ -679,7 +673,7 @@ function resetar() {
           </div>
 
           <!-- Controles -->
-          <div class="rounded-lg border border-border glass-card p-4 mb-3">
+          <div class="rounded-2xl border border-border glass-card shadow-sm p-4 mb-3">
             <div class="space-y-3">
               <button
                 v-if="!monitorando"
@@ -687,7 +681,7 @@ function resetar() {
                 :disabled="!vitimaPosicao || !agressorPosicao"
                 class="w-full flex items-center justify-center gap-2 h-12 rounded-xl font-semibold text-white transition-all"
                 :class="vitimaPosicao && agressorPosicao
-                  ? 'bg-green-500 hover:bg-green-600'
+                  ? 'bg-green-500 hover:bg-green-600 shadow-lg shadow-green-500/25 active:scale-[0.99]'
                   : 'bg-secondary text-muted-foreground cursor-not-allowed'"
               >
                 <Play class="w-5 h-5" />
@@ -696,7 +690,7 @@ function resetar() {
               <button
                 v-if="monitorando"
                 @click="pararMonitoramento"
-                class="w-full flex items-center justify-center gap-2 h-12 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold transition-all"
+                class="w-full flex items-center justify-center gap-2 h-12 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold shadow-lg shadow-red-500/25 active:scale-[0.99] transition-all"
               >
                 <Square class="w-5 h-5" />
                 Parar Monitoramento
@@ -722,7 +716,7 @@ function resetar() {
           <!-- Distância em tempo real -->
           <div
             v-if="distanciaAtual !== null"
-            class="p-4 rounded-xl mb-3"
+            class="p-4 rounded-2xl mb-3"
             :class="alertaAtivo ? 'bg-red-500/10 border border-red-500' : 'bg-green-500/10 border border-green-500'"
           >
             <div class="flex items-center justify-between">
@@ -753,8 +747,8 @@ function resetar() {
           </div>
 
           <!-- Legenda -->
-          <div class="rounded-lg border border-border glass-card p-4">
-            <h4 class="text-sm font-semibold mb-3 text-foreground">Legenda</h4>
+          <div class="rounded-2xl border border-border glass-card shadow-sm p-4">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Legenda</h4>
             <div class="space-y-2">
               <div class="flex items-center gap-2">
                 <div class="w-4 h-4 rounded-full bg-blue-500 border-2 border-border"></div>
@@ -770,29 +764,43 @@ function resetar() {
               </div>
             </div>
           </div>
-        </div>
+        </aside>
 
-        <!-- StatCards sobrepostos -->
-        <div class="absolute top-4 right-4 z-10 hidden sm:flex gap-2">
-          <div class="rounded-lg border border-border glass-card/95 backdrop-blur px-4 py-2 shadow-lg">
-            <p class="text-xs text-muted-foreground">Distância</p>
-            <p class="text-lg font-bold" :class="alertaAtivo ? 'text-red-600' : 'text-green-600'">
-              {{ distanciaAtual !== null ? formatarDistancia(distanciaAtual) : '—' }}
-            </p>
+        <!-- Coluna do mapa: stats acima + mapa -->
+        <div class="w-full flex-1 flex flex-col gap-3 min-w-0">
+          <!-- Stats acima do mapa -->
+          <div class="hidden sm:flex gap-2 justify-end">
+            <div class="rounded-xl border border-border glass-card/95 backdrop-blur px-4 py-2 shadow-lg">
+              <p class="text-xs text-muted-foreground">Distância</p>
+              <p class="text-lg font-bold" :class="alertaAtivo ? 'text-red-600' : 'text-green-600'">
+                {{ distanciaAtual !== null ? formatarDistancia(distanciaAtual) : '—' }}
+              </p>
+            </div>
+            <div class="rounded-xl border border-border glass-card/95 backdrop-blur px-4 py-2 shadow-lg">
+              <p class="text-xs text-muted-foreground">Raio</p>
+              <p class="text-lg font-bold">{{ raioMetros }}m</p>
+            </div>
+            <div
+              v-if="monitorando"
+              class="rounded-xl border px-4 py-2 shadow-lg backdrop-blur"
+              :class="alertaAtivo ? 'border-red-500 bg-red-500/10' : 'border-green-500 bg-green-500/10'"
+            >
+              <p class="text-xs" :class="alertaAtivo ? 'text-red-600' : 'text-green-600'">
+                {{ alertaAtivo ? 'EM RISCO' : 'MONITORANDO' }}
+              </p>
+              <p class="text-lg font-bold" :class="alertaAtivo ? 'text-red-600' : 'text-green-600'">●</p>
+            </div>
           </div>
-          <div class="rounded-lg border border-border glass-card/95 backdrop-blur px-4 py-2 shadow-lg">
-            <p class="text-xs text-muted-foreground">Raio</p>
-            <p class="text-lg font-bold">{{ raioMetros }}m</p>
-          </div>
-          <div
-            v-if="monitorando"
-            class="rounded-lg border px-4 py-2 shadow-lg backdrop-blur"
-            :class="alertaAtivo ? 'border-red-500 bg-red-500/10' : 'border-green-500 bg-green-500/10'"
-          >
-            <p class="text-xs" :class="alertaAtivo ? 'text-red-600' : 'text-green-600'">
-              {{ alertaAtivo ? 'EM RISCO' : 'MONITORANDO' }}
-            </p>
-            <p class="text-lg font-bold" :class="alertaAtivo ? 'text-red-600' : 'text-green-600'">●</p>
+
+          <!-- Mapa -->
+          <div class="relative w-full h-[calc(100vh-19rem)] rounded-2xl overflow-hidden border border-border">
+            <div class="absolute inset-0">
+              <div
+                id="cercamento-map"
+                class="h-full w-full z-0"
+                :class="modoSelecao ? 'cursor-crosshair' : ''"
+              ></div>
+            </div>
           </div>
         </div>
       </div>

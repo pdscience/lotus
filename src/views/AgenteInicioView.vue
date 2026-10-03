@@ -71,16 +71,16 @@ const getStatusClass = (status: string) => {
         <template #title>Painel do agente</template>
         <template #desc>Bem-vindo, {{ userStore.user?.nome || 'Agente' }}</template>
         <template #actions>
-          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border text-sm text-muted-foreground">
-            <Shield class="w-4 h-4 text-primary" />
+          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-blue-500/20 bg-blue-500/10 text-xs font-medium text-blue-500">
+            <Shield class="w-4 h-4" />
             Agente
           </span>
         </template>
       </SectionHeader>
 
-      <div class="rounded-lg border border-border glass-card p-4 mb-4 flex items-center justify-between">
-        <div><p class="font-bold text-lg">{{ saudacao }}</p><p class="text-sm text-muted-foreground">{{ hoje }}</p></div>
-        <router-link to="/dashboard/consulta" class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold" :style="{ color: 'hsl(var(--accent-foreground))' }">Nova consulta</router-link>
+      <div class="rounded-2xl border border-border glass-card p-4 sm:p-5 mb-4 flex items-center justify-between shadow-lg animate-fade-in-up">
+        <div><p class="font-bold text-lg font-heading">{{ saudacao }}</p><p class="text-sm text-muted-foreground">{{ hoje }}</p></div>
+        <router-link to="/dashboard/consulta" class="rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white px-4 py-2 text-sm font-semibold shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all">Nova consulta</router-link>
       </div>
 
       <!-- Stats -->
@@ -92,11 +92,13 @@ const getStatusClass = (status: string) => {
       </div>
 
       <!-- Últimas Medidas Registradas -->
-      <div class="rounded-lg border border-border glass-card p-6">
-        <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-          <FileText class="w-5 h-5 text-primary" />
-          Últimas medidas registradas
-        </h2>
+      <div class="rounded-2xl border border-border glass-card p-6 shadow-lg">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
+            <FileText class="w-5 h-5" />
+          </span>
+          <h2 class="font-heading font-semibold text-lg">Últimas medidas registradas</h2>
+        </div>
 
         <div v-if="isLoading" class="text-center py-8 text-muted-foreground">
           Carregando...
@@ -107,7 +109,7 @@ const getStatusClass = (status: string) => {
         </div>
 
         <div v-else class="space-y-0">
-          <ul class="rounded-lg border border-border glass-card divide-y divide-border">
+          <ul class="rounded-xl border border-border bg-secondary/20 divide-y divide-border">
             <li
               v-for="m in medidas.slice(0, 5)"
               :key="m.id"
@@ -120,7 +122,7 @@ const getStatusClass = (status: string) => {
               </div>
               <div class="flex items-center gap-2 shrink-0">
                 <span
-                  class="inline-block px-2 py-1 rounded-full text-xs font-medium"
+                  class="inline-block px-3 py-1 rounded-lg text-xs font-medium"
                   :class="getStatusClass(m.status)"
                 >
                   {{ m.status }}
@@ -140,25 +142,31 @@ const getStatusClass = (status: string) => {
       <div class="grid grid-cols-3 gap-3 sm:gap-4">
         <router-link
           to="/dashboard/monitoramento"
-          class="rounded-lg border border-border glass-card p-4 hover:bg-secondary/30 transition-colors text-center"
+          class="rounded-2xl border border-border glass-card p-5 hover:border-primary/30 hover:bg-secondary/30 transition-colors text-center shadow-sm"
         >
-          <ClipboardList class="w-8 h-8 mx-auto mb-2 text-primary" />
+          <span class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
+            <ClipboardList class="w-5 h-5" />
+          </span>
           <p class="font-medium text-sm">Monitoramento</p>
         </router-link>
 
         <router-link
           to="/dashboard/consulta"
-          class="rounded-lg border border-border glass-card p-4 hover:bg-secondary/30 transition-colors text-center"
+          class="rounded-2xl border border-border glass-card p-5 hover:border-success/30 hover:bg-secondary/30 transition-colors text-center shadow-sm"
         >
-          <Shield class="w-8 h-8 mx-auto mb-2 text-success" />
+          <span class="w-10 h-10 rounded-xl bg-success/10 text-success flex items-center justify-center mx-auto mb-3">
+            <Shield class="w-5 h-5" />
+          </span>
           <p class="font-medium text-sm">Consultar</p>
         </router-link>
 
         <router-link
           to="/dashboard/cercamento"
-          class="rounded-lg border border-border glass-card p-4 hover:bg-secondary/30 transition-colors text-center"
+          class="rounded-2xl border border-border glass-card p-5 hover:border-info/30 hover:bg-secondary/30 transition-colors text-center shadow-sm"
         >
-          <MapPin class="w-8 h-8 mx-auto mb-2 text-info" />
+          <span class="w-10 h-10 rounded-xl bg-info/10 text-info flex items-center justify-center mx-auto mb-3">
+            <MapPin class="w-5 h-5" />
+          </span>
           <p class="font-medium text-sm">Cercamento</p>
         </router-link>
       </div>

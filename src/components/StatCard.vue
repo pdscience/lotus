@@ -5,12 +5,12 @@ const points = props.trend.length
   : ''
 </script>
 <template>
-  <div class="rounded-lg border border-border glass-card p-4">
-    <div v-if="accentTop" class="h-1 -mx-4 -mt-4 mb-3 rounded-t-lg bg-primary" />
-    <p class="text-xs text-muted-foreground dark:text-white">{{ label }}</p>
-    <p class="tnum text-2xl font-bold mt-1">{{ value }}</p>
+  <div class="relative rounded-2xl border border-border glass-card p-4 overflow-hidden">
+    <div v-if="accentTop" class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary to-accent" />
+    <p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">{{ label }}</p>
+    <p class="tnum text-2xl font-bold mt-1.5 font-heading">{{ value }}</p>
     <div class="flex items-end justify-between mt-2">
-      <span v-if="delta" class="text-xs" :class="delta.trim().startsWith('-') ? 'text-destructive' : 'text-success'">{{ delta }}</span>
+      <span v-if="delta" class="text-xs font-medium" :class="delta.trim().startsWith('-') ? 'text-destructive' : 'text-success'">{{ delta }}</span>
       <svg v-if="points" viewBox="0 0 100 32" class="h-8 w-24 text-primary" fill="none">
         <polyline :points="points" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
       </svg>

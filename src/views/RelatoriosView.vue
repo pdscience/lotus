@@ -9,7 +9,8 @@ import {
   Eye,
   Scale,
   CheckCircle,
-  MapPin
+  MapPin,
+  Activity
 } from 'lucide-vue-next'
 import { fetchMedidasProtetivas, type MedidaProtetivaAll } from '../services/medidaService'
 import { fetchAllMonitoramentos, type AgenteMonitoramento } from '../services/agenteService'
@@ -202,9 +203,9 @@ const municipioStats = computed(() => {
         <template #desc>Visão geral do sistema de proteção</template>
       </SectionHeader>
 
-      <div class="rounded-lg border border-border glass-card p-4 mb-4 flex items-center justify-between">
-        <div><p class="font-bold text-lg">{{ saudacao }}</p><p class="text-sm text-muted-foreground">{{ hoje }}</p></div>
-        <button class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold" :style="{ color: 'hsl(var(--accent-foreground))' }">Exportar relatório</button>
+      <div class="rounded-2xl border border-border glass-card p-4 sm:p-5 mb-4 flex items-center justify-between shadow-lg animate-fade-in-up">
+        <div><p class="font-bold text-lg font-heading">{{ saudacao }}</p><p class="text-sm text-muted-foreground">{{ hoje }}</p></div>
+        <button class="rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white px-4 py-2 text-sm font-semibold shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all">Exportar relatório</button>
       </div>
 
       <!-- Loading -->
@@ -215,7 +216,13 @@ const municipioStats = computed(() => {
       <template v-else>
         <!-- Stats Gerais -->
         <div class="mb-6">
-          <h2 class="text-lg font-semibold mb-4">Visão geral do sistema</h2>
+          <div class="flex items-center gap-3 mb-4">
+            <span class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+              <Activity class="w-5 h-5" />
+            </span>
+            <h2 class="font-heading font-semibold text-lg">Visão geral do sistema</h2>
+            <div class="h-px flex-1 bg-border/60"></div>
+          </div>
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <StatCard
               v-for="stat in statsGeral"
@@ -230,10 +237,13 @@ const municipioStats = computed(() => {
 
         <!-- Stats Vítimas e Agressores -->
         <div class="mb-6">
-          <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-            <Users class="w-5 h-5 text-primary" />
-            Vítimas e agressores
-          </h2>
+          <div class="flex items-center gap-3 mb-4">
+            <span class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+              <Users class="w-5 h-5" />
+            </span>
+            <h2 class="font-heading font-semibold text-lg">Vítimas e agressores</h2>
+            <div class="h-px flex-1 bg-border/60"></div>
+          </div>
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <StatCard
               v-for="stat in statsVitimas"
@@ -254,11 +264,13 @@ const municipioStats = computed(() => {
         <template v-else>
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
             <!-- Tipos de Medidas Protetivas -->
-            <div class="rounded-lg border border-border glass-card p-6">
-              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                <Shield class="w-5 h-5 text-primary" />
-                Tipos de medidas protetivas
-              </h3>
+            <div class="rounded-2xl border border-border glass-card p-6 shadow-lg">
+              <div class="flex items-center gap-3 mb-4">
+                <span class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                  <Shield class="w-5 h-5" />
+                </span>
+                <h3 class="font-heading font-semibold text-lg">Tipos de medidas protetivas</h3>
+              </div>
               <div v-if="tipoMedidas.length === 0" class="text-center py-6 text-muted-foreground text-sm">
                 Sem dados disponíveis
               </div>
@@ -279,11 +291,13 @@ const municipioStats = computed(() => {
             </div>
 
             <!-- Urgência dos Casos (donut, 3 fatias) -->
-            <div class="rounded-lg border border-border glass-card p-6">
-              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                <AlertTriangle class="w-5 h-5 text-destructive" />
-                Urgência dos casos
-              </h3>
+            <div class="rounded-2xl border border-border glass-card p-6 shadow-lg">
+              <div class="flex items-center gap-3 mb-4">
+                <span class="w-9 h-9 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center">
+                  <AlertTriangle class="w-5 h-5" />
+                </span>
+                <h3 class="font-heading font-semibold text-lg">Urgência dos casos</h3>
+              </div>
               <div v-if="medidas.length === 0" class="text-center py-6 text-muted-foreground text-sm">
                 Sem dados disponíveis
               </div>
@@ -313,11 +327,13 @@ const municipioStats = computed(() => {
 
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
             <!-- Medidas por Mês (linha SVG) -->
-            <div class="rounded-lg border border-border glass-card p-6">
-              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                <TrendingUp class="w-5 h-5 text-success" />
-                Medidas por mês
-              </h3>
+            <div class="rounded-2xl border border-border glass-card p-6 shadow-lg">
+              <div class="flex items-center gap-3 mb-4">
+                <span class="w-9 h-9 rounded-xl bg-success/10 text-success flex items-center justify-center">
+                  <TrendingUp class="w-5 h-5" />
+                </span>
+                <h3 class="font-heading font-semibold text-lg">Medidas por mês</h3>
+              </div>
               <div v-if="mesStats.length === 0" class="text-center py-6 text-muted-foreground text-sm">
                 Sem dados disponíveis
               </div>
@@ -335,11 +351,13 @@ const municipioStats = computed(() => {
             </div>
 
             <!-- Distribuição por Município -->
-            <div class="rounded-lg border border-border glass-card p-6">
-              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                <MapPin class="w-5 h-5 text-info" />
-                Distribuição por município
-              </h3>
+            <div class="rounded-2xl border border-border glass-card p-6 shadow-lg">
+              <div class="flex items-center gap-3 mb-4">
+                <span class="w-9 h-9 rounded-xl bg-info/10 text-info flex items-center justify-center">
+                  <MapPin class="w-5 h-5" />
+                </span>
+                <h3 class="font-heading font-semibold text-lg">Distribuição por município</h3>
+              </div>
               <div v-if="municipioStats.length === 0" class="text-center py-6 text-muted-foreground text-sm">
                 Sem dados disponíveis
               </div>
@@ -362,17 +380,19 @@ const municipioStats = computed(() => {
         </template>
 
         <!-- Informações por Tipo de Usuário -->
-        <div class="rounded-lg border border-border glass-card p-6">
-          <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-            <Eye class="w-5 h-5 text-primary" />
-            Informações por tipo de acesso
-          </h3>
+        <div class="rounded-2xl border border-border glass-card p-6 shadow-lg">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+              <Eye class="w-5 h-5" />
+            </span>
+            <h3 class="font-heading font-semibold text-lg">Informações por tipo de acesso</h3>
+          </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <!-- Admin -->
-            <div class="p-4 rounded-lg border border-border bg-secondary/20">
+            <div class="p-5 rounded-xl border border-border bg-secondary/30">
               <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center">
+                <div class="w-9 h-9 rounded-xl bg-accent/10 text-accent flex items-center justify-center">
                   <Scale class="w-5 h-5" />
                 </div>
                 <div>
@@ -405,9 +425,9 @@ const municipioStats = computed(() => {
             </div>
 
             <!-- Vítima -->
-            <div class="p-4 rounded-lg border border-border bg-secondary/20">
+            <div class="p-5 rounded-xl border border-border bg-secondary/30">
               <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center">
+                <div class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
                   <Heart class="w-5 h-5" />
                 </div>
                 <div>

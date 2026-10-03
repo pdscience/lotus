@@ -29,7 +29,7 @@ export async function fetchMedidasProtetivas(): Promise<MedidaProtetivaAll[]> {
   const { data, error } = await supabase
     .database.from('medidas_protetivas')
     .select('*')
-    .order('data_registro', { ascending: false })
+    .order('created_at', { ascending: false })
 
   if (error) {
     console.error('Erro ao buscar medidas protetivas:', error)

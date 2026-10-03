@@ -1,6 +1,9 @@
 <template>
-  <div class="flex items-start justify-between mb-4">
-    <div><h2 class="text-xl font-bold"><slot name="title" /></h2><p class="text-sm text-muted-foreground mt-0.5"><slot name="desc" /></p></div>
-    <div><slot name="aside" /></div><div class="flex gap-2"><slot name="actions" /></div>
+  <div class="flex items-start justify-between gap-4 mb-5 animate-fade-in-up">
+    <div class="min-w-0">
+      <h2 class="text-xl md:text-2xl font-bold font-heading tracking-tight"><slot name="title" /></h2>
+      <p class="text-sm text-muted-foreground mt-1"><slot name="desc" /></p>
+    </div>
+    <div class="flex items-center gap-2 flex-shrink-0"><slot name="aside" /><slot name="actions" /></div>
   </div>
 </template>

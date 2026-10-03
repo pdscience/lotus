@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { ArrowLeft, Lock, Mail, Shield, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-vue-next'
-import ProtegidaLogo from './ProtegidaLogo.vue'
+import LotusLogo from './LotusLogo.vue'
 
 const emit = defineEmits<{
   (e: 'back'): void
@@ -49,7 +49,7 @@ const handleSubmit = async () => {
       <div class="text-center mb-8">
         <!-- Logo -->
         <div class="flex justify-center mb-6">
-          <ProtegidaLogo size="md" />
+          <LotusLogo size="md" />
         </div>
 
         <h1 class="text-2xl sm:text-3xl font-bold text-gradient mb-2">

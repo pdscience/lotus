@@ -172,7 +172,7 @@ onUnmounted(() => {
 
 <template>
   <div class="bg-background">
-    <div class="p-4 max-w-3xl mx-auto">
+    <div class="p-4 sm:p-6 pb-12 max-w-3xl mx-auto">
       <SectionHeader>
         <template #title>Histórico de acionamentos</template>
         <template #desc>Registros de emergência da vítima</template>
@@ -180,17 +180,17 @@ onUnmounted(() => {
 
       <div class="flex flex-wrap items-center gap-2 mb-4">
         <input v-model="busca" placeholder="Buscar..." class="input-enhanced !w-64" />
-        <button v-for="f in filtros" :key="f" @click="filtroAtivo = f" :class="['rounded-full px-3 py-1 text-xs border', filtroAtivo === f ? 'bg-primary text-primary-foreground border-transparent' : 'border-border text-muted-foreground']">{{ f }}</button>
-        <button @click="novoRegistro" class="rounded-lg px-3 py-1.5 text-xs font-semibold" :style="{ background: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }">+ Novo</button>
+        <button v-for="f in filtros" :key="f" @click="filtroAtivo = f" :class="['rounded-lg px-3 py-1.5 text-xs border transition-colors', filtroAtivo === f ? 'bg-primary/10 text-primary border-primary/30 font-semibold' : 'border-border text-muted-foreground hover:bg-secondary/50']">{{ f }}</button>
+        <button @click="novoRegistro" class="rounded-lg px-3 py-1.5 text-xs font-semibold transition-all hover:opacity-90" :style="{ background: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))' }">+ Novo</button>
       </div>
 
       <DataTable v-if="recordsFiltrados.length > 0">
         <template #head>
-          <th class="font-medium py-3">Data / hora</th>
-          <th class="font-medium py-3">Localização</th>
-          <th class="font-medium py-3">Status</th>
-          <th class="font-medium py-3 hidden sm:table-cell">Mídia</th>
-          <th class="font-medium py-3 text-right">Ações</th>
+          <th class="text-xs font-semibold uppercase tracking-wider text-muted-foreground py-3">Data / hora</th>
+          <th class="text-xs font-semibold uppercase tracking-wider text-muted-foreground py-3">Localização</th>
+          <th class="text-xs font-semibold uppercase tracking-wider text-muted-foreground py-3">Status</th>
+          <th class="text-xs font-semibold uppercase tracking-wider text-muted-foreground py-3 hidden sm:table-cell">Mídia</th>
+          <th class="text-xs font-semibold uppercase tracking-wider text-muted-foreground py-3 text-right">Ações</th>
         </template>
         <tr v-for="record in recordsFiltrados" :key="record.id">
           <td class="font-medium text-foreground">{{ formatDate(record.timestamp) }}</td>
@@ -226,14 +226,14 @@ onUnmounted(() => {
             </div>
           </td>
           <td>
-            <span class="rounded-full px-2 py-0.5 text-xs" :class="classePorStatus(statusMidia(record))" :style="estiloSeloPendente(statusMidia(record))">{{ statusMidia(record) }}</span>
+            <span class="rounded-lg px-2.5 py-1 text-xs font-medium" :class="classePorStatus(statusMidia(record))" :style="estiloSeloPendente(statusMidia(record))">{{ statusMidia(record) }}</span>
           </td>
           <td class="hidden sm:table-cell">
             <div class="flex items-center gap-2">
               <button
                 v-if="record.audioUrl"
                 @click="playAudio(record)"
-                class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-secondary/50 hover:bg-secondary text-xs font-medium transition-colors"
+                class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-border bg-secondary/50 hover:bg-secondary text-xs font-medium transition-colors"
                 :title="playingAudioId === record.id ? 'Parar áudio' : 'Reproduzir áudio'"
               >
                 <Pause v-if="playingAudioId === record.id" class="w-3 h-3" />
@@ -244,7 +244,7 @@ onUnmounted(() => {
               <button
                 v-if="record.imageUrl"
                 @click="openImage(record.imageUrl)"
-                class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-secondary/50 hover:bg-secondary text-xs font-medium transition-colors"
+                class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-border bg-secondary/50 hover:bg-secondary text-xs font-medium transition-colors"
                 title="Ver foto do local"
               >
                 <Camera class="w-3 h-3" />
@@ -261,30 +261,30 @@ onUnmounted(() => {
           <td class="text-right">
             <details class="relative inline-block">
               <summary class="cursor-pointer list-none px-3 py-1.5 rounded-lg border border-border text-xs font-medium hover:bg-secondary/50 transition-colors">•••</summary>
-              <div class="absolute right-0 z-10 rounded-lg border border-border bg-popover p-1 shadow-lg min-w-36">
+              <div class="absolute right-0 z-10 rounded-xl border border-border bg-popover p-1.5 shadow-xl min-w-36">
                 <button
                   v-if="record.audioUrl"
                   @click="playAudio(record)"
-                  class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
+                  class="flex w-full items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
                 >
                   {{ playingAudioId === record.id ? 'Parar áudio' : 'Ouvir áudio' }}
                 </button>
                 <button
                   v-if="record.imageUrl"
                   @click="openImage(record.imageUrl)"
-                  class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
+                  class="flex w-full items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
                 >
                   Ver foto
                 </button>
                 <button
                   @click="openLocation(record.latitude, record.longitude)"
-                  class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
+                  class="flex w-full items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-secondary/50 transition-colors text-left"
                 >
                   Abrir no Maps
                 </button>
                 <button
                   @click="removeRecord(record.id)"
-                  class="flex w-full items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-secondary/50 transition-colors text-left text-destructive"
+                  class="flex w-full items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-secondary/50 transition-colors text-left text-destructive"
                 >
                   <Trash2 class="w-4 h-4" />
                   Excluir
@@ -315,7 +315,7 @@ onUnmounted(() => {
           <X class="w-8 h-8" />
         </button>
 
-        <div class="relative max-w-4xl w-full">
+        <div class="relative max-w-4xl w-full animate-scale-in">
           <img
             :src="selectedImage"
             alt="Foto do local"

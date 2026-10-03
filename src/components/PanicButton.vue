@@ -14,7 +14,7 @@ import { sendPanicAlert } from '../services/panicService'
 type StatusType = 'seguro' | 'ativando' | 'enviando' | 'sucesso' | 'erro'
 
 const status = ref<StatusType>('seguro')
-const statusMessage = ref('Protegida')
+const statusMessage = ref('Lótus')
 const enviados = ref<{ tipo: string; contato: string; sucesso: boolean }[]>([])
 const locationInterval = ref<number | null>(null)
 const progress = ref(0)

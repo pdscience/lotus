@@ -173,7 +173,7 @@ const handleCompartilhar = async () => {
   if (navigator.share) {
     try {
       await navigator.share({
-        title: 'Medida Protetiva - Protegida',
+        title: 'Medida Protetiva - Lótus',
         text: texto
       })
     } catch {
@@ -231,9 +231,9 @@ const gerarSugestoes = async () => {
           <AlertTriangle class="mx-auto h-12 w-12 text-muted-foreground mb-4" />
           <h2 class="text-xl font-semibold mb-2">Medida não encontrada</h2>
           <p class="text-muted-foreground mb-6">A medida protetiva solicitada não foi encontrada no sistema.</p>
-          <button
+              <button
             @click="router.push('/dashboard/consulta')"
-            class="flex items-center justify-center gap-2 mx-auto px-4 py-2 rounded-lg border border-border hover:bg-secondary/50 transition-colors text-sm font-medium"
+            class="flex items-center justify-center gap-2 mx-auto px-4 py-2 rounded-xl border border-border hover:bg-secondary/50 transition-colors text-sm font-medium"
           >
             <ArrowLeft class="w-4 h-4" />
             Voltar à Consulta
@@ -241,19 +241,19 @@ const gerarSugestoes = async () => {
         </div>
 
         <!-- Content -->
-        <div v-else>
+        <div v-else class="animate-fade-in-up">
           <SectionHeader>
             <template #title>{{ registro.medidaProtetiva.numero || 'Medida protetiva' }}</template>
             <template #desc>{{ registro.medidaProtetiva.tipoMedida || 'Detalhes da medida protetiva' }}</template>
             <template #actions>
-              <span :class="`px-3 py-1 rounded-full text-sm font-medium border ${situacao.color}`">
+              <span :class="`px-3 py-1 rounded-lg text-xs font-medium border ${situacao.color}`">
                 {{ situacao.text }}
               </span>
-              <button @click="handleCompartilhar" class="flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:bg-secondary/50 transition-colors text-sm font-medium">
+              <button @click="handleCompartilhar" class="flex items-center gap-2 px-4 py-2 rounded-xl border border-border hover:bg-secondary/50 transition-colors text-sm font-medium">
                 <Share2 class="w-4 h-4" />
                 Compartilhar
               </button>
-              <button @click="handleExcluir" class="flex items-center gap-2 px-4 py-2 rounded-lg border border-destructive/40 text-destructive hover:bg-destructive/10 transition-colors text-sm font-medium">
+              <button @click="handleExcluir" class="flex items-center gap-2 px-4 py-2 rounded-xl border border-destructive/40 text-destructive hover:bg-destructive/10 transition-colors text-sm font-medium">
                 <Trash2 class="w-4 h-4" />
                 Excluir
               </button>
@@ -262,177 +262,185 @@ const gerarSugestoes = async () => {
 
           <div class="space-y-4 sm:space-y-6">
             <!-- Dados da Medida -->
-            <div class="rounded-lg border border-border glass-card p-6">
-              <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
-                <Shield class="w-5 h-5 text-primary" />
-                Dados da Medida Protetiva
-              </h2>
+            <div class="rounded-2xl border border-border glass-card shadow-lg p-6">
+              <div class="flex items-center gap-3 mb-6">
+                <span class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                  <Shield class="w-5 h-5" />
+                </span>
+                <h2 class="font-heading font-semibold text-lg">Dados da Medida Protetiva</h2>
+              </div>
               <div class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p class="text-sm font-medium text-muted-foreground">Número</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Número</p>
                     <p class="text-base">{{ registro.medidaProtetiva.numero || 'Não informado' }}</p>
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-muted-foreground">Tipo</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tipo</p>
                     <p class="text-base">{{ registro.medidaProtetiva.tipoMedida || 'Não informado' }}</p>
                   </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p class="text-sm font-medium text-muted-foreground">Local de Expedição</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Local de Expedição</p>
                     <p class="text-base">{{ registro.medidaProtetiva.localExpedicao || 'Não informado' }}</p>
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-muted-foreground">Solicitante</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Solicitante</p>
                     <p class="text-base">{{ registro.medidaProtetiva.solicitante || 'Não informado' }}</p>
                   </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p class="text-sm font-medium text-muted-foreground">Data de Expedição</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Data de Expedição</p>
                     <p class="text-base">{{ formatarData(registro.medidaProtetiva.dataExpedicao) }}</p>
                   </div>
                   <div v-if="registro.medidaProtetiva.dataVencimento">
-                    <p class="text-sm font-medium text-muted-foreground">Data de Vencimento</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Data de Vencimento</p>
                     <p class="text-base">{{ formatarData(registro.medidaProtetiva.dataVencimento) }}</p>
                   </div>
                 </div>
 
-                <div v-if="registro.medidaProtetiva.observacoes">
-                  <p class="text-sm font-medium text-muted-foreground">Observações</p>
+                <div v-if="registro.medidaProtetiva.observacoes" class="rounded-xl bg-secondary/30 border border-border/60 p-4">
+                  <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Observações</p>
                   <p class="text-base">{{ registro.medidaProtetiva.observacoes }}</p>
                 </div>
               </div>
             </div>
 
             <!-- Dados da Ofendida -->
-            <div class="rounded-lg border border-border glass-card p-6">
-              <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
-                <User class="w-5 h-5 text-info" />
-                Dados da Ofendida (Vítima)
-              </h2>
+            <div class="rounded-2xl border border-border glass-card shadow-lg p-6">
+              <div class="flex items-center gap-3 mb-6">
+                <span class="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center flex-shrink-0">
+                  <User class="w-5 h-5" />
+                </span>
+                <h2 class="font-heading font-semibold text-lg">Dados da Ofendida (Vítima)</h2>
+              </div>
               <div class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p class="text-sm font-medium text-muted-foreground">Nome Completo</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Nome Completo</p>
                     <p class="text-base">{{ registro.ofendida.nomeCompleto }}</p>
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-muted-foreground">Data de Nascimento</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Data de Nascimento</p>
                     <p class="text-base">{{ formatarData(registro.ofendida.dataNascimento) }}</p>
                   </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p class="text-sm font-medium text-muted-foreground">CPF</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">CPF</p>
                     <p class="text-base">{{ registro.ofendida.cpf }}</p>
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-muted-foreground">RG</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">RG</p>
                     <p class="text-base">{{ registro.ofendida.rg || 'Não informado' }}</p>
                   </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p class="text-sm font-medium text-muted-foreground">Profissão</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Profissão</p>
                     <p class="text-base">{{ registro.ofendida.profissao || 'Não informado' }}</p>
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-muted-foreground">Telefone</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Telefone</p>
                     <p class="text-base">{{ registro.ofendida.telefone }}</p>
                   </div>
                 </div>
 
                 <div v-if="registro.ofendida.email">
-                  <p class="text-sm font-medium text-muted-foreground">E-mail</p>
+                  <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">E-mail</p>
                   <p class="text-base">{{ registro.ofendida.email }}</p>
                 </div>
 
-                <div class="pt-4 border-t border-border">
-                  <p class="text-sm font-medium text-muted-foreground mb-2">Endereço de Residência</p>
+                <div class="pt-4 border-t border-border/60">
+                  <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Endereço de Residência</p>
                   <p class="text-base">{{ formatarEndereco(registro.ofendida.enderecoResidencia) }}</p>
                 </div>
               </div>
             </div>
 
             <!-- Dados do Ofensor -->
-            <div class="rounded-lg border border-border glass-card p-6">
-              <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
-                <AlertTriangle class="w-5 h-5 text-destructive" />
-                Dados do Ofensor (Agressor)
-              </h2>
+            <div class="rounded-2xl border border-border glass-card shadow-lg p-6">
+              <div class="flex items-center gap-3 mb-6">
+                <span class="w-9 h-9 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center flex-shrink-0">
+                  <AlertTriangle class="w-5 h-5" />
+                </span>
+                <h2 class="font-heading font-semibold text-lg">Dados do Ofensor (Agressor)</h2>
+              </div>
               <div class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p class="text-sm font-medium text-muted-foreground">Nome Completo</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Nome Completo</p>
                     <p class="text-base">{{ registro.ofensor.nomeCompleto }}</p>
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-muted-foreground">Data de Nascimento</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Data de Nascimento</p>
                     <p class="text-base">{{ formatarData(registro.ofensor.dataNascimento) }}</p>
                   </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p class="text-sm font-medium text-muted-foreground">CPF</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">CPF</p>
                     <p class="text-base">{{ registro.ofensor.cpf }}</p>
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-muted-foreground">RG</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">RG</p>
                     <p class="text-base">{{ registro.ofensor.rg || 'Não informado' }}</p>
                   </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p class="text-sm font-medium text-muted-foreground">Profissão</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Profissão</p>
                     <p class="text-base">{{ registro.ofensor.profissao || 'Não informado' }}</p>
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-muted-foreground">Telefone</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Telefone</p>
                     <p class="text-base">{{ registro.ofensor.telefone || 'Não informado' }}</p>
                   </div>
                 </div>
 
-                <div class="pt-4 border-t border-border">
-                  <p class="text-sm font-medium text-muted-foreground mb-2">Endereço de Residência</p>
+                <div class="pt-4 border-t border-border/60">
+                  <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Endereço de Residência</p>
                   <p class="text-base">{{ formatarEndereco(registro.ofensor.enderecoResidencia) }}</p>
                 </div>
               </div>
             </div>
 
             <!-- Dependentes -->
-            <div v-if="registro.dependentes && registro.dependentes.length > 0" class="rounded-lg border border-border glass-card p-6">
-              <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
-                <Users class="w-5 h-5 text-success" />
-                Dependentes ({{ registro.dependentes.length }})
-              </h2>
+            <div v-if="registro.dependentes && registro.dependentes.length > 0" class="rounded-2xl border border-border glass-card shadow-lg p-6">
+              <div class="flex items-center gap-3 mb-6">
+                <span class="w-9 h-9 rounded-xl bg-success/10 text-success flex items-center justify-center flex-shrink-0">
+                  <Users class="w-5 h-5" />
+                </span>
+                <h2 class="font-heading font-semibold text-lg">Dependentes ({{ registro.dependentes.length }})</h2>
+              </div>
               <div class="space-y-6">
                 <div
                   v-for="(dependente, index) in registro.dependentes"
                   :key="index"
                   :class="index > 0 ? 'pt-6 border-t border-border' : ''"
                 >
-                  <h4 class="font-medium mb-3">Dependente {{ index + 1 }}</h4>
+                  <h4 class="text-sm font-semibold mb-3">Dependente {{ index + 1 }}</h4>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <p class="text-sm font-medium text-muted-foreground">Nome</p>
+                      <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Nome</p>
                       <p class="text-base">{{ dependente.nomeCompleto }}</p>
                     </div>
                     <div>
-                      <p class="text-sm font-medium text-muted-foreground">Data de Nascimento</p>
+                      <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Data de Nascimento</p>
                       <p class="text-base">{{ formatarData(dependente.dataNascimento) }}</p>
                     </div>
                   </div>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                     <div>
-                      <p class="text-sm font-medium text-muted-foreground">Guarda</p>
+                      <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Guarda</p>
                       <p class="text-base capitalize">{{ dependente.guarda }}</p>
                     </div>
                   </div>
@@ -441,45 +449,49 @@ const gerarSugestoes = async () => {
             </div>
 
             <!-- Tipos de Restrição -->
-            <div v-if="registro.medidaProtetiva.tiposRestricao" class="rounded-lg border border-border glass-card p-6">
-              <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
-                <AlertTriangle class="w-5 h-5 text-warning" />
-                Tipos de Restrição Aplicados
-              </h2>
-              <div class="space-y-4">
-                <div v-if="registro.medidaProtetiva.tiposRestricao.afastamentoLar" class="flex items-center gap-2">
-                  <CheckCircle class="w-4 h-4 text-success" />
-                  <span>Afastamento do lar, domicílio ou local de convivência</span>
+            <div v-if="registro.medidaProtetiva.tiposRestricao" class="rounded-2xl border border-border glass-card shadow-lg p-6">
+              <div class="flex items-center gap-3 mb-6">
+                <span class="w-9 h-9 rounded-xl bg-warning/10 text-warning flex items-center justify-center flex-shrink-0">
+                  <AlertTriangle class="w-5 h-5" />
+                </span>
+                <h2 class="font-heading font-semibold text-lg">Tipos de Restrição Aplicados</h2>
+              </div>
+              <div class="space-y-3">
+                <div v-if="registro.medidaProtetiva.tiposRestricao.afastamentoLar" class="flex items-center gap-3 rounded-xl border border-success/15 bg-success/5 px-4 py-3">
+                  <CheckCircle class="w-4 h-4 text-success flex-shrink-0" />
+                  <span class="text-sm">Afastamento do lar, domicílio ou local de convivência</span>
                 </div>
-                <div v-if="registro.medidaProtetiva.tiposRestricao.proibicaoAproximacao?.ativa" class="flex items-center gap-2">
-                  <CheckCircle class="w-4 h-4 text-success" />
-                  <span>Proibição de aproximação ({{ registro.medidaProtetiva.tiposRestricao.proibicaoAproximacao.distancia || '100' }} metros)</span>
+                <div v-if="registro.medidaProtetiva.tiposRestricao.proibicaoAproximacao?.ativa" class="flex items-center gap-3 rounded-xl border border-success/15 bg-success/5 px-4 py-3">
+                  <CheckCircle class="w-4 h-4 text-success flex-shrink-0" />
+                  <span class="text-sm">Proibição de aproximação ({{ registro.medidaProtetiva.tiposRestricao.proibicaoAproximacao.distancia || '100' }} metros)</span>
                 </div>
-                <div v-if="registro.medidaProtetiva.tiposRestricao.proibicaoContato" class="flex items-center gap-2">
-                  <CheckCircle class="w-4 h-4 text-success" />
-                  <span>Proibição de contato</span>
+                <div v-if="registro.medidaProtetiva.tiposRestricao.proibicaoContato" class="flex items-center gap-3 rounded-xl border border-success/15 bg-success/5 px-4 py-3">
+                  <CheckCircle class="w-4 h-4 text-success flex-shrink-0" />
+                  <span class="text-sm">Proibição de contato</span>
                 </div>
               </div>
             </div>
 
             <!-- Sugestões de ação (IA nativa, opt-in) -->
-            <div v-if="iaDisponivel" class="rounded-lg border border-border glass-card p-6 max-w-2xl mx-auto">
-              <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
-                <Sparkles class="w-5 h-5 text-primary" />
-                Sugestões de ação
-              </h2>
+            <div v-if="iaDisponivel" class="rounded-2xl border border-border glass-card shadow-lg p-6 max-w-2xl mx-auto">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                  <Sparkles class="w-5 h-5" />
+                </span>
+                <h2 class="font-heading font-semibold text-lg">Sugestões de ação</h2>
+              </div>
               <p class="text-sm text-muted-foreground mb-4">Conteúdo gerado por IA como apoio — não substitui orientação jurídica ou policial.</p>
-              <label class="text-sm font-medium text-muted-foreground mb-2 block">Contexto usado</label>
+              <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 block">Contexto usado</label>
               <textarea
                 :value="contextoIa"
                 disabled
                 rows="2"
-                class="w-full rounded-lg border border-border bg-secondary/20 px-3 py-2 text-sm text-muted-foreground resize-none mb-4"
+                class="w-full rounded-xl border border-border/60 bg-secondary/30 px-4 py-3 text-sm text-muted-foreground resize-none mb-4"
               />
               <button
                 @click="gerarSugestoes"
                 :disabled="carregandoIa"
-                class="px-4 py-2 rounded-lg bg-accent text-accent-foreground hover:bg-accent/90 transition-colors text-sm font-medium disabled:opacity-50"
+                class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {{ carregandoIa ? 'Gerando...' : sugestaoIa ? 'Gerar novamente' : 'Gerar sugestões' }}
               </button>

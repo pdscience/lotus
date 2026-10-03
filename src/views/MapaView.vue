@@ -275,6 +275,10 @@ const updateMapMarkers = () => {
 watch(filteredLocations, () => {
   updateMapMarkers()
 }, { deep: true })
+
+watch(filtrosAbertos, () => {
+  setTimeout(() => map?.invalidateSize(), 50)
+})
 </script>
 
 <template>
@@ -284,9 +288,22 @@ watch(filteredLocations, () => {
         <template #title>Mapa de georreferenciamento</template>
         <template #desc>Visualização espacial de vítimas e agressores</template>
         <template #actions>
+          <div class="hidden sm:flex items-center gap-2">
+            <StatCard label="Total de pontos" :value="String(stats.total)" accent-top class="w-40 shadow-lg" />
+            <StatCard label="Vítimas" :value="String(stats.vitimas)" accent-top class="w-40 shadow-lg" />
+            <StatCard label="Agressores" :value="String(stats.agressores)" accent-top class="w-40 shadow-lg" />
+          </div>
+          <button
+            v-if="!filtrosAbertos"
+            @click="filtrosAbertos = true"
+            class="flex items-center gap-2 px-4 py-2 rounded-xl border border-border text-sm font-medium hover:bg-secondary/50 transition-colors"
+          >
+            <Filter class="w-4 h-4" />
+            Mostrar filtros
+          </button>
           <button
             @click="handleReset"
-            class="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium hover:bg-secondary/50 transition-colors"
+            class="flex items-center gap-2 px-4 py-2 rounded-xl border border-border text-sm font-medium hover:bg-secondary/50 transition-colors"
           >
             <RefreshCw class="w-4 h-4" />
             Limpar filtros
@@ -300,28 +317,15 @@ watch(filteredLocations, () => {
       </div>
 
       <template v-else>
-        <!-- Molde Mapa: full-bleed + painel flutuante + stats sobrepostos -->
-        <div class="relative h-[calc(100vh-8rem)] rounded-lg overflow-hidden border border-border">
-          <div class="absolute inset-0">
-            <div id="map" class="h-full w-full z-0"></div>
-          </div>
-
-          <!-- Botão flutuante quando recolhido -->
-          <button
-            v-if="!filtrosAbertos"
-            @click="filtrosAbertos = true"
-            type="button"
-            title="Mostrar filtros"
-            class="absolute left-4 top-24 z-10 flex h-11 w-11 items-center justify-center rounded-xl border border-border glass-card shadow-lg text-primary hover:scale-105 transition-transform"
-          >
-            <Filter class="w-5 h-5" />
-          </button>
-
-          <!-- Painel flutuante: filtros + lista -->
-          <div v-if="filtrosAbertos" class="absolute left-4 top-4 bottom-4 z-10 w-80 max-w-[calc(100%-2rem)] rounded-lg border border-border glass-card backdrop-blur p-4 overflow-y-auto">
+        <!-- Molde Mapa: painel de filtros ao lado + mapa -->
+        <div class="flex flex-col lg:flex-row items-start gap-4">
+          <!-- Painel: filtros -->
+          <aside v-if="filtrosAbertos" class="w-full lg:w-80 shrink-0 rounded-2xl border border-border glass-card shadow-lg p-4">
             <div class="flex items-center justify-between mb-2">
-              <h2 class="font-semibold text-lg flex items-center gap-2">
-                <Filter class="w-5 h-5 text-primary" />
+              <h2 class="font-heading font-semibold text-lg flex items-center gap-3">
+                <span class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                  <Filter class="w-5 h-5" />
+                </span>
                 Filtros de localização
               </h2>
               <button
@@ -339,11 +343,11 @@ watch(filteredLocations, () => {
 
             <div class="grid grid-cols-1 gap-4">
               <div>
-                <label class="text-sm font-medium mb-2 block">Estado (UF)</label>
+                <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 block">Estado (UF)</label>
                 <select
                   v-model="selectedUF"
                   :disabled="loadingEstados"
-                  class="w-full h-11 rounded-lg border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 disabled:opacity-50"
+                  class="w-full h-11 rounded-xl border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 disabled:opacity-50"
                 >
                   <option v-if="loadingEstados" value="">Carregando...</option>
                   <option v-for="estado in estados" :key="estado.sigla" :value="estado.sigla">
@@ -353,11 +357,11 @@ watch(filteredLocations, () => {
               </div>
 
               <div>
-                <label class="text-sm font-medium mb-2 block">Cidade</label>
+                <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 block">Cidade</label>
                 <select
                   v-model="selectedCidade"
                   :disabled="loadingCidades || cidades.length === 0"
-                  class="w-full h-11 rounded-lg border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 disabled:opacity-50"
+                  class="w-full h-11 rounded-xl border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 disabled:opacity-50"
                 >
                   <option v-if="loadingCidades" value="">Carregando...</option>
                   <option v-else-if="cidades.length === 0" value="">Nenhum município</option>
@@ -369,10 +373,10 @@ watch(filteredLocations, () => {
               </div>
 
               <div>
-                <label class="text-sm font-medium mb-2 block">Bairro</label>
+                <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 block">Bairro</label>
                 <select
                   v-model="selectedBairro"
-                  class="w-full h-11 rounded-lg border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
+                  class="w-full h-11 rounded-xl border border-border bg-input px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50"
                 >
                   <option value="Todos">Todos</option>
                   <option v-for="bairro in bairrosDisponiveis" :key="bairro" :value="bairro">
@@ -385,7 +389,7 @@ watch(filteredLocations, () => {
             <!-- Filtros de Tipo -->
             <div class="mt-4 flex flex-wrap gap-3">
               <label
-                class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer transition-colors select-none"
+                class="flex items-center gap-2 px-4 py-2 rounded-xl border cursor-pointer transition-colors select-none"
                 :class="showVitimas ? 'border-info/60 bg-info/30 text-info dark:text-sky-300 font-semibold' : 'border-border text-muted-foreground'"
               >
                 <input type="checkbox" v-model="showVitimas" class="sr-only" />
@@ -394,7 +398,7 @@ watch(filteredLocations, () => {
               </label>
 
               <label
-                class="flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer transition-colors select-none"
+                class="flex items-center gap-2 px-4 py-2 rounded-xl border cursor-pointer transition-colors select-none"
                 :class="showAgressores ? 'border-destructive/60 bg-destructive/30 text-destructive dark:text-red-300 font-semibold' : 'border-border text-muted-foreground'"
               >
                 <input type="checkbox" v-model="showAgressores" class="sr-only" />
@@ -417,20 +421,20 @@ watch(filteredLocations, () => {
                 {{ selectedBairro }}
               </span>
             </div>
-          </div>
+          </aside>
 
-          <!-- StatCards sobrepostos -->
-          <div class="absolute top-4 right-4 z-10 hidden sm:flex gap-2">
-            <StatCard label="Total de pontos" :value="String(stats.total)" accent-top class="w-32 shadow-lg" />
-            <StatCard label="Vítimas" :value="String(stats.vitimas)" accent-top class="w-28 shadow-lg" />
-            <StatCard label="Agressores" :value="String(stats.agressores)" accent-top class="w-28 shadow-lg" />
+          <!-- Mapa -->
+          <div class="relative w-full flex-1 h-[calc(100vh-16rem)] rounded-2xl overflow-hidden border border-border">
+            <div id="map" class="absolute inset-0 z-0"></div>
           </div>
         </div>
 
         <!-- Estatísticas por Bairro -->
-        <div v-if="bairroStats.length > 0" class="mt-6 rounded-lg border border-border glass-card p-6">
-          <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-            <MapPin class="w-5 h-5 text-primary" />
+        <div v-if="bairroStats.length > 0" class="mt-6 rounded-2xl border border-border glass-card shadow-lg p-6">
+          <h3 class="font-heading text-lg font-semibold mb-4 flex items-center gap-3">
+            <span class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+              <MapPin class="w-5 h-5" />
+            </span>
             Top bairros
           </h3>
           <DataTable>
