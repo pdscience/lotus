@@ -139,7 +139,7 @@ const getStatusClass = (status: string) => {
       </div>
 
       <!-- Acesso Rápido -->
-      <div class="grid grid-cols-3 gap-3 sm:gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         <router-link
           to="/dashboard/monitoramento"
           class="rounded-2xl border border-border glass-card p-5 hover:border-primary/30 hover:bg-secondary/30 transition-colors text-center shadow-sm"

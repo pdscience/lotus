@@ -424,7 +424,7 @@ watch(filtrosAbertos, () => {
           </aside>
 
           <!-- Mapa -->
-          <div class="relative w-full flex-1 h-[calc(100vh-16rem)] rounded-2xl overflow-hidden border border-border">
+          <div class="relative w-full min-h-[380px] sm:min-h-[450px] lg:h-[calc(100vh-16rem)] rounded-2xl overflow-hidden border border-border">
             <div id="map" class="absolute inset-0 z-0"></div>
           </div>
         </div>

@@ -1,9 +1,11 @@
 <template>
   <div class="rounded-2xl border border-border glass-card overflow-hidden">
-    <table class="w-full text-sm">
-      <thead><tr class="border-b border-border text-left text-xs uppercase tracking-wider text-muted-foreground"><slot name="head" /></tr></thead>
-      <tbody class="tnum"><slot /></tbody>
-    </table>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead><tr class="border-b border-border text-left text-xs uppercase tracking-wider text-muted-foreground"><slot name="head" /></tr></thead>
+        <tbody class="tnum"><slot /></tbody>
+      </table>
+    </div>
     <slot name="empty" />
   </div>
 </template>

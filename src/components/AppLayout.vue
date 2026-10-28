@@ -326,23 +326,23 @@ useClickOutside(navRef, closeDropdown)
       </main>
     </div>
 
-    <!-- Bottom Navigation (Mobile only - Vitima) -->
+    <!-- Bottom Navigation (Mobile only - Vitima/Agente) -->
     <nav
       v-if="user?.tipo !== 'admin'"
-      class="fixed bottom-0 left-0 right-0 bg-background border-t border-border/50 shadow-lg lg:hidden z-50"
+      class="fixed bottom-0 left-0 right-0 bg-background border-t border-border/50 shadow-lg lg:hidden z-50 overflow-x-auto scrollbar-none"
     >
-      <div class="flex items-center justify-around py-2">
+      <div class="flex items-center justify-around sm:justify-center gap-1 sm:gap-4 py-1.5 px-2 min-w-max sm:min-w-0">
         <router-link
           v-for="item in navigationItems"
           :key="item.href"
           :to="item.href"
-          class="flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-all"
+          class="flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-lg transition-all flex-shrink-0"
           :class="isActivePath(item.href)
-            ? 'text-primary'
-            : 'text-muted-foreground'"
+            ? 'text-primary font-semibold'
+            : 'text-muted-foreground hover:text-foreground'"
         >
           <component :is="item.icon" class="w-5 h-5" />
-          <span class="text-xs">{{ item.label }}</span>
+          <span class="text-[10px] tracking-tight">{{ item.label }}</span>
         </router-link>
       </div>
     </nav>

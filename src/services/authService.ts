@@ -5,13 +5,35 @@ export type { LoginCredentials } from '../types'
 
 export const currentUserRef = ref<User | null>(null)
 
-function mapUser(u: { id: string; email: string; metadata: Record<string, unknown> | null; profile: { name?: string } | null }): User {
-  const tipo = (u.metadata?.tipo || (u.profile as Record<string, unknown>)?.tipo) as UserType | undefined
+async function mapUser(u: { id: string; email: string; metadata: Record<string, unknown> | null; profile: { name?: string } | null }): Promise<User> {
+  const metaTipo = (u.metadata?.tipo || (u.profile as Record<string, unknown>)?.tipo) as UserType | undefined
+  let tipo: UserType = metaTipo || 'vitima'
+
+  if (!metaTipo && u.email) {
+    const lowerEmail = u.email.toLowerCase()
+    if (lowerEmail.startsWith('admin') || lowerEmail.includes('admin')) {
+      tipo = 'admin'
+    } else if (lowerEmail.startsWith('agente') || lowerEmail.includes('agente')) {
+      tipo = 'agente'
+    } else {
+      try {
+        const { data, error } = await supabase.database
+          .from('user_roles')
+          .select('tipo')
+          .eq('user_id', u.id)
+          .single()
+        if (!error && data?.tipo) {
+          tipo = data.tipo as UserType
+        }
+      } catch {}
+    }
+  }
+
   return {
     id: u.id,
     email: u.email || '',
     nome: u.profile?.name || u.email?.split('@')[0] || '',
-    tipo: tipo || 'vitima'
+    tipo
   }
 }
 
@@ -24,7 +46,7 @@ export async function getCurrentUser(): Promise<User | null> {
       return null
     }
 
-    const userObj = mapUser(data.user)
+    const userObj = await mapUser(data.user)
     currentUserRef.value = userObj
     return userObj
   } catch {
@@ -42,7 +64,7 @@ export async function login(email: string, password: string): Promise<User | nul
     return null
   }
 
-  const userObj = mapUser(data.user)
+  const userObj = await mapUser(data.user)
   currentUserRef.value = userObj
   return userObj
 }

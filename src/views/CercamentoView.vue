@@ -793,7 +793,7 @@ function resetar() {
           </div>
 
           <!-- Mapa -->
-          <div class="relative w-full h-[calc(100vh-19rem)] rounded-2xl overflow-hidden border border-border">
+          <div class="relative w-full h-[380px] sm:h-[450px] lg:h-[calc(100vh-19rem)] rounded-2xl overflow-hidden border border-border">
             <div class="absolute inset-0">
               <div
                 id="cercamento-map"
