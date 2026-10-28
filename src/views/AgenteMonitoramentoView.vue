@@ -16,7 +16,8 @@ import {
   Eye,
   AlertTriangle,
   ClipboardCheck,
-  Car
+  Car,
+  Sparkles
 } from 'lucide-vue-next'
 import {
   fetchMonitoramentos,
@@ -29,6 +30,7 @@ import { fetchMedidasProtetivas, type MedidaProtetivaAll } from '../services/med
 import DataTable from '../components/DataTable.vue'
 import SectionHeader from '../components/SectionHeader.vue'
 import StatCard from '../components/StatCard.vue'
+import { isConfigured, gerarApoio } from '../services/iaAconselhamentoService'
 
 const monitoramentos = ref<AgenteMonitoramento[]>([])
 const medidas = ref<MedidaProtetivaAll[]>([])
@@ -36,6 +38,36 @@ const isLoading = ref(false)
 const isModalOpen = ref(false)
 const isDetailOpen = ref(false)
 const isEditOpen = ref(false)
+const isRelatorioModalOpen = ref(false)
+const relatorioTexto = ref('')
+const gerandoRelatorio = ref(false)
+
+async function gerarRelatorioExecutivoIa() {
+  if (!isConfigured()) {
+    alert('A IA não está configurada neste ambiente (VITE_IA_FUNCTION_URL ausente).')
+    return
+  }
+  gerandoRelatorio.value = true
+  try {
+    const total = monitoramentos.value.length
+    const pendentes = monitoramentos.value.filter((m) => m.status_visita === 'pendente').length
+    const altoRisco = monitoramentos.value.filter((m) => m.risco === 'alto' || m.risco === 'critico').length
+    const concluidos = monitoramentos.value.filter((m) => m.status_patrulha === 'concluido').length
+    const prompt = [
+      'Gere um relatório executivo formal de patrulhamento e monitoramento de medidas protetivas.',
+      `Dados operacionais: total de registros = ${total}; visitas pendentes = ${pendentes};`,
+      `registros de risco alto/crítico = ${altoRisco}; patrulhas concluídas = ${concluidos}.`,
+      'Estruture em: 1) Sumário operacional, 2) Situação das visitas, 3) Pontos de atenção, 4) Recomendações táticas.',
+      'Use linguagem técnica, objetiva e adequada para envio à autoridade competente.'
+    ].join(' ')
+    relatorioTexto.value = await gerarApoio(prompt)
+    isRelatorioModalOpen.value = true
+  } catch (e: any) {
+    alert(e.message || 'Erro ao gerar relatório com IA')
+  } finally {
+    gerandoRelatorio.value = false
+  }
+}
 const selectedMonitoramento = ref<AgenteMonitoramento | null>(null)
 const editingMonitoramento = ref<AgenteMonitoramento | null>(null)
 const searchTerm = ref('')
@@ -321,13 +353,24 @@ onMounted(() => {
         <template #title>Painel do agente</template>
         <template #desc>Monitoramento de medidas protetivas e acompanhamento de vítimas</template>
         <template #actions>
-          <button
-            @click="openModal"
-            class="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white text-sm font-medium shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all"
-          >
-            <Plus class="w-4 h-4" />
-            Novo registro
-          </button>
+          <div class="flex flex-wrap items-center gap-2">
+            <button
+              @click="gerarRelatorioExecutivoIa"
+              :disabled="gerandoRelatorio"
+              class="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/10 text-primary text-sm font-medium hover:bg-primary/20 transition-colors disabled:opacity-50"
+            >
+              <span v-if="gerandoRelatorio" class="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></span>
+              <Sparkles v-else class="w-4 h-4" />
+              Relatório IA
+            </button>
+            <button
+              @click="openModal"
+              class="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white text-sm font-medium shadow-lg shadow-primary/25 hover:opacity-95 active:scale-[0.99] transition-all"
+            >
+              <Plus class="w-4 h-4" />
+              Novo registro
+            </button>
+          </div>
         </template>
       </SectionHeader>
 
@@ -919,6 +962,38 @@ onMounted(() => {
               Última atualização: {{ formatDateTime(selectedMonitoramento.ultima_atualizacao) }}
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Relatório Executivo IA -->
+    <div
+      v-if="isRelatorioModalOpen"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
+    >
+      <div class="bg-card border border-border rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl animate-scale-in">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-heading font-semibold text-lg flex items-center gap-2">
+            <Sparkles class="w-5 h-5 text-primary" />
+            Relatório Executivo de Patrulha (IA)
+          </h3>
+          <button
+            @click="isRelatorioModalOpen = false"
+            class="p-2 rounded-lg hover:bg-secondary/50 transition-colors"
+          >
+            <X class="w-5 h-5" />
+          </button>
+        </div>
+        <div class="rounded-xl border border-border bg-secondary/20 p-4 text-sm text-foreground whitespace-pre-line leading-relaxed">
+          {{ relatorioTexto || 'Nenhum relatório gerado.' }}
+        </div>
+        <div class="flex justify-end gap-2 mt-4">
+          <button
+            @click="isRelatorioModalOpen = false"
+            class="px-4 py-2 rounded-xl border border-border text-sm hover:bg-secondary/50 transition-colors"
+          >
+            Fechar
+          </button>
         </div>
       </div>
     </div>

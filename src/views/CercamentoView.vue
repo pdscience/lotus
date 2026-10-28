@@ -9,10 +9,12 @@ import {
   AlertTriangle,
   MapPin,
   Navigation,
-  Bell
+  Bell,
+  Sparkles
 } from 'lucide-vue-next'
 import 'leaflet/dist/leaflet.css'
 import SectionHeader from '../components/SectionHeader.vue'
+import { isConfigured, gerarApoio } from '../services/iaAconselhamentoService'
 
 let L: typeof import('leaflet') | null = null
 
@@ -36,6 +38,26 @@ const modoSelecao = ref<'vitima' | 'agressor' | null>(null)
 const localizacaoPermitida = ref(false)
 const localizacaoSolicitando = ref(false)
 const localizacaoNegada = ref(false)
+
+// --- AI State ---
+const analisePreditiva = ref('')
+const carregandoAnalise = ref(false)
+
+async function analisarRiscoPreditivo() {
+  if (!isConfigured()) {
+    alert('A IA não está configurada neste ambiente.')
+    return
+  }
+  carregandoAnalise.value = true
+  try {
+    const prompt = `Analise o risco de cercamento territorial entre a vítima ${vitimaNome.value || 'Vítima'} e o agressor ${agressorNome.value || 'Agressor'}. Distância atual: ${distanciaAtual.value !== null ? distanciaAtual.value + ' metros' : 'desconhecida'}. Raio configurado: ${raioMetros.value} metros. Status de alerta: ${alertaAtivo.value ? 'EM RISCO / DENTRO DO RAIO' : 'Seguro / Fora do raio'}. Forneça uma análise preditiva de risco em 2 parágrafos curtos com recomendações de segurança.`
+    analisePreditiva.value = await gerarApoio(prompt)
+  } catch (e: any) {
+    alert(e.message || 'Erro ao gerar análise preditiva')
+  } finally {
+    carregandoAnalise.value = false
+  }
+}
 
 // --- Map refs ---
 let map: import('leaflet').Map | null = null
@@ -372,6 +394,7 @@ function resetar() {
   distanciaAtual.value = null
   alertaAtivo.value = false
   localizacaoNegada.value = false
+  analisePreditiva.value = ''
 }
 </script>
 
@@ -476,6 +499,29 @@ function resetar() {
               Distância atual: {{ distanciaAtual !== null ? formatarDistancia(distanciaAtual) : 'calculando...' }}
             </p>
           </div>
+        </div>
+      </div>
+
+      <!-- Análise Preditiva de Risco com IA -->
+      <div v-if="monitorando" class="mb-6 rounded-2xl border border-primary/30 bg-primary/5 p-4 shadow-lg animate-fade-in-up">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex items-start gap-3">
+            <div class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+              <Sparkles class="w-4 h-4" />
+            </div>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wider text-primary">Análise Preditiva de Risco (IA)</p>
+              <p class="text-sm mt-1 text-foreground">{{ analisePreditiva || 'Gere uma análise preditiva baseada na distância atual e no raio configurado para suporte tático.' }}</p>
+            </div>
+          </div>
+          <button
+            @click="analisarRiscoPreditivo"
+            :disabled="carregandoAnalise"
+            class="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-semibold shadow hover:opacity-90 disabled:opacity-50 transition-all flex items-center gap-1.5 flex-shrink-0"
+          >
+            <span v-if="carregandoAnalise" class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+            Analisar Risco
+          </button>
         </div>
       </div>
 

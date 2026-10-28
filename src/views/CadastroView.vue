@@ -13,12 +13,14 @@ import {
   FileText,
   MapPin,
   XCircle,
-  Navigation
+  Navigation,
+  Sparkles
 } from 'lucide-vue-next'
 import { useUserStore } from '../stores/userStore'
 import { supabase } from '../lib/supabase'
 import SectionHeader from '../components/SectionHeader.vue'
 import { geocodificarEndereco, reverseGeocode } from '../services/geocodingService'
+import { isConfigured, gerarApoio } from '../services/iaAconselhamentoService'
 import 'leaflet/dist/leaflet.css'
 
 let L: typeof import('leaflet') | null = null
@@ -35,6 +37,49 @@ const ofendidaData = ref<Record<string, any>>({})
 const ofensorData = ref<Record<string, any>>({})
 const dependentesData = ref<Record<string, any>[]>([])
 const medidasData = ref<Record<string, any>>({})
+
+// AI triage state
+const isAiModalOpen = ref(false)
+const boText = ref('')
+const isAiProcessing = ref(false)
+const triagemResultado = ref('')
+
+async function processarTriagemIa() {
+  if (!boText.value.trim()) return
+  if (!isConfigured()) {
+    alert('A IA não está configurada neste ambiente (VITE_IA_FUNCTION_URL ausente).')
+    return
+  }
+  isAiProcessing.value = true
+  triagemResultado.value = ''
+  try {
+    const prompt = [
+      'Você é um assistente de triagem de medidas protetivas.',
+      'Extraia do texto abaixo os campos: nome da vítima, telefone da vítima, endereço da vítima,',
+      'nome do agressor, cidade/UF e nível de urgência (baixa, media, alta ou critica).',
+      'Responda em formato de lista simples, um campo por linha, sem comentários adicionais.',
+      '',
+      `Texto: ${boText.value.slice(0, 1500)}`
+    ].join('\n')
+    triagemResultado.value = await gerarApoio(prompt)
+  } catch (e: any) {
+    alert(e.message || 'Erro ao processar triagem com IA')
+  } finally {
+    isAiProcessing.value = false
+  }
+}
+
+function aplicarTriagem() {
+  if (!triagemResultado.value) return
+  medidasData.value.observacoes = [
+    medidasData.value.observacoes,
+    '[Triagem IA - revisar antes de salvar]',
+    triagemResultado.value
+  ].filter(Boolean).join('\n\n')
+  isAiModalOpen.value = false
+  boText.value = ''
+  triagemResultado.value = ''
+}
 
 // Location state
 const latVitima = ref<number | null>(null)
@@ -370,6 +415,9 @@ const handleSave = async () => {
     if (medidasData.value.escolaDependente) {
       descricaoParts.push(`Escola dependente: ${medidasData.value.escolaDependente}`)
     }
+    if (medidasData.value.observacoes) {
+      descricaoParts.push(`Observações / Triagem: ${medidasData.value.observacoes}`)
+    }
 
     const { error } = await supabase
       .database.from('medidas_protetivas')
@@ -424,6 +472,15 @@ const handleSave = async () => {
       <SectionHeader>
         <template #title>Cadastrar nova medida protetiva</template>
         <template #desc>Registro completo de medida protetiva de urgência</template>
+        <template #actions>
+          <button
+            @click="isAiModalOpen = true"
+            class="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 text-sm font-semibold transition-colors shadow-sm"
+          >
+            <Sparkles class="w-4 h-4" />
+            Triagem IA (B.O.)
+          </button>
+        </template>
       </SectionHeader>
 
       <!-- Wizard vertical: passos laterais + conteúdo -->
@@ -991,5 +1048,56 @@ const handleSave = async () => {
         </div>
       </div>
     </main>
+
+    <!-- Modal Triagem IA -->
+    <div v-if="isAiModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+      <div class="bg-card border border-border rounded-2xl max-w-lg w-full p-6 shadow-2xl animate-scale-in">
+        <h3 class="font-heading font-semibold text-lg mb-2 flex items-center gap-2">
+          <Sparkles class="w-5 h-5 text-primary" />
+          Triagem Automática com IA (B.O.)
+        </h3>
+        <p class="text-xs text-muted-foreground mb-4">
+          Cole abaixo o texto do Boletim de Ocorrência ou Relatório Policial. A IA fará a leitura e preenchimento preliminar.
+        </p>
+        <textarea
+          v-model="boText"
+          rows="6"
+          placeholder="Ex: Boletim de Ocorrência nº 1234/2026. Vítima Maria da Silva relata que..."
+          class="w-full rounded-xl border border-border bg-input p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 mb-3 text-foreground"
+        ></textarea>
+
+        <div v-if="triagemResultado" class="mb-4">
+          <p class="text-xs font-semibold uppercase tracking-wider text-primary mb-2">Resultado da triagem (revise)</p>
+          <div class="rounded-xl border border-border bg-secondary/20 p-3 text-sm text-foreground whitespace-pre-line max-h-48 overflow-y-auto">
+            {{ triagemResultado }}
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2">
+          <button
+            @click="isAiModalOpen = false"
+            class="px-4 py-2 rounded-xl border border-border text-sm hover:bg-secondary/50 transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            v-if="triagemResultado"
+            @click="aplicarTriagem"
+            class="px-5 py-2 rounded-xl bg-success text-white text-sm font-semibold shadow-lg hover:opacity-90 transition-all"
+          >
+            Aplicar nas observações
+          </button>
+          <button
+            v-else
+            @click="processarTriagemIa"
+            :disabled="isAiProcessing || !boText.trim()"
+            class="px-5 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold shadow-lg hover:opacity-90 disabled:opacity-50 transition-all flex items-center gap-2"
+          >
+            <span v-if="isAiProcessing" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+            Processar com IA
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
