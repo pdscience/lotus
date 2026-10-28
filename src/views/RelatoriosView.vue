@@ -388,7 +388,7 @@ const municipioStats = computed(() => {
             <h3 class="font-heading font-semibold text-lg">Informações por tipo de acesso</h3>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             <!-- Admin -->
             <div class="p-5 rounded-xl border border-border bg-secondary/30">
               <div class="flex items-center gap-3 mb-4">
@@ -396,7 +396,7 @@ const municipioStats = computed(() => {
                   <Scale class="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 class="font-semibold">Acesso Administrador</h4>
+                  <h4 class="font-semibold text-lg leading-tight">Acesso Administrador</h4>
                   <p class="text-xs text-muted-foreground">Gestão completa do sistema</p>
                 </div>
               </div>
@@ -431,7 +431,7 @@ const municipioStats = computed(() => {
                   <Heart class="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 class="font-semibold">Acesso Vítima</h4>
+                  <h4 class="font-semibold text-lg leading-tight">Acesso Vítima</h4>
                   <p class="text-xs text-muted-foreground">Área restrita e protegida</p>
                 </div>
               </div>
@@ -455,6 +455,41 @@ const municipioStats = computed(() => {
                 <li class="flex items-center gap-2">
                   <CheckCircle class="w-4 h-4 text-success" />
                   Informações sobre direitos
+                </li>
+              </ul>
+            </div>
+
+            <!-- Agente -->
+            <div class="p-5 rounded-xl border border-border bg-secondary/30">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                  <Shield class="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 class="font-semibold text-lg leading-tight">Acesso Agente</h4>
+                  <p class="text-xs text-muted-foreground">Monitoramento e patrulha</p>
+                </div>
+              </div>
+              <ul class="space-y-2 text-sm text-muted-foreground">
+                <li class="flex items-center gap-2">
+                  <CheckCircle class="w-4 h-4 text-success" />
+                  Monitorar medidas protetivas
+                </li>
+                <li class="flex items-center gap-2">
+                  <CheckCircle class="w-4 h-4 text-success" />
+                  Consultar registros e medidas
+                </li>
+                <li class="flex items-center gap-2">
+                  <CheckCircle class="w-4 h-4 text-success" />
+                  Cercamento com análise de risco (IA)
+                </li>
+                <li class="flex items-center gap-2">
+                  <CheckCircle class="w-4 h-4 text-success" />
+                  Relatório executivo (IA)
+                </li>
+                <li class="flex items-center gap-2">
+                  <CheckCircle class="w-4 h-4 text-success" />
+                  Protetores e histórico de pânico
                 </li>
               </ul>
             </div>
